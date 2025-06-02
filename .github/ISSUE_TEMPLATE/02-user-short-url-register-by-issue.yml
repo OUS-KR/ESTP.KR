@@ -1,0 +1,58 @@
+name: 사용자 정의 단축 URL 등록
+description: "{도메인}/u/{사용자_아이디}/{단축 경로} 형태의 사용자 정의 단축 URL 등록"
+title: "[USER SHORT URL REGISTER] 사용자 정의 단축 URL 등록"
+labels: user-short-url-register
+assignees: OUS-KR
+body:
+  - type: input
+    id: user-id
+    attributes:
+      label: 사용자 아이디
+      description: "등록한 본인의 사용자 아이디"
+      placeholder: "예: my_user-id"
+    validations:
+      required: true
+  - type: input
+    id: original-url
+    attributes:
+      label: 원본 URL
+      description: "단축하고자 하는 원본 URL (스팸, 불법적인 콘텐츠 등의 주소 연결 시 사용자 아이디 삭제)"
+      placeholder: "예: https://example.com"
+    validations:
+      required: true
+  - type: input
+    id: short-url
+    attributes:
+      label: 단축 URL 경로
+      description: "각 경로 이름은 20자리 이하의 영어 (a-z, A-Z), 숫자 (0-9), 하이픈 (-), 언더스코어 (_)로 구성되고, 시작과 끝은 영어 소문자와 숫자만 가능하며, 경로는 슬래시 (/)로 구분"
+      placeholder: "예: instagram, sns/instagram, sns/instagram/profile, ..."
+    validations:
+      required: true
+  - type: input
+    id: redirect-delay
+    attributes:
+      label: "원본 URL 이동 지연 시간 (n초 후 원본 URL로 이동)"
+      description: "지연 시간 (초)"
+    validations:
+      required: true
+  - type: input
+    id: page-title
+    attributes:
+      label: 페이지 제목 (선택 사항)
+      description: "title 및 h1 태그에 사용될 페이지 제목"
+    validations:
+      required: false
+  - type: input
+    id: title
+    attributes:
+      label: 사용자 글 제목 (선택 사항)
+      description: "h2 태그에 사용될 사용자 글 제목"
+    validations:
+      required: false
+  - type: textarea
+    id: article
+    attributes:
+      label: 사용자 글 내용 (선택 사항)
+      placeholder: "사용자 글 작성"
+    validations:
+      required: false

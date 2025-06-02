@@ -1,0 +1,22 @@
+name: 사용자 정의 단축 URL 삭제
+description: "{도메인}/u/{사용자_아이디}/{단축 경로} 형태의 등록된 사용자 정의 단축 URL 삭제"
+title: "[USER SHORT URL DELETION] 사용자 정의 단축 URL 삭제"
+labels: user-short-url-deletion
+assignees: OUS-KR
+body:
+  - type: input
+    id: user-id
+    attributes:
+      label: 사용자 아이디
+      description: "등록한 본인의 사용자 아이디"
+      placeholder: "예: my_user-id"
+    validations:
+      required: true
+  - type: input
+    id: short-url
+    attributes:
+      label: 단축 URL 경로
+      description: "삭제할 등록된 사용자 정의 단축 URL 경로"
+      placeholder: "예: instagram, sns/instagram, sns/instagram/profile, ..."
+    validations:
+      required: true

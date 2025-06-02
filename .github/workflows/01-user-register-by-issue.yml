@@ -1,0 +1,217 @@
+name: User register by issue
+  
+on:
+  issues:
+    types: [opened, edited]
+    
+jobs:
+  user-register:
+    if: contains(github.event.issue.labels.*.name, 'user-register')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v3
+      with:
+        ref: main
+        
+    - name: Set env
+      env:
+        GITHUB_ID: ${{ github.event.issue.user.id }}
+      id: env
+      run: |
+        # Env
+        ADMIN_GITHUB_ID="210320028"
+        USERS_REGISTER_INFO_PATH="registered/users"
+        USERS_PUBLIC_PATH="public/u"
+        USERS_SERVICE_PATH="u"
+        TMP_PATH="/tmp"
+        
+        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/$GITHUB_ID"
+        USER_HTML_TEMPLATE_FILE="templates/user.html"
+        USER_PAGE_HTML_FILE_NAME="index.html"
+        USER_META_INFO_FILE_NAME="meta.json"
+        USER_MENU_INFO_FILE_NAME="menu.json"
+        
+        # Github output
+        {
+          echo "admin_github_id=$ADMIN_GITHUB_ID"
+          echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
+          echo "users_public_path=$USERS_PUBLIC_PATH"
+          echo "users_service_path=$USERS_SERVICE_PATH"
+          echo "tmp_path=$TMP_PATH"
+          
+          echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
+          echo "user_html_template_file=$USER_HTML_TEMPLATE_FILE"
+          echo "user_page_html_file_name=$USER_PAGE_HTML_FILE_NAME"
+          echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
+          echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
+        } >> "$GITHUB_OUTPUT"
+        
+    - name: Check if user already registered
+      env:
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        ENV__ADMIN_GITHUB_ID: ${{ steps.env.outputs.admin_github_id }}
+        GITHUB_ID: ${{ github.event.issue.user.id }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: register-info
+      run: |
+        # Validation: User
+        if [ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ] && [ -f "$ENV__USER_REGISTER_INFO_FILE" ]; then
+          echo "이미 사용자 아이디를 등록한 Github 사용자: **$GITHUB_ID**" > comment.md
+          gh issue comment "$ISSUE_NUMBER" -F comment.md
+          exit 1
+        fi
+        
+    - name: Parse issue forms
+      id: issue-parser
+      uses: edumserrano/github-issue-forms-parser@v1.3.7
+      with:
+        template-filepath: '.github/ISSUE_TEMPLATE/01-user-register-by-issue.yml'
+        issue-form-body: '${{ github.event.issue.body }}'
+        
+    - name: Extract user ID from issue body
+      env:
+        ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
+        ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
+        ENV__TMP_PATH: ${{ steps.env.outputs.tmp_path }}
+        ENV__USER_PAGE_HTML_FILE_NAME: ${{ steps.env.outputs.user_page_html_file_name }}
+        ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
+        ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
+        PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: extract
+      run: |
+        # Extract
+        USER_ID=$(echo "$PARSED_ISSUE" | jq -r '.["user-id"]')
+        
+        # Validation: User ID
+        if [[ ! "$USER_ID" =~ ^[a-z0-9][a-z0-9_-]{1,28}[a-z0-9]$ ]]; then
+          echo "올바르지 않은 아이디 형식" > comment.md
+          gh issue comment "$ISSUE_NUMBER" -F comment.md
+          echo "user_id=" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+        
+        # User paths & files
+        USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
+        USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
+        USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
+        USER_PUBLIC_PAGE_HTML_FILE="$USER_PUBLIC_PATH/$ENV__USER_PAGE_HTML_FILE_NAME"
+        USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
+        USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
+        
+        # Output
+        echo "Extracted USER_ID: $USER_ID"
+        
+        echo "User public path: $USER_PUBLIC_PATH"
+        echo "User service path: $USER_SERVICE_PATH"
+        echo "User tmp path: $USER_TMP_PATH"
+        echo "User public page html file: $USER_PUBLIC_PAGE_HTML_FILE"
+        echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
+        echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
+        
+        # Github output
+        {
+          echo "user_id=$USER_ID"
+          
+          echo "user_public_path=$USER_PUBLIC_PATH"
+          echo "user_service_path=$USER_SERVICE_PATH"
+          echo "user_tmp_path=$USER_TMP_PATH"
+          echo "user_public_page_html_file=$USER_PUBLIC_PAGE_HTML_FILE"
+          echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
+          echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
+        } >> "$GITHUB_OUTPUT"
+        
+    - name: Check if user exists
+      env:
+        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Validation: User ID
+        if [ -d "$ENV__USER_PUBLIC_PATH" ]; then
+          echo "사용할 수 없는 사용자 아이디: **$USER_ID**" > comment.md
+          gh issue comment "$ISSUE_NUMBER" -F comment.md
+          exit 1
+        fi
+        
+    - name: Create user page
+      env:
+        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
+        ENV__USER_HTML_TEMPLATE_FILE: ${{ steps.env.outputs.user_html_template_file }}
+        ENV__USER_PUBLIC_PAGE_HTML_FILE: ${{ steps.extract.outputs.user_public_page_html_file }}
+        ENV__USER_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.user_public_meta_info_file }}
+        ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
+        ENV__USERS_REGISTER_INFO_PATH: ${{ steps.env.outputs.users_register_info_path }}
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+        GITHUB_ID: ${{ github.event.issue.user.id }}
+        GITHUB_NAME: ${{ github.event.issue.user.login }}
+      run: |
+        # Template
+        export PAGE_TITLE="$USER_ID"
+        
+        mkdir -p "$ENV__USER_PUBLIC_PATH"
+        envsubst < "$ENV__USER_HTML_TEMPLATE_FILE" > "$ENV__USER_PUBLIC_PAGE_HTML_FILE"
+        
+        # User meta info
+        cat <<EOF > "$ENV__USER_PUBLIC_META_INFO_FILE"
+        {
+          "github_id": "$GITHUB_ID",
+          "github_name": "$GITHUB_NAME",
+          "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
+        }
+        EOF
+        
+        # User register info
+        mkdir -p "$ENV__USERS_REGISTER_INFO_PATH"
+        touch "$ENV__USER_REGISTER_INFO_FILE"
+        
+    - name: Setup Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+    - name: Commit and push to main
+      env:
+        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+      run: |
+        git checkout main
+        git add "$ENV__USER_PUBLIC_PATH" "$ENV__USER_REGISTER_INFO_FILE" || true
+        git commit -m "Add user directory for $USER_ID and registered user info" || echo "Nothing to commit"
+        git push origin main
+        
+    - name: Commit and push to cf-pages
+      env:
+        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
+        ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
+        ENV__USER_SERVICE_PATH: ${{ steps.extract.outputs.user_service_path }}
+        ENV__USER_TMP_PATH: ${{ steps.extract.outputs.user_tmp_path }}
+      run: |
+        cp -r "$ENV__USER_PUBLIC_PATH" "$ENV__USER_TMP_PATH"
+        
+        git fetch origin cf-pages
+        git switch cf-pages || git checkout -b cf-pages
+        
+        mkdir -p "$ENV__USERS_SERVICE_PATH"
+        cp -r "$ENV__USER_TMP_PATH" "$ENV__USERS_SERVICE_PATH/"
+        
+        git add "$ENV__USER_SERVICE_PATH" || true
+        git commit -m "Add user page: $ENV__USER_SERVICE_PATH" || echo "Nothing to commit"
+        git push origin cf-pages
+        
+    - name: Comment on issue
+      env:
+        ENV__USER_SERVICE_PATH: ${{ steps.extract.outputs.user_service_path }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+        REPO_NAME: ${{ github.event.repository.name }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "사용자 **$USER_ID** 등록 완료: [$REPO_NAME/$ENV__USER_SERVICE_PATH](https://$REPO_NAME/$ENV__USER_SERVICE_PATH)" > comment.md
+        gh issue comment ${{ github.event.issue.number }} -F comment.md
