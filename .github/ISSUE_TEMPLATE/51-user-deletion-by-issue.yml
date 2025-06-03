@@ -1,0 +1,14 @@
+name: 사용자 삭제
+description: "{도메인}/u/{사용자_아이디} 주소의 등록된 사용자 삭제"
+title: "[USER DELETION] 사용자 삭제"
+labels: user-deletion
+assignees: OUS-KR
+body:
+  - type: input
+    id: user-id
+    attributes:
+      label: 사용자 아이디
+      description: "삭제할 등록된 사용자 아이디"
+      placeholder: "예: my_user-id"
+    validations:
+      required: true

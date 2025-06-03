@@ -1,0 +1,27 @@
+name: 사용자 메뉴 설정
+description: 모든 사용자 페이지에 사용될 메뉴 설정
+title: "[USER MENU SETTING] 사용자 메뉴 설정"
+labels: user-menu-setting
+assignees: OUS-KR
+body:
+  - type: input
+    id: user-id
+    attributes:
+      label: 사용자 아이디
+      description: "등록한 본인의 사용자 아이디"
+      placeholder: "예: my_user-id"
+    validations:
+      required: true
+  - type: textarea
+    id: menu
+    attributes:
+      label: 사용자 메뉴 (최대 2단계 리스트 메뉴)
+      description: "메뉴는 리스트 형식으로 작성하며 각 메뉴는 최대 2단계까지 설정 가능"
+      placeholder: |
+        - [1단계 메뉴 이름](메뉴 링크 주소) : 하위 메뉴 없이 링크 주소 설정
+        - 1단계 메뉴 이름 : 하위 메뉴를 가지는 1단계 메뉴는 링크 설정 없이 메뉴 이름만 작성
+          - [2단계 메뉴 이름](하위 메뉴 링크 주소) : 하위 메뉴 링크 주소 설정
+          - [2단계 메뉴 이름](하위 메뉴 링크 주소) : 하위 메뉴 링크 주소 설정
+        - 1단계 메뉴 이름 : 하위 메뉴 없이 메뉴 이름만 작성
+    validations:
+      required: true

@@ -1,0 +1,51 @@
+name: 사용자 글 작성
+description: "{도메인}/u/{사용자_아이디}/{글 경로} 형태의 사용자 정의 위치에 글 작성"
+title: "[USER ARTICLE WRTING] 사용자 글 작성"
+labels: user-article-writing
+assignees: OUS-KR
+body:
+  - type: input
+    id: user-id
+    attributes:
+      label: 사용자 아이디
+      description: "등록한 본인의 사용자 아이디"
+      placeholder: "예: my_user-id"
+    validations:
+      required: true
+  - type: input
+    id: article-path
+    attributes:
+      label: 사용자 글 URL 경로
+      description: "각 경로 이름은 20자리 이하의 영어 (a-z, A-Z), 숫자 (0-9), 하이픈 (-), 언더스코어 (_)로 구성되고, 시작과 끝은 영어 소문자와 숫자만 가능하며, 경로는 슬래시 (/)로 구분"
+      placeholder: "예: profile, blog/welcome, ..."
+    validations:
+      required: true
+  - type: input
+    id: page-title
+    attributes:
+      label: 페이지 제목
+      description: "title 및 h1 태그에 사용될 페이지 제목"
+    validations:
+      required: true
+  - type: input
+    id: title
+    attributes:
+      label: 사용자 글 제목
+      description: "h2 태그에 사용될 사용자 글 제목"
+    validations:
+      required: true
+  - type: textarea
+    id: article
+    attributes:
+      label: 사용자 글 내용
+      placeholder: "사용자 글 작성"
+    validations:
+      required: true
+  #- type: checkboxes
+  #  id: agreement
+  #  attributes:
+  #    label: 사용자 글 관련 설정
+  #    description: 사용자 글 관련 다양한 옵션 설정
+  #    options:
+  #      - label: 댓글 시스템 활성화 여부
+  #        required: true
