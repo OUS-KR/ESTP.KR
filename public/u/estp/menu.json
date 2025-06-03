@@ -1,0 +1,23 @@
+[
+  {
+    "text": "주요 기능",
+    "subs": [
+      {
+        "text": "사용자\n등록",
+        "link": "https://github.com/OUS-KR/ESTP.KR/issues/new?template=01-user-register-by-issue.yml"
+      },
+      {
+        "text": "사용자\n단축주소 생성",
+        "link": "https://github.com/OUS-KR/ESTP.KR/issues/new?template=02-user-short-url-register-by-issue.yml"
+      },
+      {
+        "text": "사용자\n글 작성",
+        "link": "https://github.com/OUS-KR/ESTP.KR/issues/new?template=03-user-article-writing-by-issue.yml"
+      },
+      {
+        "text": "사용자\n메뉴 설정",
+        "link": "https://github.com/OUS-KR/ESTP.KR/issues/new?template=04-user-menu-setting-by-issue.yml"
+      }
+    ]
+  }
+]
