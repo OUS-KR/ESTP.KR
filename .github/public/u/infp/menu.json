@@ -1,0 +1,40 @@
+[
+  {
+    "text": "메뉴 1",
+    "link": "/"
+  },
+  {
+    "text": "MBTI",
+    "subs": [
+      {
+        "text": "INFP.KR",
+        "link": "https://infp.kr"
+      },
+      {
+        "text": "ENFP.KR",
+        "link": "https://enfp.kr"
+      },
+      {
+        "text": "서브 메뉴"
+      },
+      {
+        "text": "서브 메뉴 2"
+      },
+      {
+        "text": "서브 메뉴 3"
+      }
+    ]
+  },
+  {
+    "text": "메뉴 3"
+  },
+  {
+    "text": "메뉴 4"
+  },
+  {
+    "text": "메뉴 5"
+  },
+  {
+    "text": "메뉴 6"
+  }
+]
