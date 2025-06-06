@@ -1,0 +1,2 @@
+/@:user/*     /u/:user/:splat    301
+/@:user       /u/:user           301
