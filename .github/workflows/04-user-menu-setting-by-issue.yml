@@ -228,7 +228,7 @@ jobs:
         git commit -m "Update user menu for $USER_ID" || echo "Nothing to commit"
         git push origin main
         
-    - name: Commit and push to cf-pages
+    - name: Commit and push to stage
       env:
         ENV__USER_PUBLIC_MENU_INFO_FILE: ${{ steps.extract.outputs.user_public_menu_info_file }}
         ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
@@ -238,19 +238,19 @@ jobs:
         mkdir -p "$(dirname "$ENV__USER_TMP_MENU_INFO_FILE")"
         cp -r "$ENV__USER_PUBLIC_MENU_INFO_FILE" "$ENV__USER_TMP_MENU_INFO_FILE"
         
-        git fetch origin cf-pages
-        git switch cf-pages || git checkout -b cf-pages
+        git fetch origin stage
+        git switch stage || git checkout -b stage
         
         cp -r "$ENV__USER_TMP_MENU_INFO_FILE" "$ENV__USER_SERVICE_MENU_INFO_FILE"
         
         git add "$ENV__USER_SERVICE_MENU_INFO_FILE" || true
         git commit -m "Update user menu for $USER_ID" || echo "Nothing to commit"
-        git push origin cf-pages
+        git push origin stage
         
     - name: Comment on issue
       env:
         USER_ID: ${{ steps.extract.outputs.user_id }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "사용자 **$USER_ID** 메뉴 설정 완료" > comment.md
+        echo "사용자 **$USER_ID** 메뉴 설정 준비 완료" > comment.md
         gh issue comment ${{ github.event.issue.number }} -F comment.md

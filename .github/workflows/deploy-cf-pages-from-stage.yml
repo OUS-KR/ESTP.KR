@@ -1,0 +1,40 @@
+name: Deploy cf-pages (svc) from stage only when needed
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout cf-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: cf-pages
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch stage branch
+        run: git fetch origin stage
+
+      - name: Merge stage into cf-pages
+        run: git merge origin/stage --no-edit || echo "Nothing to merge"
+
+      - name: Check diff
+        id: diff-chk
+        run: |
+          if git diff --quiet HEAD origin/stage; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push changes if needed
+        if: steps.diff-chk.outputs.changed == 'true'
+        run: git push origin cf-pages
