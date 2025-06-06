@@ -14,18 +14,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: cf-pages
-
+          
       - name: Setup Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
+          
       - name: Fetch stage branch
         run: git fetch origin stage
-
-      - name: Merge stage into cf-pages
-        run: git merge origin/stage --no-edit || echo "Nothing to merge"
-
+        
       - name: Check diff
         id: diff-chk
         run: |
@@ -34,7 +31,11 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-
+          
+      - name: Merge stage into cf-pages
+        if: steps.diff-chk.outputs.changed == 'true'
+        run: git merge origin/stage --no-edit || echo "Nothing to merge"
+          
       - name: Push changes if needed
         if: steps.diff-chk.outputs.changed == 'true'
         run: git push origin cf-pages
