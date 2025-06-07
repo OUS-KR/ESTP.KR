@@ -103,6 +103,10 @@ jobs:
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
         
+        # SEO
+        CANONICAL_PATH="$USER_SERVICE_PATH"
+        PAGE_DESC="${USER_ID}의 개인 페이지"
+        
         # Output
         echo "Extracted USER_ID: $USER_ID"
         
@@ -112,6 +116,9 @@ jobs:
         echo "User public page html file: $USER_PUBLIC_PAGE_HTML_FILE"
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
+        
+        echo "Canonical path: $CANONICAL_PATH"
+        echo "Page desc: $PAGE_DESC"
         
         # Github output
         {
@@ -123,6 +130,9 @@ jobs:
           echo "user_public_page_html_file=$USER_PUBLIC_PAGE_HTML_FILE"
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
+          
+          echo "canonical_path=$CANONICAL_PATH"
+          echo "page_desc=$PAGE_DESC"
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user exists
@@ -149,6 +159,8 @@ jobs:
         ENV__USERS_REGISTER_INFO_PATH: ${{ steps.env.outputs.users_register_info_path }}
         ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
+        CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
+        PAGE_DESC: ${{ steps.extract.outputs.page_desc }}
         GITHUB_ID: ${{ github.event.issue.user.id }}
         GITHUB_NAME: ${{ github.event.issue.user.login }}
       run: |

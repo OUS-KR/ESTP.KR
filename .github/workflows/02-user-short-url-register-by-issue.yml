@@ -78,6 +78,9 @@ jobs:
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
         USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_PATH/$SHORT_PATH/index.html"
         
+        # SEO
+        CANONICAL_PATH="$USER_SERVICE_SHORT_URL_PATH"
+        
         # Optionals
         if [ -z "$PAGE_TITLE" ]; then
           PAGE_TITLE="$USER_ID"
@@ -104,6 +107,8 @@ jobs:
         echo "User service short url html file: $USER_SERVICE_SHORT_URL_HTML_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
         echo "User tmp short url html file: $USER_TMP_SHORT_URL_HTML_FILE"
+        
+        echo "Canonical path: $CANONICAL_PATH"
         
         # Validation: User ID
         if [[ ! "$USER_ID" =~ ^[a-z0-9][a-z0-9_-]{1,28}[a-z0-9]$ ]]; then
@@ -185,6 +190,8 @@ jobs:
           echo "user_service_short_url_html_file=$USER_SERVICE_SHORT_URL_HTML_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
           echo "user_tmp_short_url_html_file=$USER_TMP_SHORT_URL_HTML_FILE"
+          
+          echo "canonical_path=$CANONICAL_PATH"
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user exists
@@ -226,10 +233,17 @@ jobs:
         ARTICLE_MARKDOWN=$(echo "$PARSED_ISSUE" | jq -r '.["article"]')
         echo "Extracted ARTICLE_MARKDOWN: $ARTICLE_MARKDOWN"
         
+        # SEO
+        PAGE_DESC=$(echo "$ARTICLE_MARKDOWN" | tr -d '\n' | grep -o . | head -n 20)
+        
         # Optional
         if [ -z "$ARTICLE_MARKDOWN" ]; then
           ARTICLE_MARKDOWN="[$ORIGINAL_URL]($ORIGINAL_URL)"
+          PAGE_DESC="${ORIGINAL_URL} URL로 이동하는 단축 URL 페이지"
         fi
+        
+        # Output
+        echo "PAGE_DESC: $PAGE_DESC"
         
         # Convert
         sudo apt-get install -y pandoc
@@ -284,6 +298,8 @@ jobs:
         ARTICLE_TITLE: ${{ steps.extract.outputs.article_title }}
         ARTICLE_HTML: ${{ steps.convert.outputs.article_html }}
         BREADCRUMB_ITEMS: ${{ steps.breadcrumbs.outputs.breadcrumb_items }}
+        CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
+        PAGE_DESC: ${{ steps.extract.outputs.page_desc }}
       id: create
       run: |
         # Template
