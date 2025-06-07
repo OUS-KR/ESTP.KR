@@ -8,13 +8,13 @@
 	
 	
 	<title>${PAGE_TITLE} - ESTP.KR</title>
-	<link rel="canonical" href="https://estp.kr/">
+	<link rel="canonical" href="https://estp.kr/${CANONICAL_PATH}">
 	<meta name="title" content="${PAGE_TITLE} - ESTP.KR">
-	<meta name="description" content="">
+	<meta name="description" content="${PAGE_DESC}">
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="${PAGE_TITLE} - ESTP.KR">
-	<meta property="og:description" content="">
-	<meta property="og:url" content="https://estp.kr/">
+	<meta property="og:description" content="${PAGE_DESC}">
+	<meta property="og:url" content="https://estp.kr/${CANONICAL_PATH}">
 	
 		
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700&display=swap">
@@ -517,7 +517,7 @@
             Kakao.isInitialized();
             
             // Canonical URL
-            const canonical_url = 'https://estp.kr/';
+            const canonical_url = 'https://estp.kr/${CANONICAL_PATH}';
             
             function share_with_kakaotalk()
             {
