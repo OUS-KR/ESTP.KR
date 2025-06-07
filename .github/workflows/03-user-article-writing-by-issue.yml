@@ -209,7 +209,7 @@ jobs:
         
         # SEO
         ARTICLE_TXT=$(echo "$ARTICLE_HTML" | pandoc -f html -t plain)
-        PAGE_DESC=$(echo "$ARTICLE_TXT" | sed ':a;N;$!ba;s/\n/ /g' | grep -o . | head -n 20 | paste -sd '')
+        PAGE_DESC=$(echo "$ARTICLE_TXT" | sed ':a;N;$!ba;s/\n/ /g' | grep -o . | head -n 100 | paste -sd '')
         
         # Output
         echo "ARTICLE_TXT: $ARTICLE_TXT"
