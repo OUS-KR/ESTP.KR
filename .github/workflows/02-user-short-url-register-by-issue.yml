@@ -233,23 +233,28 @@ jobs:
         ARTICLE_MARKDOWN=$(echo "$PARSED_ISSUE" | jq -r '.["article"]')
         echo "Extracted ARTICLE_MARKDOWN: $ARTICLE_MARKDOWN"
         
-        # SEO
-        PAGE_DESC=$(echo "$ARTICLE_MARKDOWN" | tr -d '\n' | grep -o . | head -n 20)
-        
         # Optional
         if [ -z "$ARTICLE_MARKDOWN" ]; then
           ARTICLE_MARKDOWN="[$ORIGINAL_URL]($ORIGINAL_URL)"
-          PAGE_DESC="${ORIGINAL_URL} URL로 이동하는 단축 URL 페이지"
         fi
-        
-        # Output
-        echo "PAGE_DESC: $PAGE_DESC"
         
         # Convert
         sudo apt-get install -y pandoc
         
         ARTICLE_HTML=$(echo "$ARTICLE_MARKDOWN" | pandoc -f gfm -t html | jq -Rs . | jq -r)
         echo "ARTICLE_HTML: $ARTICLE_HTML"
+        
+        # SEO
+        ARTICLE_TXT=$(echo "$ARTICLE_HTML" | pandoc -f html -t plain)
+        if [ -z "$ARTICLE_TXT" ]; then
+          PAGE_DESC="${ORIGINAL_URL} URL로 이동하는 단축 URL 페이지"
+        else
+          PAGE_DESC=$(echo "$ARTICLE_TXT" | sed ':a;N;$!ba;s/\n/ /g' | grep -o . | head -n 20 | paste -sd '')
+        fi
+        
+        # Output
+        echo "ARTICLE_TXT: $ARTICLE_TXT"
+        echo "PAGE_DESC: $PAGE_DESC"
         
         # Github output
         {
