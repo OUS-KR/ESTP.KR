@@ -249,7 +249,7 @@ jobs:
         if [ -z "$ARTICLE_TXT" ]; then
           PAGE_DESC="${ORIGINAL_URL} URL로 이동하는 단축 URL 페이지"
         else
-          PAGE_DESC=$(echo "$ARTICLE_TXT" | sed ':a;N;$!ba;s/\n/ /g' | grep -o . | head -n 100 | paste -sd '')
+          PAGE_DESC=$(echo "$ARTICLE_TXT" | sed ':a;N;$!ba;s/\n/ /g' | sed 's/[[:space:]]\+/ /g' | grep -o . | head -n 100 | paste -sd '')
         fi
         
         # Output
