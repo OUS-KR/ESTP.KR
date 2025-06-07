@@ -261,6 +261,8 @@ jobs:
           echo "article_html<<EOF"
           echo "$ARTICLE_HTML"
           echo "EOF"
+          
+          echo "page_desc=$PAGE_DESC"
         } >> "$GITHUB_OUTPUT"
         
     - name: Make breadcrumbs
