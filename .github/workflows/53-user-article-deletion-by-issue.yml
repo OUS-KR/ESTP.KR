@@ -151,6 +151,7 @@ jobs:
       id: delete
       run: |
         git checkout main
+        git pull origin main
         git rm "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE" || true
         git commit -m "Delete user article page for $USER_ID" || echo "Nothing to commit"
         git push origin main

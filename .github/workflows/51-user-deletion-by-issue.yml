@@ -127,6 +127,7 @@ jobs:
         USER_ID: ${{ steps.extract.outputs.user_id }}
       run: |
         git checkout main
+        git pull origin main
         git rm -r "$ENV__USER_PUBLIC_PATH" || true
         git rm -r "$ENV__USER_REGISTER_INFO_FILE" || true
         git commit -m "Delete user directory for $USER_ID and registered user info" || echo "Nothing to commit"

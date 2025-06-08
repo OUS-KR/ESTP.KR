@@ -281,6 +281,7 @@ jobs:
         USER_ID: ${{ steps.extract.outputs.user_id }}
       run: |
         git checkout main
+        git pull origin main
         git add "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE" || true
         git commit -m "Add user article for $USER_ID" || echo "Nothing to commit"
         git push origin main
