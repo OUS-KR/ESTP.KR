@@ -130,10 +130,6 @@ jobs:
             exit 1
           fi
           
-          if [[ $i -eq 0 && "$SEGMENT" == "index" ]]; then
-            continue
-          fi
-          
           PATH_PREFIX="$PATH_PREFIX/$SEGMENT"
           BREADCRUMBS+=("${SEGMENT}|${PATH_PREFIX}")
         done
