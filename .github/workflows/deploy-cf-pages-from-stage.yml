@@ -36,7 +36,7 @@ jobs:
           
       - name: Merge stage into cf-pages
         if: steps.diff-chk.outputs.changed == 'true'
-        run: git merge origin/stage --no-edit || echo "Nothing to merge"
+        run: git merge origin/stage --no-edit --allow-unrelated-histories || echo "Nothing to merge"
           
       - name: Push changes if needed
         if: steps.diff-chk.outputs.changed == 'true'
