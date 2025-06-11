@@ -68,13 +68,21 @@ jobs:
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
-        USER_SERVICE_ARTICLE_PATH="$USER_SERVICE_PATH/$ARTICLE_PATH"
         USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
-        USER_PUBLIC_ARTICLE_HTML_FILE="$USER_PUBLIC_PATH/$ARTICLE_PATH/index.html"
-        USER_SERVICE_ARTICLE_HTML_FILE="$USER_SERVICE_PATH/$ARTICLE_PATH/index.html"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
-        USER_TMP_ARTICLE_HTML_FILE="$USER_TMP_PATH/$ARTICLE_PATH/index.html"
+        
+        if [[ ! -z "$ARTICLE_PATH" ]]; then
+          USER_SERVICE_ARTICLE_PATH="$USER_SERVICE_PATH/$ARTICLE_PATH"
+          USER_PUBLIC_ARTICLE_HTML_FILE="$USER_PUBLIC_PATH/$ARTICLE_PATH/index.html"
+          USER_SERVICE_ARTICLE_HTML_FILE="$USER_SERVICE_PATH/$ARTICLE_PATH/index.html"
+          USER_TMP_ARTICLE_HTML_FILE="$USER_TMP_PATH/$ARTICLE_PATH/index.html"
+        else
+          USER_SERVICE_ARTICLE_PATH="$USER_SERVICE_PATH"
+          USER_PUBLIC_ARTICLE_HTML_FILE="$USER_PUBLIC_PATH/index.html"
+          USER_SERVICE_ARTICLE_HTML_FILE="$USER_SERVICE_PATH/index.html"
+          USER_TMP_ARTICLE_HTML_FILE="$USER_TMP_PATH/index.html"
+        fi
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_ARTICLE_PATH"
@@ -116,27 +124,31 @@ jobs:
           return 0
         }
         
-        IFS='/' read -ra PARTS <<< "$ARTICLE_PATH"
-        PATH_PREFIX="/u/$USER_ID"
-        BREADCRUMBS=()
-        
-        for i in "${!PARTS[@]}"; do
-          SEGMENT="${PARTS[$i]}"
+        if [[ ! -z "$ARTICLE_PATH" ]]; then
+          IFS='/' read -ra PARTS <<< "$ARTICLE_PATH"
+          PATH_PREFIX="/u/$USER_ID"
+          BREADCRUMBS=()
           
-          if ! validate_segment "$SEGMENT"; then
-            echo "올바르지 않은 단축 URL 경로 형식: $SEGMENT" > comment.md
-            gh issue comment "$ISSUE_NUMBER" -F comment.md
-            echo "article_path=" >> $GITHUB_OUTPUT
-            exit 1
-          fi
+          for i in "${!PARTS[@]}"; do
+            SEGMENT="${PARTS[$i]}"
+            
+            if ! validate_segment "$SEGMENT"; then
+              echo "올바르지 않은 단축 URL 경로 형식: $SEGMENT" > comment.md
+              gh issue comment "$ISSUE_NUMBER" -F comment.md
+              echo "article_path=" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            PATH_PREFIX="$PATH_PREFIX/$SEGMENT"
+            BREADCRUMBS+=("${SEGMENT}|${PATH_PREFIX}")
+          done
           
-          PATH_PREFIX="$PATH_PREFIX/$SEGMENT"
-          BREADCRUMBS+=("${SEGMENT}|${PATH_PREFIX}")
-        done
-        
-        # Breadcrumbs
-        BREADCRUMBS_STR=$(IFS=','; echo "${BREADCRUMBS[*]}")
-        echo "Extracted BREADCRUMBS_STR: $BREADCRUMBS_STR"
+          # Breadcrumbs
+          BREADCRUMBS_STR=$(IFS=','; echo "${BREADCRUMBS[*]}")
+          echo "Extracted BREADCRUMBS_STR: $BREADCRUMBS_STR"
+        else
+          BREADCRUMBS_STR=
+        fi
         
         # Github output
         {

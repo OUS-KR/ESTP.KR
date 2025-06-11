@@ -15,11 +15,11 @@ body:
   - type: input
     id: article-path
     attributes:
-      label: 사용자 글 URL 경로
+      label: 사용자 글 URL 경로 (선택 사항)
       description: "각 경로 이름은 20자리 이하의 영어 (a-z, A-Z), 숫자 (0-9), 하이픈 (-), 언더스코어 (_)로 구성되고, 시작과 끝은 영어 소문자와 숫자만 가능하며, 경로는 슬래시 (/)로 구분 (주의: 동일한 경로 존재 시 덮어쓰기 됨)"
       placeholder: "예: profile, blog/welcome, ..."
     validations:
-      required: true
+      required: false
   - type: input
     id: page-title
     attributes:
