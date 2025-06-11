@@ -40,4 +40,4 @@ jobs:
           
       - name: Push changes if needed
         if: steps.diff-chk.outputs.changed == 'true'
-        run: git push origin cf-pages
+        run: git push origin cf-pages --force
