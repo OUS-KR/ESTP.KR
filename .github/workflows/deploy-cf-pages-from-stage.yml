@@ -20,8 +20,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-      - name: Fetch stage branch
-        run: git fetch origin stage
+      - name: Fetch branch
+        run: |
+          git pull origin cf-pages
+          git fetch origin stage
         
       - name: Check diff
         id: diff-chk
