@@ -21,9 +21,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
       - name: Fetch branch
-        run: |
-          git pull origin cf-pages
-          git fetch origin stage
+        run: git fetch origin stage
         
       - name: Check diff
         id: diff-chk
@@ -38,7 +36,7 @@ jobs:
           
       - name: Merge stage into cf-pages
         if: steps.diff-chk.outputs.changed == 'true'
-        run: git merge origin/stage --no-edit --allow-unrelated-histories || echo "Nothing to merge"
+        run: git reset --hard origin/stage
           
       - name: Push changes if needed
         if: steps.diff-chk.outputs.changed == 'true'
