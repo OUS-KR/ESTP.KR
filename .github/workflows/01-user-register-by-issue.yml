@@ -27,7 +27,7 @@ jobs:
         USERS_SERVICE_PATH="u"
         TMP_PATH="/tmp"
         
-        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/$GITHUB_ID"
+        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_HTML_TEMPLATE_FILE="templates/user.html"
         USER_PAGE_HTML_FILE_NAME="index.html"
         USER_META_INFO_FILE_NAME="meta.json"
@@ -58,10 +58,17 @@ jobs:
       id: register-info
       run: |
         # Validation: User
-        if [ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ] && [ -f "$ENV__USER_REGISTER_INFO_FILE" ]; then
-          echo "이미 사용자 아이디를 등록한 Github 사용자: **$GITHUB_ID**" > comment.md
-          gh issue comment "$ISSUE_NUMBER" -F comment.md
-          exit 1
+        if [ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ]; then
+          if [ -f "$ENV__USER_REGISTER_INFO_FILE" ]; then
+            USER_COUNT=$(jq '.user_ids | length' "$ENV__USER_REGISTER_INFO_FILE")
+            echo "USER_COUNT: $USER_COUNT"
+            
+            if [ "$USER_COUNT" -ge 1 ]; then
+              echo "이미 사용자 아이디를 등록한 Github 사용자: **$GITHUB_ID**" > comment.md
+              gh issue comment "$ISSUE_NUMBER" -F comment.md
+              exit 1
+            fi
+          fi
         fi
         
     - name: Parse issue forms
@@ -179,9 +186,34 @@ jobs:
         }
         EOF
         
+    - name: Update user register info file
+      env:
+        ENV__USERS_REGISTER_INFO_PATH: ${{ steps.env.outputs.users_register_info_path }}
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+      run: |
         # User register info
         mkdir -p "$ENV__USERS_REGISTER_INFO_PATH"
-        touch "$ENV__USER_REGISTER_INFO_FILE"
+        
+        python3 << EOF
+        import os
+        import json
+        
+        # Load JSON file
+        json_file = os.environ["ENV__USER_REGISTER_INFO_FILE"]
+        json_data = {"user_ids": []}
+        if os.path.exists(json_file):
+          with open(json_file, "r", encoding="utf-8") as f:
+            json_data = json.load(f)
+            
+        # Update JSON data
+        user_id = os.environ["USER_ID"]
+        json_data["user_ids"].append(user_id)
+        
+        # Save to JSON file
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
+        EOF
         
     - name: Setup Git
       run: |

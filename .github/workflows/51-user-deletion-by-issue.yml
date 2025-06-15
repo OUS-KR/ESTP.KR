@@ -25,7 +25,7 @@ jobs:
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
         
-        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/$GITHUB_ID"
+        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_META_INFO_FILE_NAME="meta.json"
         
         # Github output
@@ -115,6 +115,14 @@ jobs:
           exit 1
         fi
         
+    - name: Update user register info file
+      env:
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+      run: |
+        TMP_FILE="${ENV__USER_REGISTER_INFO_FILE}.tmp"
+        jq --arg uid "$USER_ID" '.user_ids |= map(select(. != $uid))' "$ENV__USER_REGISTER_INFO_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$ENV__USER_REGISTER_INFO_FILE"
+        
     - name: Setup Git
       run: |
         git config user.name "github-actions[bot]"
@@ -129,8 +137,8 @@ jobs:
         git checkout main
         git pull origin main
         git rm -r "$ENV__USER_PUBLIC_PATH" || true
-        git rm -r "$ENV__USER_REGISTER_INFO_FILE" || true
-        git commit -m "Delete user directory for $USER_ID and registered user info" || echo "Nothing to commit"
+        git add "$ENV__USER_REGISTER_INFO_FILE" || true
+        git commit -m "Delete user directory for $USER_ID and update registered user info" || echo "Nothing to commit"
         git push origin main
         
     - name: Commit and push to stage
