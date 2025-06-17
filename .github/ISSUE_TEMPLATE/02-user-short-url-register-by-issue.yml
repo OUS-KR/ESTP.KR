@@ -7,11 +7,11 @@ body:
   - type: input
     id: user-id
     attributes:
-      label: 사용자 아이디
-      description: "등록한 본인의 사용자 아이디"
+      label: 사용자 아이디 (선택 사항)
+      description: "등록한 본인의 사용자 아이디 (미 입력 시 본인이 등록한 아이디로 자동 처리)"
       placeholder: "예: my_user-id"
     validations:
-      required: true
+      required: false
   - type: input
     id: original-url
     attributes:

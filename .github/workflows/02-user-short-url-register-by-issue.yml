@@ -16,13 +16,17 @@ jobs:
         ref: main
         
     - name: Set env
+      env:
+        GITHUB_ID: ${{ github.event.issue.user.id }}
       id: env
       run: |
         # Env
+        USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
         TMP_PATH="/tmp"
         
+        USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_SHORT_URL_HTML_TEMPLATE_FILE="templates/user-short-url.html"
         USER_META_INFO_FILE_NAME="meta.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
@@ -30,10 +34,12 @@ jobs:
         # Github output
         {
           # Env
+          echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
           echo "tmp_path=$TMP_PATH"
-          
+        
+          echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
           echo "user_short_url_html_template_file=$USER_SHORT_URL_HTML_TEMPLATE_FILE"
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
@@ -46,6 +52,19 @@ jobs:
         template-filepath: '.github/ISSUE_TEMPLATE/02-user-short-url-register-by-issue.yml'
         issue-form-body: '${{ github.event.issue.body }}'
         
+    - name: Extract the first user ID from registered user info
+      env:
+        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+      id: registered-user-info
+      run: |
+        # Extract
+        FIRST_USER_ID_IN_REGISTERED_USER_INFO=$(jq -r '.user_ids[0]' "$ENV__USER_REGISTER_INFO_FILE")
+        
+        # Github output
+        {
+          echo "first_user_id_in_registered_user_info=$FIRST_USER_ID_IN_REGISTERED_USER_INFO"
+        } > "$GITHUB_OUTPUT"
+        
     - name: Extract user ID, original URL, short URL, etc. from issue body
       env:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
@@ -54,6 +73,7 @@ jobs:
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
+        FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
         REPO_NAME: ${{ github.event.repository.name }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,6 +86,19 @@ jobs:
         REDIRECT_DELAY=$(echo "$PARSED_ISSUE" | jq -r '.["redirect-delay"]')
         PAGE_TITLE=$(echo "$PARSED_ISSUE" | jq -r '.["page-title"]')
         ARTICLE_TITLE=$(echo "$PARSED_ISSUE" | jq -r '.["title"]')
+        
+        # Optionals
+        if [ -z "$USER_ID" ]; then
+          USER_ID="$FIRST_USER_ID_IN_REGISTERED_USER_INFO"
+        fi
+        
+        if [ -z "$PAGE_TITLE" ]; then
+          PAGE_TITLE="$USER_ID"
+        fi
+        
+        if [ -z "$ARTICLE_TITLE" ]; then
+          ARTICLE_TITLE="$REPO_NAME/$USER_SERVICE_SHORT_URL_PATH"
+        fi
         
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
@@ -80,15 +113,6 @@ jobs:
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_SHORT_URL_PATH"
-        
-        # Optionals
-        if [ -z "$PAGE_TITLE" ]; then
-          PAGE_TITLE="$USER_ID"
-        fi
-        
-        if [ -z "$ARTICLE_TITLE" ]; then
-          ARTICLE_TITLE="$REPO_NAME/$USER_SERVICE_SHORT_URL_PATH"
-        fi
         
         # Output
         echo "Extracted USER_ID: $USER_ID"
