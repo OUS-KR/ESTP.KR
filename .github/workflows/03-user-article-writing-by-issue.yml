@@ -347,4 +347,5 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "사용자 **$USER_ID**의 글 **$ARTICLE_PATH** 생성 준비 완료: [$REPO_NAME/$ENV__USER_SERVICE_ARTICLE_PATH](https://$REPO_NAME/$ENV__USER_SERVICE_ARTICLE_PATH)" > comment.md
+        echo "미리보기: [PREVIEW.$REPO_NAME/$ENV__USER_SERVICE_ARTICLE_PATH](https://PREVIEW.$REPO_NAME/$ENV__USER_SERVICE_ARTICLE_PATH)"" >> comment.md
         gh issue comment ${{ github.event.issue.number }} -F comment.md
