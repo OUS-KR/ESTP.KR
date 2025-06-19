@@ -108,18 +108,20 @@ jobs:
         
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
+        USER_PUBLIC_SHORT_URL_PATH="$USER_PUBLIC_PATH/$SHORT_PATH"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
         USER_SERVICE_SHORT_URL_PATH="$USER_SERVICE_PATH/$SHORT_PATH"
         USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
+        USER_TMP_SHORT_URL_PATH="$USER_TMP_PATH/$SHORT_PATH"
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
-        CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
-        CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
+        CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
+        CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
-        CONTENT_TMP_META_INFO_FILE="$USER_TMP_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
+        CONTENT_TMP_META_INFO_FILE="$USER_TMP_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_SHORT_URL_PATH"
@@ -133,12 +135,14 @@ jobs:
         echo "Extracted ARTICLE_TITLE: $ARTICLE_TITLE"
         
         echo "User public path: $USER_PUBLIC_PATH"
+        echo "User public short url path: $USER_PUBLIC_SHORT_URL_PATH"
         echo "User service path: $USER_SERVICE_PATH"
         echo "User service short url path: $USER_SERVICE_SHORT_URL_PATH"
         echo "User tmp path: $USER_TMP_PATH"
+        echo "User tmp short url path: $USER_TMP_SHORT_URL_PATH"
         
-        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
+        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
         echo "User public short url html file: $USER_PUBLIC_SHORT_URL_HTML_FILE"
         echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
         echo "User service short url html file: $USER_SERVICE_SHORT_URL_HTML_FILE"
@@ -216,12 +220,14 @@ jobs:
           echo "article_title=$ARTICLE_TITLE"
           
           echo "user_public_path=$USER_PUBLIC_PATH"
+          echo "user_public_short_url_path=$USER_PUBLIC_SHORT_URL_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
           echo "user_service_short_url_path=$USER_SERVICE_SHORT_URL_PATH"
           echo "user_tmp_path=$USER_TMP_PATH"
+          echo "user_tmp_short_url_path=$USER_TMP_SHORT_URL_PATH"
           
-          echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
+          echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
           echo "user_public_short_url_html_file=$USER_PUBLIC_SHORT_URL_HTML_FILE"
           echo "content_service_meta_info_file=$CONTENT_SERVICE_META_INFO_FILE"
           echo "user_service_short_url_html_file=$USER_SERVICE_SHORT_URL_HTML_FILE"
@@ -359,7 +365,7 @@ jobs:
           "type": "user-short-url",
           "path": "$SHORT_PATH",
           "files": [
-            "$USER_SHORT_URL_HTML_FILE_NAME",
+            "$USER_SHORT_URL_HTML_FILE_NAME"
           ],
           "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
         }

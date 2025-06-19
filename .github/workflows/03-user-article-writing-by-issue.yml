@@ -332,7 +332,7 @@ jobs:
           "type": "user-article",
           "path": "$ARTICLE_PATH",
           "files": [
-            "$USER_ARTICLE_HTML_FILE_NAME",
+            "$USER_ARTICLE_HTML_FILE_NAME"
           ],
           "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
         }
