@@ -16,7 +16,7 @@ body:
     id: article-path
     attributes:
       label: 사용자 글 URL 경로 (선택 사항)
-      description: "각 경로 이름은 20자리 이하의 영어 (a-z, A-Z), 숫자 (0-9), 하이픈 (-), 언더스코어 (_)로 구성되고, 시작과 끝은 영어 소문자와 숫자만 가능하며, 경로는 슬래시 (/)로 구분 (주의: 동일한 경로 존재 시 덮어쓰기 됨)"
+      description: "각 경로 이름은 `20자리 이하`의 `영어 (a-z, A-Z)`, `숫자 (0-9)`, `하이픈 (-)`, `언더스코어 (_)`로 구성되고, 시작과 끝은 영어 소문자와 숫자만 가능하며, 경로는 `슬래시 (/)`로 구분 (동일한 경로 존재 시 덮어쓰기 되며, 미 입력 시 사용자 첫 페이지 `{도메인}/u/{사용자_아이디}` 수정)"
       placeholder: "예: profile, blog/welcome, ..."
     validations:
       required: false
@@ -24,14 +24,14 @@ body:
     id: page-title
     attributes:
       label: 페이지 제목
-      description: "title 및 h1 태그에 사용될 페이지 제목"
+      description: "`title` 및 `h1` 태그에 사용될 페이지 제목"
     validations:
       required: true
   - type: input
     id: title
     attributes:
       label: 사용자 글 제목
-      description: "h2 태그에 사용될 사용자 글 제목"
+      description: "`h2` 태그에 사용될 사용자 글 제목"
     validations:
       required: true
   - type: textarea
