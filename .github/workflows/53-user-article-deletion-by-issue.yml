@@ -26,7 +26,7 @@ jobs:
         USERS_SERVICE_PATH="u"
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
-        USER_META_INFO_FILE_NAME="meta.json"
+        USER_META_INFO_FILE_NAME="user.json"
         
         # Github output
         {

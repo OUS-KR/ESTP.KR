@@ -27,7 +27,7 @@ jobs:
         TMP_PATH="/tmp"
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
-        USER_META_INFO_FILE_NAME="meta.json"
+        USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         USER_MENU_HTML_FILE_NAME="menu.html"
         

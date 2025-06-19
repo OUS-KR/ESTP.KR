@@ -30,7 +30,7 @@ jobs:
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_HTML_TEMPLATE_FILE="templates/user.html"
         USER_PAGE_HTML_FILE_NAME="index.html"
-        USER_META_INFO_FILE_NAME="meta.json"
+        USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         
         # Github output

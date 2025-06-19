@@ -33,6 +33,7 @@ body:
     attributes:
       label: "원본 URL 이동 지연 시간 (n초 후 원본 URL로 이동)"
       description: "지연 시간 (초)"
+      value: "0"
     validations:
       required: true
   - type: input
