@@ -28,6 +28,7 @@ jobs:
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_SHORT_URL_HTML_TEMPLATE_FILE="templates/user-short-url.html"
+        USER_SHORT_URL_HTML_FILE_NAME="index.html"
         USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         CONTENT_META_INFO_FILE_NAME="content.json"
@@ -42,6 +43,7 @@ jobs:
         
           echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
           echo "user_short_url_html_template_file=$USER_SHORT_URL_HTML_TEMPLATE_FILE"
+          echo "user_short_url_html_file_name=$USER_SHORT_URL_HTML_FILE_NAME"
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
           echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
@@ -72,6 +74,7 @@ jobs:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
         ENV__TMP_PATH: ${{ steps.env.outputs.tmp_path }}
+        USER_SHORT_URL_HTML_FILE_NAME: ${{ steps.env.outputs.user_short_url_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
@@ -111,12 +114,12 @@ jobs:
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_PATH/$SHORT_PATH/index.html"
+        USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_PATH/$SHORT_PATH/index.html"
+        USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
         CONTENT_TMP_META_INFO_FILE="$USER_TMP_PATH/$SHORT_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_PATH/$SHORT_PATH/index.html"
+        USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_PATH/$SHORT_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_SHORT_URL_PATH"
@@ -330,6 +333,7 @@ jobs:
     - name: Create user short URL page
       env:
         ENV__USER_SHORT_URL_HTML_TEMPLATE_FILE: ${{ steps.env.outputs.user_short_url_html_template_file }}
+        USER_SHORT_URL_HTML_FILE_NAME: ${{ steps.env.outputs.user_short_url_html_file_name }}
         ENV__USER_PUBLIC_SHORT_URL_HTML_FILE: ${{ steps.extract.outputs.user_public_short_url_html_file }}
         ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
         ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
@@ -352,6 +356,11 @@ jobs:
         # Content meta info
         cat <<EOF > "$ENV__CONTENT_PUBLIC_META_INFO_FILE"
         {
+          "type": "user-short-url",
+          "path": "$SHORT_PATH",
+          "files": [
+            "$USER_SHORT_URL_HTML_FILE_NAME",
+          ],
           "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
         }
         EOF
