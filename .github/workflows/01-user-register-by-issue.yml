@@ -32,6 +32,7 @@ jobs:
         USER_PAGE_HTML_FILE_NAME="index.html"
         USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
+        CONTENT_META_INFO_FILE_NAME="content.json"
         
         # Github output
         {
@@ -46,6 +47,7 @@ jobs:
           echo "user_page_html_file_name=$USER_PAGE_HTML_FILE_NAME"
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
+          echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user already registered
@@ -86,6 +88,7 @@ jobs:
         ENV__USER_PAGE_HTML_FILE_NAME: ${{ steps.env.outputs.user_page_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
+        ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -106,6 +109,8 @@ jobs:
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
         USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
+        
+        CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
         USER_PUBLIC_PAGE_HTML_FILE="$USER_PUBLIC_PATH/$ENV__USER_PAGE_HTML_FILE_NAME"
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
@@ -120,6 +125,8 @@ jobs:
         echo "User public path: $USER_PUBLIC_PATH"
         echo "User service path: $USER_SERVICE_PATH"
         echo "User tmp path: $USER_TMP_PATH"
+        
+        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
         echo "User public page html file: $USER_PUBLIC_PAGE_HTML_FILE"
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
@@ -134,6 +141,8 @@ jobs:
           echo "user_public_path=$USER_PUBLIC_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
           echo "user_tmp_path=$USER_TMP_PATH"
+          
+          echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
           echo "user_public_page_html_file=$USER_PUBLIC_PAGE_HTML_FILE"
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
@@ -160,11 +169,13 @@ jobs:
       env:
         ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
         ENV__USER_HTML_TEMPLATE_FILE: ${{ steps.env.outputs.user_html_template_file }}
+        ENV__USER_PAGE_HTML_FILE_NAME: ${{ steps.env.outputs.user_page_html_file_name }}
         ENV__USER_PUBLIC_PAGE_HTML_FILE: ${{ steps.extract.outputs.user_public_page_html_file }}
         ENV__USER_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.user_public_meta_info_file }}
         ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
         ENV__USERS_REGISTER_INFO_PATH: ${{ steps.env.outputs.users_register_info_path }}
         ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
+        ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
         CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
         PAGE_DESC: ${{ steps.extract.outputs.page_desc }}
@@ -182,6 +193,18 @@ jobs:
         {
           "github_id": "$GITHUB_ID",
           "github_name": "$GITHUB_NAME",
+          "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
+        }
+        EOF
+        
+        # Content meta info
+        cat <<EOF > "$ENV__CONTENT_PUBLIC_META_INFO_FILE"
+        {
+          "type": "user-page",
+          "path": "",
+          "files": [
+            "$ENV__USER_PAGE_HTML_FILE_NAME",
+          ],
           "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
         }
         EOF
