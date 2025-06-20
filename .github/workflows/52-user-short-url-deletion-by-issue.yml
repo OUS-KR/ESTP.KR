@@ -24,6 +24,7 @@ jobs:
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
+        TMP_PATH="/tmp"
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_SHORT_URL_HTML_FILE_NAME="index.html"
@@ -37,6 +38,7 @@ jobs:
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
+          echo "tmp_path=$TMP_PATH"
         
           echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
           echo "user_short_url_html_file_name=$USER_SHORT_URL_HTML_FILE_NAME"
@@ -69,6 +71,7 @@ jobs:
       env:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
+        ENV__TMP_PATH: ${{ steps.env.outputs.tmp_path }}
         USER_SHORT_URL_HTML_FILE_NAME: ${{ steps.env.outputs.user_short_url_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
@@ -93,6 +96,8 @@ jobs:
         USER_PUBLIC_SHORT_URL_PATH="$USER_PUBLIC_PATH/$SHORT_PATH"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
         USER_SERVICE_SHORT_URL_PATH="$USER_SERVICE_PATH/$SHORT_PATH"
+        USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
+        USER_TMP_SHORT_URL_PATH="$USER_TMP_PATH/$SHORT_PATH"
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
@@ -101,6 +106,7 @@ jobs:
         CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
         LIST_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
+        LIST_TMP_META_INFO_FILE="$USER_TMP_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         
         # Output
         echo "Extracted USER_ID: $USER_ID"
@@ -110,6 +116,8 @@ jobs:
         echo "User public short url path: $USER_PUBLIC_SHORT_URL_PATH"
         echo "User service path: $USER_SERVICE_PATH"
         echo "User service short url path: $USER_SERVICE_SHORT_URL_PATH"
+        echo "User tmp path: $USER_TMP_PATH"
+        echo "User tmp short url path: $USER_TMP_SHORT_URL_PATH"
         
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
@@ -118,6 +126,7 @@ jobs:
         echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
         echo "List service meta info file: $LIST_SERVICE_META_INFO_FILE"
         echo "User service short url html file: $USER_SERVICE_SHORT_URL_HTML_FILE"
+        echo "List tmp meta info file: $LIST_TMP_META_INFO_FILE"
         
         # Validation: User ID
         if [[ ! "$USER_ID" =~ ^[a-z0-9][a-z0-9_-]{1,28}[a-z0-9]$ ]]; then
@@ -157,6 +166,8 @@ jobs:
           echo "user_public_short_url_path=$USER_PUBLIC_SHORT_URL_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
           echo "user_service_short_url_path=$USER_SERVICE_SHORT_URL_PATH"
+          echo "user_tmp_path=$USER_TMP_PATH"
+          echo "user_tmp_short_url_path=$USER_TMP_SHORT_URL_PATH"
           
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
@@ -165,6 +176,7 @@ jobs:
           echo "content_service_meta_info_file=$CONTENT_SERVICE_META_INFO_FILE"
           echo "list_service_meta_info_file=$LIST_SERVICE_META_INFO_FILE"
           echo "user_service_short_url_html_file=$USER_SERVICE_SHORT_URL_HTML_FILE"
+          echo "list_tmp_meta_info_file=$LIST_TMP_META_INFO_FILE"
         } >> $GITHUB_OUTPUT
         
     - name: Check if user exists
@@ -196,6 +208,39 @@ jobs:
           exit 1
         fi
         
+    - name: Update list meta info
+      env:
+        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
+        SHORT_PATH: ${{ steps.extract.outputs.short_path }}
+      id: list-meta-info
+      run: |
+        python3 << EOF
+        import os
+        import json
+        import shutil
+        
+        # Load JSON file
+        json_file = os.environ["ENV__LIST_PUBLIC_META_INFO_FILE"]
+        json_data = {"list": []}
+        if os.path.exists(json_file):
+          with open(json_file, "r", encoding="utf-8") as f:
+            json_data = json.load(f)
+            
+        # Update JSON data
+        json_data["list"] = [
+            item for item in json_data["list"]
+            if item.get("path") != os.environ["SHORT_PATH"]
+        ]
+        
+        # Save to JSON file
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
+        
+        # Github output
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+          f.write(f"list_meta_info_size={len(json_data['list'])}\n")
+        EOF
+        
     - name: Setup Git
       run: |
         git config user.name "github-actions[bot]"
@@ -205,11 +250,18 @@ jobs:
       env:
         ENV__USER_PUBLIC_SHORT_URL_PATH: ${{ steps.extract.outputs.user_public_short_url_path }}
         ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
+        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
+        ENV__LIST_TMP_META_INFO_FILE: ${{ steps.extract.outputs.list_tmp_meta_info_file }}
+        LIST_META_INFO_SIZE: ${{ steps.list-meta-info.outputs.list_meta_info_size }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
       id: delete
       run: |
         git checkout main
         git pull origin main
+        
+        # Copy list meta info file to tmp dir
+        mkdir -p "$(dirname "$ENV__LIST_TMP_META_INFO_FILE")"
+        cp -r "$ENV__LIST_PUBLIC_META_INFO_FILE" "$ENV__LIST_TMP_META_INFO_FILE"
         
         # Content meta info
         FILES=$(jq -r '.files[]' "$ENV__CONTENT_PUBLIC_META_INFO_FILE")
@@ -233,6 +285,13 @@ jobs:
           fi
         fi
         
+        # Delete list meta info file
+        if [[ "$LIST_META_INFO_SIZE" == "0" ]]; then
+          git rm -f "$ENV__LIST_PUBLIC_META_INFO_FILE" || true
+        else
+          git add "$ENV__LIST_PUBLIC_META_INFO_FILE" || true
+        fi
+        
         git commit -m "Delete user short URL page for $USER_ID" || echo "Nothing to commit"
         git push origin main
         
@@ -240,9 +299,15 @@ jobs:
       env:
         ENV__USER_SERVICE_SHORT_URL_PATH: ${{ steps.extract.outputs.user_service_short_url_path }}
         ENV__CONTENT_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.content_service_meta_info_file }}
+        ENV__LIST_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.list_service_meta_info_file }}
+        ENV__LIST_TMP_META_INFO_FILE: ${{ steps.extract.outputs.list_tmp_meta_info_file }}
+        LIST_META_INFO_SIZE: ${{ steps.list-meta-info.outputs.list_meta_info_size }}
       run: |
         git fetch origin stage
         git switch stage || git checkout -b stage
+        
+        # Copy list meta info file to tmp dir
+        cp -r "$ENV__LIST_TMP_META_INFO_FILE" "$ENV__LIST_SERVICE_META_INFO_FILE"
         
         # Content meta info
         FILES=$(jq -r '.files[]' "$ENV__CONTENT_SERVICE_META_INFO_FILE")
@@ -264,6 +329,13 @@ jobs:
           else
             echo "Directory is not empty: $ENV__USER_SERVICE_SHORT_URL_PATH"
           fi
+        fi
+        
+        # Delete list meta info file
+        if [[ "$LIST_META_INFO_SIZE" == "0" ]]; then
+          git rm -f "$ENV__LIST_SERVICE_META_INFO_FILE" || true
+        else
+          git add "$ENV__LIST_SERVICE_META_INFO_FILE" || true
         fi
         
         git commit -m "Delete user short URL page: $ENV__USER_SERVICE_SHORT_URL_PATH" || echo "Nothing to commit"
