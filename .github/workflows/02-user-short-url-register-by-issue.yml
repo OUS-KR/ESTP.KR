@@ -32,6 +32,7 @@ jobs:
         USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         CONTENT_META_INFO_FILE_NAME="content.json"
+        LIST_META_INFO_FILE_NAME="list.json"
         
         # Github output
         {
@@ -47,6 +48,7 @@ jobs:
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
           echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
+          echo "list_meta_info_file_name=$LIST_META_INFO_FILE_NAME"
         } >> "$GITHUB_OUTPUT"
         
     - name: Parse issue forms
@@ -78,6 +80,7 @@ jobs:
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__LIST_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
         REPO_NAME: ${{ github.event.repository.name }}
@@ -116,11 +119,14 @@ jobs:
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
         CONTENT_TMP_META_INFO_FILE="$USER_TMP_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_TMP_META_INFO_FILE="$USER_TMP_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_TMP_SHORT_URL_HTML_FILE="$USER_TMP_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         
         # SEO
@@ -143,11 +149,14 @@ jobs:
         
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
+        echo "List public meta info file: $LIST_PUBLIC_META_INFO_FILE"
         echo "User public short url html file: $USER_PUBLIC_SHORT_URL_HTML_FILE"
         echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
+        echo "List service meta info file: $LIST_SERVICE_META_INFO_FILE"
         echo "User service short url html file: $USER_SERVICE_SHORT_URL_HTML_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
         echo "Content tmp meta info file: $CONTENT_TMP_META_INFO_FILE"
+        echo "List tmp meta info file: $LIST_TMP_META_INFO_FILE"
         echo "User tmp short url html file: $USER_TMP_SHORT_URL_HTML_FILE"
         
         echo "Canonical path: $CANONICAL_PATH"
@@ -228,11 +237,14 @@ jobs:
           
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
+          echo "list_public_meta_info_file=$LIST_PUBLIC_META_INFO_FILE"
           echo "user_public_short_url_html_file=$USER_PUBLIC_SHORT_URL_HTML_FILE"
           echo "content_service_meta_info_file=$CONTENT_SERVICE_META_INFO_FILE"
+          echo "list_service_meta_info_file=$LIST_SERVICE_META_INFO_FILE"
           echo "user_service_short_url_html_file=$USER_SERVICE_SHORT_URL_HTML_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
           echo "content_tmp_meta_info_file=$CONTENT_TMP_META_INFO_FILE"
+          echo "list_tmp_meta_info_file=$LIST_TMP_META_INFO_FILE"
           echo "user_tmp_short_url_html_file=$USER_TMP_SHORT_URL_HTML_FILE"
           
           echo "canonical_path=$CANONICAL_PATH"
@@ -359,6 +371,9 @@ jobs:
         mkdir -p "$(dirname "$ENV__USER_PUBLIC_SHORT_URL_HTML_FILE")"
         envsubst < "$ENV__USER_SHORT_URL_HTML_TEMPLATE_FILE" > "$ENV__USER_PUBLIC_SHORT_URL_HTML_FILE"
         
+        # Created at
+        CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
+        
         # Content meta info
         cat <<EOF > "$ENV__CONTENT_PUBLIC_META_INFO_FILE"
         {
@@ -367,8 +382,53 @@ jobs:
           "files": [
             "$USER_SHORT_URL_HTML_FILE_NAME"
           ],
-          "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
+          "created_at": "$CREATED_AT"
         }
+        EOF
+        
+        # Github output
+        {
+          echo "created_at=$CREATED_AT"
+        } >> "$GITHUB_OUTPUT"
+        
+    - name: Update list meta info
+      env:
+        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
+        USER_SHORT_URL_HTML_FILE_NAME: ${{ steps.env.outputs.user_short_url_html_file_name }}
+        SHORT_PATH: ${{ steps.extract.outputs.short_path }}
+        CREATED_AT: ${{ steps.create.outputs.created_at }}
+      run: |
+        python3 << EOF
+        import os
+        import json
+        
+        # Load JSON file
+        json_file = os.environ["ENV__LIST_PUBLIC_META_INFO_FILE"]
+        json_data = {"list": []}
+        if os.path.exists(json_file):
+          with open(json_file, "r", encoding="utf-8") as f:
+            json_data = json.load(f)
+            
+        # Update JSON data
+        info = {
+          "type": "user-short-url",
+          "path": os.environ["SHORT_PATH"],
+          "files": [
+            os.environ["USER_SHORT_URL_HTML_FILE_NAME"]
+          ],
+          "created_at": "$CREATED_AT"
+        }
+        
+        json_data["list"] = [
+            item for item in json_data["list"]
+            if item.get("path") != os.environ["SHORT_PATH"]
+        ]
+        
+        json_data["list"].append(info)
+        
+        # Save to JSON file
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
         EOF
         
     - name: Setup Git
@@ -379,27 +439,32 @@ jobs:
     - name: Commit and push to main
       env:
         ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
+        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
         ENV__USER_PUBLIC_SHORT_URL_HTML_FILE: ${{ steps.extract.outputs.user_public_short_url_html_file }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
       run: |
         git checkout main
         git pull origin main
-        git add "$ENV__USER_PUBLIC_SHORT_URL_HTML_FILE" "$ENV__CONTENT_PUBLIC_META_INFO_FILE" || true
+        git add "$ENV__USER_PUBLIC_SHORT_URL_HTML_FILE" "$ENV__CONTENT_PUBLIC_META_INFO_FILE" "$ENV__LIST_PUBLIC_META_INFO_FILE" || true
         git commit -m "Add user short URL page for $USER_ID" || echo "Nothing to commit"
         git push origin main
         
     - name: Commit and push to stage
       env:
         ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
+        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
         ENV__USER_PUBLIC_SHORT_URL_HTML_FILE: ${{ steps.extract.outputs.user_public_short_url_html_file }}
         ENV__CONTENT_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.content_service_meta_info_file }}
+        ENV__LIST_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.list_service_meta_info_file }}
         ENV__USER_SERVICE_SHORT_URL_HTML_FILE: ${{ steps.extract.outputs.user_service_short_url_html_file }}
         ENV__CONTENT_TMP_META_INFO_FILE: ${{ steps.extract.outputs.content_tmp_meta_info_file }}
+        ENV__LIST_TMP_META_INFO_FILE: ${{ steps.extract.outputs.list_tmp_meta_info_file }}
         ENV__USER_TMP_SHORT_URL_HTML_FILE: ${{ steps.extract.outputs.user_tmp_short_url_html_file }}
         ENV__USER_SERVICE_SHORT_URL_PATH: ${{ steps.extract.outputs.user_service_short_url_path }}
       run: |
         mkdir -p "$(dirname "$ENV__USER_TMP_SHORT_URL_HTML_FILE")"
         cp -r "$ENV__CONTENT_PUBLIC_META_INFO_FILE" "$ENV__CONTENT_TMP_META_INFO_FILE"
+        cp -r "$ENV__LIST_PUBLIC_META_INFO_FILE" "$ENV__LIST_TMP_META_INFO_FILE"
         cp -r "$ENV__USER_PUBLIC_SHORT_URL_HTML_FILE" "$ENV__USER_TMP_SHORT_URL_HTML_FILE"
         
         git fetch origin stage
@@ -407,9 +472,10 @@ jobs:
         
         mkdir -p "$(dirname "$ENV__USER_SERVICE_SHORT_URL_HTML_FILE")"
         cp -r "$ENV__CONTENT_TMP_META_INFO_FILE" "$ENV__CONTENT_SERVICE_META_INFO_FILE"
+        cp -r "$ENV__LIST_TMP_META_INFO_FILE" "$ENV__LIST_SERVICE_META_INFO_FILE"
         cp -r "$ENV__USER_TMP_SHORT_URL_HTML_FILE" "$ENV__USER_SERVICE_SHORT_URL_HTML_FILE"
         
-        git add "$ENV__USER_SERVICE_SHORT_URL_HTML_FILE" "$ENV__CONTENT_SERVICE_META_INFO_FILE" || true
+        git add "$ENV__USER_SERVICE_SHORT_URL_HTML_FILE" "$ENV__CONTENT_SERVICE_META_INFO_FILE" "$ENV__LIST_SERVICE_META_INFO_FILE" || true
         git commit -m "Add user short URL page: $ENV__USER_SERVICE_SHORT_URL_PATH" || echo "Nothing to commit"
         git push origin stage
         

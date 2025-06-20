@@ -29,6 +29,7 @@ jobs:
         USER_SHORT_URL_HTML_FILE_NAME="index.html"
         USER_META_INFO_FILE_NAME="user.json"
         CONTENT_META_INFO_FILE_NAME="content.json"
+        LIST_META_INFO_FILE_NAME="list.json"
         
         # Github output
         {
@@ -41,6 +42,7 @@ jobs:
           echo "user_short_url_html_file_name=$USER_SHORT_URL_HTML_FILE_NAME"
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
+          echo "list_meta_info_file_name=$LIST_META_INFO_FILE_NAME"
         } >> "$GITHUB_OUTPUT"
         
     - name: Parse issue forms
@@ -70,6 +72,7 @@ jobs:
         USER_SHORT_URL_HTML_FILE_NAME: ${{ steps.env.outputs.user_short_url_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__LIST_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
@@ -93,8 +96,10 @@ jobs:
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_SERVICE_META_INFO_FILE="$USER_SERVICE_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_SERVICE_SHORT_URL_HTML_FILE="$USER_SERVICE_SHORT_URL_PATH/$USER_SHORT_URL_HTML_FILE_NAME"
         
         # Output
@@ -108,8 +113,10 @@ jobs:
         
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
+        echo "List public meta info file: $LIST_PUBLIC_META_INFO_FILE"
         echo "User public short url html file: $USER_PUBLIC_SHORT_URL_HTML_FILE"
         echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
+        echo "List service meta info file: $LIST_SERVICE_META_INFO_FILE"
         echo "User service short url html file: $USER_SERVICE_SHORT_URL_HTML_FILE"
         
         # Validation: User ID
@@ -153,8 +160,10 @@ jobs:
           
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
+          echo "list_public_meta_info_file=$LIST_PUBLIC_META_INFO_FILE"
           echo "user_public_short_url_html_file=$USER_PUBLIC_SHORT_URL_HTML_FILE"
           echo "content_service_meta_info_file=$CONTENT_SERVICE_META_INFO_FILE"
+          echo "list_service_meta_info_file=$LIST_SERVICE_META_INFO_FILE"
           echo "user_service_short_url_html_file=$USER_SERVICE_SHORT_URL_HTML_FILE"
         } >> $GITHUB_OUTPUT
         
