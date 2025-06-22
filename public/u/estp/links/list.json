@@ -1,15 +1,6 @@
 {
   "list": [
     {
-      "type": "user-article",
-      "path": "articles/example",
-      "files": [
-        "index.html",
-        "content.json"
-      ],
-      "created_at": "2025-06-23T05:03:43+09:00"
-    },
-    {
       "type": "user-short-url",
       "path": "links/estp-kr",
       "files": [
