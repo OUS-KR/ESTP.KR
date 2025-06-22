@@ -6,38 +6,24 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  sync:
+  merge-to-cf-pages:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout cf-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: cf-pages
-          
-      - name: Setup Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-      - name: Fetch branch
-        run: git fetch origin stage
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
         
-      - name: Check diff
-        id: diff-chk
-        run: |
-          if git diff --quiet HEAD origin/stage; then
-            echo "false"
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "true"
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-          
-      - name: Merge stage into cf-pages
-        if: steps.diff-chk.outputs.changed == 'true'
-        run: git reset --hard origin/stage
-          
-      - name: Push changes if needed
-        if: steps.diff-chk.outputs.changed == 'true'
-        run: git push origin cf-pages --force
+    - name: Setup Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+    - name: Merge main into cf-pages branch
+      run: |
+        git fetch origin
+        git checkout cf-pages || git checkout -b cf-pages origin/cf-pages
+        
+        git merge main -m "Merge main into cf-pages for deployment"
+        git push origin cf-pages

@@ -14,32 +14,25 @@ on:
   workflow_dispatch: {}
       
 jobs:
-  build-and-deploy:
+  merge-to-stage:
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout main branch
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: main
+        fetch-depth: 0
         
     - name: Setup Git
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         
-    - name: Deploy to stage branch
+    - name: Merge main into stage branch
       run: |
-        git fetch origin stage
-        git switch stage || git checkout -b stage
+        git fetch origin
+        git checkout stage || git checkout -b stage origin/stage
         
-        git rm -rf .
-        
-        git checkout main -- public
-        mv public/* .
-        rm -rf public
-        
-        git add .
-        git commit -m "Deploy site from main/public to stage"
-        git push origin stage --force
+        git merge main -m "Merge main into stage for deployment"
+        git push origin stage
