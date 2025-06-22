@@ -20,12 +20,14 @@ jobs:
         GITHUB_ID: ${{ github.event.issue.user.id }}
       id: env
       run: |
+        # Created at
+        CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
+        
         # Env
         ADMIN_GITHUB_ID="210320028"
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
-        TMP_PATH="/tmp"
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_HTML_TEMPLATE_FILE="templates/user.html"
@@ -33,14 +35,18 @@ jobs:
         USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         CONTENT_META_INFO_FILE_NAME="content.json"
+        LIST_GLOBAL_META_INFO_FILE_NAME="list.global.json"
         
         # Github output
         {
+          # Created at
+          echo "created_at=$CREATED_AT"
+          
+          # Env
           echo "admin_github_id=$ADMIN_GITHUB_ID"
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
-          echo "tmp_path=$TMP_PATH"
           
           echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
           echo "user_html_template_file=$USER_HTML_TEMPLATE_FILE"
@@ -48,6 +54,7 @@ jobs:
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
           echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
+          echo "list_global_meta_info_file_name=$LIST_GLOBAL_META_INFO_FILE_NAME"
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user already registered
@@ -84,11 +91,11 @@ jobs:
       env:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
-        ENV__TMP_PATH: ${{ steps.env.outputs.tmp_path }}
         ENV__USER_PAGE_HTML_FILE_NAME: ${{ steps.env.outputs.user_page_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__LIST_GLOBAL_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_global_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -108,15 +115,16 @@ jobs:
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
-        USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
         
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_PUBLIC_GLOBAL_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__LIST_GLOBAL_META_INFO_FILE_NAME"
         USER_PUBLIC_PAGE_HTML_FILE="$USER_PUBLIC_PATH/$ENV__USER_PAGE_HTML_FILE_NAME"
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_PATH"
+        PAGE_TITLE="$USER_ID"
         PAGE_DESC="${USER_ID}의 개인 페이지"
         
         # Output
@@ -124,14 +132,15 @@ jobs:
         
         echo "User public path: $USER_PUBLIC_PATH"
         echo "User service path: $USER_SERVICE_PATH"
-        echo "User tmp path: $USER_TMP_PATH"
         
         echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
+        echo "List public global meta info file: $LIST_PUBLIC_GLOBAL_META_INFO_FILE"
         echo "User public page html file: $USER_PUBLIC_PAGE_HTML_FILE"
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
         
         echo "Canonical path: $CANONICAL_PATH"
+        echo "Page title: $PAGE_TITLE"
         echo "Page desc: $PAGE_DESC"
         
         # Github output
@@ -140,14 +149,15 @@ jobs:
           
           echo "user_public_path=$USER_PUBLIC_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
-          echo "user_tmp_path=$USER_TMP_PATH"
           
           echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
+          echo "list_public_global_meta_info_file=$LIST_PUBLIC_GLOBAL_META_INFO_FILE"
           echo "user_public_page_html_file=$USER_PUBLIC_PAGE_HTML_FILE"
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
           
           echo "canonical_path=$CANONICAL_PATH"
+          echo "page_title=$PAGE_TITLE"
           echo "page_desc=$PAGE_DESC"
         } >> "$GITHUB_OUTPUT"
         
@@ -176,15 +186,17 @@ jobs:
         ENV__USERS_REGISTER_INFO_PATH: ${{ steps.env.outputs.users_register_info_path }}
         ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
         ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
+        ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__LIST_PUBLIC_GLOBAL_META_INFO_FILE: ${{ steps.extract.outputs.list_public_global_meta_info_file }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
         CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
+        PAGE_TITLE: ${{ steps.extract.outputs.page_title }}
         PAGE_DESC: ${{ steps.extract.outputs.page_desc }}
+        CREATED_AT: ${{ steps.env.outputs.created_at }}
         GITHUB_ID: ${{ github.event.issue.user.id }}
         GITHUB_NAME: ${{ github.event.issue.user.login }}
       run: |
         # Template
-        export PAGE_TITLE="$USER_ID"
-        
         mkdir -p "$ENV__USER_PUBLIC_PATH"
         envsubst < "$ENV__USER_HTML_TEMPLATE_FILE" > "$ENV__USER_PUBLIC_PAGE_HTML_FILE"
         
@@ -193,7 +205,7 @@ jobs:
         {
           "github_id": "$GITHUB_ID",
           "github_name": "$GITHUB_NAME",
-          "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
+          "created_at": "$CREATED_AT"
         }
         EOF
         
@@ -204,8 +216,26 @@ jobs:
           "path": "",
           "files": [
             "$ENV__USER_PAGE_HTML_FILE_NAME",
+            "$ENV__CONTENT_META_INFO_FILE_NAME"
           ],
-          "created_at": "$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")"
+          "created_at": "$CREATED_AT"
+        }
+        EOF
+        
+        # Global list meta info
+        cat <<EOF > "$ENV__LIST_PUBLIC_GLOBAL_META_INFO_FILE"
+        {
+          "list": [
+            {
+              "type": "user-page",
+              "path": "",
+              "files": [
+                "$ENV__USER_PAGE_HTML_FILE_NAME",
+                "$ENV__CONTENT_META_INFO_FILE_NAME"
+              ],
+              "created_at": "$CREATED_AT"
+            }
+          ]
         }
         EOF
         
@@ -254,25 +284,6 @@ jobs:
         git add "$ENV__USER_PUBLIC_PATH" "$ENV__USER_REGISTER_INFO_FILE" || true
         git commit -m "Add user directory for $USER_ID and registered user info" || echo "Nothing to commit"
         git push origin main
-        
-    - name: Commit and push to stage
-      env:
-        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
-        ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
-        ENV__USER_SERVICE_PATH: ${{ steps.extract.outputs.user_service_path }}
-        ENV__USER_TMP_PATH: ${{ steps.extract.outputs.user_tmp_path }}
-      run: |
-        cp -r "$ENV__USER_PUBLIC_PATH" "$ENV__USER_TMP_PATH"
-        
-        git fetch origin stage
-        git switch stage || git checkout -b stage
-        
-        mkdir -p "$ENV__USERS_SERVICE_PATH"
-        cp -r "$ENV__USER_TMP_PATH" "$ENV__USERS_SERVICE_PATH/"
-        
-        git add "$ENV__USER_SERVICE_PATH" || true
-        git commit -m "Add user page: $ENV__USER_SERVICE_PATH" || echo "Nothing to commit"
-        git push origin stage
         
     - name: Comment on issue
       env:

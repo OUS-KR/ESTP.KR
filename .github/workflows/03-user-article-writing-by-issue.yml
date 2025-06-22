@@ -20,12 +20,14 @@ jobs:
         GITHUB_ID: ${{ github.event.issue.user.id }}
       id: env
       run: |
+        # Created at
+        CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
+        
         # Env
         ADMIN_GITHUB_ID="210320028"
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
-        TMP_PATH="/tmp"
         
         USER_REGISTER_INFO_FILE="$USERS_REGISTER_INFO_PATH/${GITHUB_ID}.json"
         USER_ARTICLE_HTML_TEMPLATE_FILE="templates/user-article.html"
@@ -33,15 +35,19 @@ jobs:
         USER_META_INFO_FILE_NAME="user.json"
         USER_MENU_INFO_FILE_NAME="menu.json"
         CONTENT_META_INFO_FILE_NAME="content.json"
+        LIST_GLOBAL_META_INFO_FILE_NAME="list.global.json"
         LIST_META_INFO_FILE_NAME="list.json"
         
         # Github output
         {
+          # Created at
+          echo "created_at=$CREATED_AT"
+          
+          # Env
           echo "admin_github_id=$ADMIN_GITHUB_ID"
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
-          echo "tmp_path=$TMP_PATH"
         
           echo "user_register_info_file=$USER_REGISTER_INFO_FILE"
           echo "user_article_html_template_file=$USER_ARTICLE_HTML_TEMPLATE_FILE"
@@ -49,6 +55,7 @@ jobs:
           echo "user_meta_info_file_name=$USER_META_INFO_FILE_NAME"
           echo "user_menu_info_file_name=$USER_MENU_INFO_FILE_NAME"
           echo "content_meta_info_file_name=$CONTENT_META_INFO_FILE_NAME"
+          echo "list_global_meta_info_file_name=$LIST_GLOBAL_META_INFO_FILE_NAME"
           echo "list_meta_info_file_name=$LIST_META_INFO_FILE_NAME"
         } >> "$GITHUB_OUTPUT"
         
@@ -76,11 +83,11 @@ jobs:
       env:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
-        ENV__TMP_PATH: ${{ steps.env.outputs.tmp_path }}
-        USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
+        ENV__USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
         ENV__USER_META_INFO_FILE_NAME: ${{ steps.env.outputs.user_meta_info_file_name }}
         ENV__USER_MENU_INFO_FILE_NAME: ${{ steps.env.outputs.user_menu_info_file_name }}
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__LIST_GLOBAL_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_global_meta_info_file_name }}
         ENV__LIST_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
@@ -102,7 +109,6 @@ jobs:
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
-        USER_TMP_PATH="$ENV__TMP_PATH/$USER_ID"
         
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         USER_SERVICE_MENU_INFO_FILE="$USER_SERVICE_PATH/$ENV__USER_MENU_INFO_FILE_NAME"
@@ -110,22 +116,15 @@ jobs:
         if [[ ! -z "$ARTICLE_PATH" ]]; then
           USER_PUBLIC_ARTICLE_PATH="$USER_PUBLIC_PATH/$ARTICLE_PATH"
           USER_SERVICE_ARTICLE_PATH="$USER_SERVICE_PATH/$ARTICLE_PATH"
-          USER_TMP_ARTICLE_PATH="$USER_TMP_PATH/$ARTICLE_PATH"
         else
           USER_PUBLIC_ARTICLE_PATH="$USER_PUBLIC_PATH"
           USER_SERVICE_ARTICLE_PATH="$USER_SERVICE_PATH"
-          USER_TMP_ARTICLE_PATH="$USER_TMP_PATH"
         fi
         
         CONTENT_PUBLIC_META_INFO_FILE="$USER_PUBLIC_ARTICLE_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
+        LIST_PUBLIC_GLOBAL_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__LIST_GLOBAL_META_INFO_FILE_NAME"
         LIST_PUBLIC_META_INFO_FILE="$USER_PUBLIC_ARTICLE_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
-        USER_PUBLIC_ARTICLE_HTML_FILE="$USER_PUBLIC_ARTICLE_PATH/$USER_ARTICLE_HTML_FILE_NAME"
-        CONTENT_SERVICE_META_INFO_FILE="$USER_SERVICE_ARTICLE_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        LIST_SERVICE_META_INFO_FILE="$USER_SERVICE_ARTICLE_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
-        USER_SERVICE_ARTICLE_HTML_FILE="$USER_SERVICE_ARTICLE_PATH/$USER_ARTICLE_HTML_FILE_NAME"
-        CONTENT_TMP_META_INFO_FILE="$USER_TMP_ARTICLE_PATH/$ENV__CONTENT_META_INFO_FILE_NAME"
-        LIST_TMP_META_INFO_FILE="$USER_TMP_ARTICLE_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
-        USER_TMP_ARTICLE_HTML_FILE="$USER_TMP_ARTICLE_PATH/$USER_ARTICLE_HTML_FILE_NAME"
+        USER_PUBLIC_ARTICLE_HTML_FILE="$USER_PUBLIC_ARTICLE_PATH/$ENV__USER_ARTICLE_HTML_FILE_NAME"
         
         # SEO
         CANONICAL_PATH="$USER_SERVICE_ARTICLE_PATH"
@@ -140,21 +139,14 @@ jobs:
         echo "User public article path: $USER_PUBLIC_ARTICLE_PATH"
         echo "User service path: $USER_SERVICE_PATH"
         echo "User service article path: $USER_SERVICE_ARTICLE_PATH"
-        echo "User tmp path: $USER_TMP_PATH"
-        echo "User tmp article path: $USER_TMP_ARTICLE_PATH"
         
         echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
         echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
         
         echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
+        echo "List public global meta info file: $LIST_PUBLIC_GLOBAL_META_INFO_FILE"
         echo "List public meta info file: $LIST_PUBLIC_META_INFO_FILE"
         echo "User public article html file: $USER_PUBLIC_ARTICLE_HTML_FILE"
-        echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
-        echo "List service meta info file: $LIST_SERVICE_META_INFO_FILE"
-        echo "User service article html file: $USER_SERVICE_ARTICLE_HTML_FILE"
-        echo "Content tmp meta info file: $CONTENT_TMP_META_INFO_FILE"
-        echo "List tmp meta info file: $LIST_TMP_META_INFO_FILE"
-        echo "User tmp article html file: $USER_TMP_ARTICLE_HTML_FILE"
         
         echo "Canonical path: $CANONICAL_PATH"
         
@@ -215,21 +207,14 @@ jobs:
           echo "user_public_article_path=$USER_PUBLIC_ARTICLE_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
           echo "user_service_article_path=$USER_SERVICE_ARTICLE_PATH"
-          echo "user_tmp_path=$USER_TMP_PATH"
-          echo "user_tmp_article_path=$USER_TMP_ARTICLE_PATH"
           
           echo "user_public_meta_info_file=$USER_PUBLIC_META_INFO_FILE"
           echo "user_service_menu_info_file=$USER_SERVICE_MENU_INFO_FILE"
           
           echo "content_public_meta_info_file=$CONTENT_PUBLIC_META_INFO_FILE"
+          echo "list_public_global_meta_info_file=$LIST_PUBLIC_GLOBAL_META_INFO_FILE"
           echo "list_public_meta_info_file=$LIST_PUBLIC_META_INFO_FILE"
           echo "user_public_article_html_file=$USER_PUBLIC_ARTICLE_HTML_FILE"
-          echo "content_service_meta_info_file=$CONTENT_SERVICE_META_INFO_FILE"
-          echo "list_service_meta_info_file=$LIST_SERVICE_META_INFO_FILE"
-          echo "user_service_article_html_file=$USER_SERVICE_ARTICLE_HTML_FILE"
-          echo "content_tmp_meta_info_file=$CONTENT_TMP_META_INFO_FILE"
-          echo "list_tmp_meta_info_file=$LIST_TMP_META_INFO_FILE"
-          echo "user_tmp_article_html_file=$USER_TMP_ARTICLE_HTML_FILE"
           
           echo "canonical_path=$CANONICAL_PATH"
         } >> "$GITHUB_OUTPUT"
@@ -322,72 +307,62 @@ jobs:
           echo "EOF"
         } >> "$GITHUB_OUTPUT"
         
-    - name: Create user article
+    - name: Make dir
       env:
-        ENV__USER_ARTICLE_HTML_TEMPLATE_FILE: ${{ steps.env.outputs.user_article_html_template_file }}
-        USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
         ENV__USER_PUBLIC_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_public_article_html_file }}
-        ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
-        ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
-        USER_ID: ${{ steps.extract.outputs.user_id }}
-        ARTICLE_PATH: ${{ steps.extract.outputs.article_path }}
-        PAGE_TITLE: ${{ steps.extract.outputs.page_title }}
-        ARTICLE_TITLE: ${{ steps.extract.outputs.article_title }}
-        ARTICLE_HTML: ${{ steps.convert.outputs.article_html }}
-        BREADCRUMB_ITEMS: ${{ steps.breadcrumbs.outputs.breadcrumb_items }}
-        CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
-        PAGE_DESC: ${{ steps.convert.outputs.page_desc }}
-      id: create
-      run: |
-        # Template
+      run:
         mkdir -p "$(dirname "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE")"
-        envsubst < "$ENV__USER_ARTICLE_HTML_TEMPLATE_FILE" > "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE"
-        
-        # Created at
-        CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
-        
-        # Content meta info
-        cat <<EOF > "$ENV__CONTENT_PUBLIC_META_INFO_FILE"
-        {
-          "type": "user-article",
-          "path": "$ARTICLE_PATH",
-          "files": [
-            "$USER_ARTICLE_HTML_FILE_NAME"
-          ],
-          "created_at": "$CREATED_AT"
-        }
-        EOF
-        
-        # Github output
-        {
-          echo "created_at=$CREATED_AT"
-        } >> "$GITHUB_OUTPUT"
         
     - name: Update list meta info
       env:
+        ENV__LIST_PUBLIC_GLOBAL_META_INFO_FILE: ${{ steps.extract.outputs.list_public_global_meta_info_file }}
         ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
-        USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
+        ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        ENV__USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
+        USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
         ARTICLE_PATH: ${{ steps.extract.outputs.article_path }}
-        CREATED_AT: ${{ steps.create.outputs.created_at }}
+        CREATED_AT: ${{ steps.env.outputs.created_at }}
       run: |
         python3 << EOF
         import os
         import json
         
+        # JSON files
+        json_files = [
+          os.environ["ENV__LIST_PUBLIC_GLOBAL_META_INFO_FILE"]
+        ]
+        
         if os.environ["ARTICLE_PATH"]:
-          # Load JSON file
-          json_file = os.environ["ENV__LIST_PUBLIC_META_INFO_FILE"]
+          json_files.append(os.environ["ENV__LIST_PUBLIC_META_INFO_FILE"])
+        
+        # Load JSON file
+        for json_file in json_files:
           json_data = {"list": []}
           if os.path.exists(json_file):
             with open(json_file, "r", encoding="utf-8") as f:
               json_data = json.load(f)
-              
+          
+          # Delete prev files
+          if json_file == os.environ["ENV__LIST_PUBLIC_GLOBAL_META_INFO_FILE"]:
+            prev_info = [
+              item for item in json_data["list"]
+              if item.get("path") == os.environ["ARTICLE_PATH"]
+            ]
+            
+            if prev_info:
+              for file_name in prev_info[0]["files"]:
+                prev_file = os.path.join(os.environ["USER_PUBLIC_PATH"], os.environ["ARTICLE_PATH"], file_name)
+                print(prev_file)
+                if os.path.exists(prev_file):
+                  os.remove(prev_file)
+          
           # Update JSON data
           info = {
             "type": "user-article",
             "path": os.environ["ARTICLE_PATH"],
             "files": [
-              os.environ["USER_ARTICLE_HTML_FILE_NAME"]
+              os.environ["ENV__USER_ARTICLE_HTML_FILE_NAME"],
+              os.environ["ENV__CONTENT_META_INFO_FILE_NAME"]
             ],
             "created_at": "$CREATED_AT"
           }
@@ -404,6 +379,41 @@ jobs:
               json.dump(json_data, f, ensure_ascii=False, indent=2)
         EOF
         
+    - name: Create user article
+      env:
+        ENV__USER_ARTICLE_HTML_TEMPLATE_FILE: ${{ steps.env.outputs.user_article_html_template_file }}
+        ENV__USER_ARTICLE_HTML_FILE_NAME: ${{ steps.env.outputs.user_article_html_file_name }}
+        ENV__USER_PUBLIC_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_public_article_html_file }}
+        ENV__USER_SERVICE_MENU_INFO_FILE: ${{ steps.extract.outputs.user_service_menu_info_file }}
+        ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
+        ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
+        USER_ID: ${{ steps.extract.outputs.user_id }}
+        ARTICLE_PATH: ${{ steps.extract.outputs.article_path }}
+        PAGE_TITLE: ${{ steps.extract.outputs.page_title }}
+        ARTICLE_TITLE: ${{ steps.extract.outputs.article_title }}
+        ARTICLE_HTML: ${{ steps.convert.outputs.article_html }}
+        BREADCRUMB_ITEMS: ${{ steps.breadcrumbs.outputs.breadcrumb_items }}
+        CANONICAL_PATH: ${{ steps.extract.outputs.canonical_path }}
+        PAGE_DESC: ${{ steps.convert.outputs.page_desc }}
+        CREATED_AT: ${{ steps.env.outputs.created_at }}
+      id: create
+      run: |
+        # Template
+        envsubst < "$ENV__USER_ARTICLE_HTML_TEMPLATE_FILE" > "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE"
+        
+        # Content meta info
+        cat <<EOF > "$ENV__CONTENT_PUBLIC_META_INFO_FILE"
+        {
+          "type": "user-article",
+          "path": "$ARTICLE_PATH",
+          "files": [
+            "$ENV__USER_ARTICLE_HTML_FILE_NAME",
+            "$ENV__CONTENT_META_INFO_FILE_NAME"
+          ],
+          "created_at": "$CREATED_AT"
+        }
+        EOF
+        
     - name: Setup Git
       run: |
         git config user.name "github-actions[bot]"
@@ -411,46 +421,14 @@ jobs:
           
     - name: Commit and push to main
       env:
-        ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
-        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
-        ENV__USER_PUBLIC_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_public_article_html_file }}
+        USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
         USER_ID: ${{ steps.extract.outputs.user_id }}
       run: |
         git checkout main
         git pull origin main
-        git add "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE" "$ENV__CONTENT_PUBLIC_META_INFO_FILE" "$ENV__LIST_PUBLIC_META_INFO_FILE" || true
+        git add "$USER_PUBLIC_PATH" || true
         git commit -m "Add user article for $USER_ID" || echo "Nothing to commit"
         git push origin main
-        
-    - name: Commit and push to stage
-      env:
-        ENV__CONTENT_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.content_public_meta_info_file }}
-        ENV__LIST_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.list_public_meta_info_file }}
-        ENV__USER_PUBLIC_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_public_article_html_file }}
-        ENV__CONTENT_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.content_service_meta_info_file }}
-        ENV__LIST_SERVICE_META_INFO_FILE: ${{ steps.extract.outputs.list_service_meta_info_file }}
-        ENV__USER_SERVICE_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_service_article_html_file }}
-        ENV__CONTENT_TMP_META_INFO_FILE: ${{ steps.extract.outputs.content_tmp_meta_info_file }}
-        ENV__LIST_TMP_META_INFO_FILE: ${{ steps.extract.outputs.list_tmp_meta_info_file }}
-        ENV__USER_TMP_ARTICLE_HTML_FILE: ${{ steps.extract.outputs.user_tmp_article_html_file }}
-        ENV__USER_SERVICE_ARTICLE_PATH: ${{ steps.extract.outputs.user_service_article_path }}
-      run: |
-        mkdir -p "$(dirname "$ENV__USER_TMP_ARTICLE_HTML_FILE")"
-        cp -r "$ENV__CONTENT_PUBLIC_META_INFO_FILE" "$ENV__CONTENT_TMP_META_INFO_FILE"
-        cp -r "$ENV__LIST_PUBLIC_META_INFO_FILE" "$ENV__LIST_TMP_META_INFO_FILE"
-        cp -r "$ENV__USER_PUBLIC_ARTICLE_HTML_FILE" "$ENV__USER_TMP_ARTICLE_HTML_FILE"
-        
-        git fetch origin stage
-        git switch stage || git checkout -b stage
-        
-        mkdir -p "$(dirname "$ENV__USER_SERVICE_ARTICLE_HTML_FILE")"
-        cp -r "$ENV__CONTENT_TMP_META_INFO_FILE" "$ENV__CONTENT_SERVICE_META_INFO_FILE"
-        cp -r "$ENV__LIST_TMP_META_INFO_FILE" "$ENV__LIST_SERVICE_META_INFO_FILE"
-        cp -r "$ENV__USER_TMP_ARTICLE_HTML_FILE" "$ENV__USER_SERVICE_ARTICLE_HTML_FILE"
-        
-        git add "$ENV__USER_SERVICE_ARTICLE_HTML_FILE" "$ENV__CONTENT_SERVICE_META_INFO_FILE" "$ENV__LIST_SERVICE_META_INFO_FILE" || true
-        git commit -m "Add user article: $ENV__USER_SERVICE_ARTICLE_PATH" || echo "Nothing to commit"
-        git push origin stage
         
     - name: Comment on issue
       env:
