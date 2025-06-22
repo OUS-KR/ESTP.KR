@@ -1,3 +1,3 @@
-/@:user/@*      /u/:user/links/:splat       301
+/@:user/!*      /u/:user/links/:splat       301
 /@:user/*       /u/:user/:splat             301
 /@:user         /u/:user                    301
