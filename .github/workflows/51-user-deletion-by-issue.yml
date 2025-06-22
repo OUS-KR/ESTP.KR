@@ -71,13 +71,6 @@ jobs:
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
         USER_PUBLIC_META_INFO_FILE="$USER_PUBLIC_PATH/$ENV__USER_META_INFO_FILE_NAME"
         
-        # Output
-        echo "Extracted USER_ID: $USER_ID"
-        
-        echo "User public path: $USER_PUBLIC_PATH"
-        echo "User service path: $USER_SERVICE_PATH"
-        echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
-        
         # Github output
         {
           echo "user_id=$USER_ID"
@@ -140,18 +133,6 @@ jobs:
         git add "$ENV__USER_REGISTER_INFO_FILE" || true
         git commit -m "Delete user directory for $USER_ID and update registered user info" || echo "Nothing to commit"
         git push origin main
-        
-    - name: Commit and push to stage
-      env:
-        ENV__USER_SERVICE_PATH: ${{ steps.extract.outputs.user_service_path }}
-        USER_ID: ${{ steps.extract.outputs.user_id }}
-      run: |
-        git fetch origin stage
-        git switch stage || git checkout -b stage
-        
-        git rm -r "$ENV__USER_SERVICE_PATH" || true
-        git commit -m "Delete user data: $USER_ID" || echo "Nothing to commit"
-        git push origin stage
         
     - name: Comment on issue
       env:

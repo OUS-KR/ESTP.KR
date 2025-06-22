@@ -16,9 +16,9 @@ jobs:
         ref: main
         
     - name: Set env
+      id: env
       env:
         GITHUB_ID: ${{ github.event.issue.user.id }}
-      id: env
       run: |
         # Created at
         CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
@@ -58,13 +58,13 @@ jobs:
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user already registered
+      id: register-info
       env:
         ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
         ENV__ADMIN_GITHUB_ID: ${{ steps.env.outputs.admin_github_id }}
         GITHUB_ID: ${{ github.event.issue.user.id }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      id: register-info
       run: |
         # Validation: User
         if [ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ]; then
@@ -88,6 +88,7 @@ jobs:
         issue-form-body: '${{ github.event.issue.body }}'
         
     - name: Extract user ID from issue body
+      id: extract
       env:
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
@@ -99,7 +100,6 @@ jobs:
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      id: extract
       run: |
         # Extract
         USER_ID=$(echo "$PARSED_ISSUE" | jq -r '.["user-id"]')
@@ -126,22 +126,6 @@ jobs:
         CANONICAL_PATH="$USER_SERVICE_PATH"
         PAGE_TITLE="$USER_ID"
         PAGE_DESC="${USER_ID}의 개인 페이지"
-        
-        # Output
-        echo "Extracted USER_ID: $USER_ID"
-        
-        echo "User public path: $USER_PUBLIC_PATH"
-        echo "User service path: $USER_SERVICE_PATH"
-        
-        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
-        echo "List public global meta info file: $LIST_PUBLIC_GLOBAL_META_INFO_FILE"
-        echo "User public page html file: $USER_PUBLIC_PAGE_HTML_FILE"
-        echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
-        echo "User service menu info file: $USER_SERVICE_MENU_INFO_FILE"
-        
-        echo "Canonical path: $CANONICAL_PATH"
-        echo "Page title: $PAGE_TITLE"
-        echo "Page desc: $PAGE_DESC"
         
         # Github output
         {
@@ -265,7 +249,7 @@ jobs:
         
         # Save to JSON file
         with open(json_file, "w", encoding="utf-8") as f:
-            json.dump(json_data, f, ensure_ascii=False, indent=2)
+          json.dump(json_data, f, ensure_ascii=False, indent=2)
         EOF
         
     - name: Setup Git

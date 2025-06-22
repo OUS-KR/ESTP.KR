@@ -7,7 +7,7 @@ on:
     paths:
       - 'public/**'
   workflow_run:
-    workflows: ["User register by issue", "User short URL register by issue", "User article writing by issue", "User short URL deletion by issue", "User article deletion by issue"]
+    workflows: ["User register by issue", "User short URL register by issue", "User article writing by issue", "User menu setting by issue", "User deletion by issue", "User short URL deletion by issue", "User article deletion by issue"]
     types: [completed]
     branches:
       - main

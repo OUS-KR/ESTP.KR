@@ -103,21 +103,6 @@ jobs:
         LIST_PUBLIC_META_INFO_FILE="$USER_PUBLIC_SHORT_URL_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_PUBLIC_SHORT_URL_HTML_FILE="$USER_PUBLIC_SHORT_URL_PATH/$ENV__USER_SHORT_URL_HTML_FILE_NAME"
         
-        # Output
-        echo "Extracted USER_ID: $USER_ID"
-        echo "Extracted SHORT_PATH: $SHORT_PATH"
-        
-        echo "User public path: $USER_PUBLIC_PATH"
-        echo "User public short url path: $USER_PUBLIC_SHORT_URL_PATH"
-        echo "User service path: $USER_SERVICE_PATH"
-        echo "User service short url path: $USER_SERVICE_SHORT_URL_PATH"
-        
-        echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
-        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
-        echo "List public global meta info file: $LIST_PUBLIC_GLOBAL_META_INFO_FILE"
-        echo "List public meta info file: $LIST_PUBLIC_META_INFO_FILE"
-        echo "User public short url html file: $USER_PUBLIC_SHORT_URL_HTML_FILE"
-        
         # Validation: User ID
         if [[ ! "$USER_ID" =~ ^[a-z0-9][a-z0-9_-]{1,28}[a-z0-9]$ ]]; then
           echo "올바르지 않은 아이디 형식" > comment.md

@@ -106,24 +106,6 @@ jobs:
         LIST_SERVICE_META_INFO_FILE="$USER_SERVICE_ARTICLE_PATH/../$ENV__LIST_META_INFO_FILE_NAME"
         USER_SERVICE_ARTICLE_HTML_FILE="$USER_SERVICE_PATH/$ARTICLE_PATH/$USER_ARTICLE_HTML_FILE_NAME"
         
-        # Output
-        echo "Extracted USER_ID: $USER_ID"
-        echo "Extracted ARTICLE_PATH: $ARTICLE_PATH"
-        
-        echo "User public path: $USER_PUBLIC_PATH"
-        echo "User public article path: $USER_PUBLIC_ARTICLE_PATH"
-        echo "User service path: $USER_SERVICE_PATH"
-        echo "User service article path: $USER_SERVICE_ARTICLE_PATH"
-        
-        echo "User public meta info file: $USER_PUBLIC_META_INFO_FILE"
-        echo "Content public meta info file: $CONTENT_PUBLIC_META_INFO_FILE"
-        echo "List public global meta info file: $LIST_PUBLIC_GLOBAL_META_INFO_FILE"
-        echo "List public meta info file: $LIST_PUBLIC_META_INFO_FILE"
-        echo "User public article html file: $USER_PUBLIC_ARTICLE_HTML_FILE"
-        echo "Content service meta info file: $CONTENT_SERVICE_META_INFO_FILE"
-        echo "List service meta info file: $LIST_SERVICE_META_INFO_FILE"
-        echo "User service article html file: $USER_SERVICE_ARTICLE_HTML_FILE"
-        
         # Validation: User ID
         if [[ ! "$USER_ID" =~ ^[a-z0-9][a-z0-9_-]{1,28}[a-z0-9]$ ]]; then
           echo "올바르지 않은 아이디 형식" > comment.md
