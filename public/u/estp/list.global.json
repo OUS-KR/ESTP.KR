@@ -2,15 +2,6 @@
   "list": [
     {
       "type": "user-article",
-      "path": "articles/example",
-      "files": [
-        "index.html",
-        "content.json"
-      ],
-      "created_at": "2025-06-23T05:03:43+09:00"
-    },
-    {
-      "type": "user-article",
       "path": "articles/test",
       "files": [
         "index.html",
@@ -35,6 +26,15 @@
         "content.json"
       ],
       "created_at": "2025-06-23T05:55:45+09:00"
+    },
+    {
+      "type": "user-article",
+      "path": "articles/example",
+      "files": [
+        "index.html",
+        "content.json"
+      ],
+      "created_at": "2025-06-23T05:59:04+09:00"
     }
   ]
 }
