@@ -47,7 +47,7 @@
 - 매일 자정 0시부터 매 2시간마다 반영 작업 시작 (0시, 2시, 4시, ..., 18시, 20시, 22시)
   - 서비스 반영 전 미리보기 도메인에서 확인 가능
   - 도메인은 임의로 변경될 수 있으므로 다른 용도로 사용 금지
-  - 미리보기 도메인: `PREVIEW-C3H.ESTP.KR` (예: [PREVIEW-C3H.ESTP.KR/public/u/estp/](https://preview-c3h.estp.kr/public/u/estp/))
+  - 미리보기 도메인: `PREVIEW-DVU.ESTP.KR` (예: [PREVIEW-DVU.ESTP.KR/public/u/estp/](https://preview-dvu.estp.kr/public/u/estp/))
 - 다음과 같은 콘텐츠 포함 시 제재
   - 불법 행위 또는 범죄를 조장하는 내용 (마약, 폭력, 성범죄, 불법 무기 등 관련 정보 유포 등)
   - 타인의 권리를 침해하는 내용 (명예훼손, 저작권 침해, 개인정보 유출, 초상권 침해 등)
