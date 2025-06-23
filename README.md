@@ -47,7 +47,7 @@
 - 매일 자정 0시부터 매 2시간마다 반영 작업 시작 (0시, 2시, 4시, ..., 18시, 20시, 22시)
   - 서비스 반영 전 미리보기 도메인에서 확인 가능
   - 도메인은 임의로 변경될 수 있으므로 다른 용도로 사용 금지
-  - 미리보기 도메인: `PREVIEW-4RN.ESTP.KR` (예: [PREVIEW-4RN.ESTP.KR/public/u/estp/](https://preview-4rn.estp.kr/public/u/estp/))
+  - 미리보기 도메인: `PREVIEW.ESTP.KR` (예: [PREVIEW.ESTP.KR/public/u/estp/](https://preview.estp.kr/public/u/estp/))
 - 다음과 같은 콘텐츠 포함 시 제재
   - 불법 행위 또는 범죄를 조장하는 내용 (마약, 폭력, 성범죄, 불법 무기 등 관련 정보 유포 등)
   - 타인의 권리를 침해하는 내용 (명예훼손, 저작권 침해, 개인정보 유출, 초상권 침해 등)
@@ -56,3 +56,7 @@
   - 도박 또는 사행심을 유도하는 콘텐츠 (불법 도박 사이트 홍보, 사설 토토 등)
   - 허위 사실 유포 또는 사기성 콘텐츠 (거짓 정보, 피싱 링크, 투자 사기 등)
   - 광고 및 스팸성 콘텐츠 (반복적 홍보, 무단 상업 게시물, 무관한 링크 삽입 등)
+
+---
+
+![카운터](https://s11.flagcounter.com/count2/Bd4m/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/)
