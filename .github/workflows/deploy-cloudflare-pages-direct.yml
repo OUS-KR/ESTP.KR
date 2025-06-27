@@ -1,0 +1,35 @@
+name: Deploy cloudflare pages direct
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ["User register by issue", "User short URL register by issue", "User article writing by issue", "User menu setting by issue", "User deletion by issue", "User short URL deletion by issue", "User article deletion by issue"]
+    types: [completed]
+    branches:
+      - main
+  workflow_dispatch: {}
+      
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          
+      - name: Install Cloudflare Wrangler CLI
+        run: npm install -g wrangler
+          
+      - name: Deploy to Cloudflare Pages
+        run: wrangler pages deploy ./public --project-name dev-infp-kr --branch cf-pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -1,25 +1,17 @@
-name: Deploy to stage by main push
+name: Deploy to stage from main
 
 on:
-  push:
-    branches:
-      - main
-  workflow_run:
-    workflows: ["User register by issue", "User short URL register by issue", "User article writing by issue", "User menu setting by issue", "User deletion by issue", "User short URL deletion by issue", "User article deletion by issue"]
-    types: [completed]
-    branches:
-      - main
   workflow_dispatch: {}
       
 jobs:
   merge-to-stage:
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout stage branch
       uses: actions/checkout@v3
       with:
+        ref: stage
         fetch-depth: 0
         
     - name: Setup Git
@@ -30,7 +22,5 @@ jobs:
     - name: Merge main into stage branch
       run: |
         git fetch origin
-        git checkout stage || git checkout -b stage origin/stage
-        
         git merge main -m "Merge main into stage for deployment"
         git push origin stage
