@@ -531,26 +531,56 @@
                         webUrl: canonical_url,
                     },
                 });
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'kakaotalk'
+                });
             }
             
             function share_with_naver()
             {
                 window.open('https://share.naver.com/web/shareView?title=' + encodeURIComponent('${PAGE_TITLE} - ESTP.KR') + '&url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'naver'
+                });
             }
             
             function share_with_line()
             {
                 window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'line'
+                });
             }
             
             function share_with_facebook()
             {
                 window.open('http://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'facebook'
+                });
             }
             
             function share_with_twitter()
             {
                 window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('${PAGE_TITLE} - ESTP.KR') + '&url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'twitter'
+                });
             }
         </script>
         

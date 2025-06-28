@@ -256,7 +256,22 @@
                                 <nav class="menu menu-column menu-rounded menu-sub-indention fw-semibold px-1" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="true" aria-label="사이트 메뉴">
                                     <div class="fs-5 fs-lg-6">
                                     
-                                                                                
+                                                                                                                        
+                                        <div class="menu-item">
+                                        
+                                            
+                                            <a class="menu-link " href="https://github.com/OUS-KR/ESTP.KR">
+                                                
+                                                                                                <span class="menu-icon"><i class="ki-duotone ki-github fs-1 fs-lg-2"><span class="path1"></span><span class="path2"></span></i></span>
+                                                                                                
+                                                
+                                                <span class="menu-title text-gray-700">Github</span>
+                                            </a>
+                                            
+                                            
+                                        </div>
+                                        
+                                                                                                                        
                                     </div>
                                 </nav>
                                 
@@ -1503,26 +1518,56 @@
                         webUrl: canonical_url,
                     },
                 });
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'kakaotalk'
+                });
             }
             
             function share_with_naver()
             {
                 window.open('https://share.naver.com/web/shareView?title=' + encodeURIComponent('ESTP 인물 목록 : 페이지 1 - ESTP.KR') + '&url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'naver'
+                });
             }
             
             function share_with_line()
             {
                 window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'line'
+                });
             }
             
             function share_with_facebook()
             {
                 window.open('http://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'facebook'
+                });
             }
             
             function share_with_twitter()
             {
                 window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('ESTP 인물 목록 : 페이지 1 - ESTP.KR') + '&url=' + encodeURIComponent(canonical_url));
+                
+                window.dataLayer.push
+                ({
+                    'event': 'sns_share',
+                    'snsPlatform': 'twitter'
+                });
             }
         </script>
         
