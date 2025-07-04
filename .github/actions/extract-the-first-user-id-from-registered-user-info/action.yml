@@ -1,0 +1,29 @@
+name: Extract the first user ID from registered user info
+description: ''
+
+inputs:
+  user-register-info-file:
+    description: ''
+    required: true
+    
+outputs:
+  first-user-id-in-registered-user-info:
+    description: ''
+    value: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Extract the first user ID from registered user info
+      id: registered-user-info
+      shell: bash
+      env:
+        ENV__USER_REGISTER_INFO_FILE: ${{ inputs.user-register-info-file }}
+      run: |
+        # Extract
+        FIRST_USER_ID_IN_REGISTERED_USER_INFO=$(jq -r '.user_ids[0]' "$ENV__USER_REGISTER_INFO_FILE")
+        
+        # Github output
+        {
+          echo "first_user_id_in_registered_user_info=$FIRST_USER_ID_IN_REGISTERED_USER_INFO"
+        } > "$GITHUB_OUTPUT"

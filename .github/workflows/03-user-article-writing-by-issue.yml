@@ -67,17 +67,10 @@ jobs:
         issue-form-body: '${{ github.event.issue.body }}'
         
     - name: Extract the first user ID from registered user info
+      uses: ./.github/actions/extract-the-first-user-id-from-registered-user-info
       id: registered-user-info
-      env:
-        ENV__USER_REGISTER_INFO_FILE: ${{ steps.env.outputs.user_register_info_file }}
-      run: |
-        # Extract
-        FIRST_USER_ID_IN_REGISTERED_USER_INFO=$(jq -r '.user_ids[0]' "$ENV__USER_REGISTER_INFO_FILE")
-        
-        # Github output
-        {
-          echo "first_user_id_in_registered_user_info=$FIRST_USER_ID_IN_REGISTERED_USER_INFO"
-        } > "$GITHUB_OUTPUT"
+      with:
+        user-register-info-file: ${{ steps.env.outputs.user_register_info_file }}
         
     - name: Extract user ID, article path, title, and body from issue body
       id: extract
@@ -91,7 +84,7 @@ jobs:
         ENV__LIST_GLOBAL_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_global_meta_info_file_name }}
         ENV__LIST_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
-        FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first_user_id_in_registered_user_info }}
+        FIRST_USER_ID_IN_REGISTERED_USER_INFO: ${{ steps.registered-user-info.outputs.first-user-id-in-registered-user-info }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
