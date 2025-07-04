@@ -80,33 +80,20 @@ jobs:
         } >> $GITHUB_OUTPUT
         
     - name: Check if user exists
-      env:
-        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
-        USER_ID: ${{ steps.extract.outputs.user_id }}
-        ISSUE_NUMBER: ${{ github.event.issue.number }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Validation: User ID
-        if [ ! -d "$ENV__USER_PUBLIC_PATH" ]; then
-          echo "존재하지 않는 사용자 아이디: **$USER_ID**" > comment.md
-          gh issue comment "$ISSUE_NUMBER" -F comment.md
-          exit 1
-        fi
+      uses: ./.github/actions/check-if-user-exists
+      with:
+        user-public-path: ${{ steps.extract.outputs.user_public_path }}
+        user-id: ${{ steps.extract.outputs.user_id }}
+        issue-number: ${{ github.event.issue.number }}
+        gh-token: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Check GitHub user ownership
+      uses: ./.github/actions/check-github-user-ownership
       env:
-        ENV__USER_PUBLIC_META_INFO_FILE: ${{ steps.extract.outputs.user_public_meta_info_file }}
-        GITHUB_ID: ${{ github.event.issue.user.id }}
-        ISSUE_NUMBER: ${{ github.event.issue.number }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Validation: User ownership
-        GITHUB_ID_META_FILE=$(jq -r '.github_id // empty' "$ENV__USER_PUBLIC_META_INFO_FILE")
-        if [ "$GITHUB_ID" != "$GITHUB_ID_META_FILE" ]; then
-          echo "권한이 없습니다" > comment.md
-          gh issue comment "$ISSUE_NUMBER" -F comment.md
-          exit 1
-        fi
+        user-public-meta-info-file: ${{ steps.extract.outputs.user_public_meta_info_file }}
+        github-id: ${{ github.event.issue.user.id }}
+        issue-number: ${{ github.event.issue.number }}
+        gh-token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Update user register info file
       env:

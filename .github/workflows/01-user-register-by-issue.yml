@@ -146,18 +146,12 @@ jobs:
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user exists
-      env:
-        ENV__USER_PUBLIC_PATH: ${{ steps.extract.outputs.user_public_path }}
-        USER_ID: ${{ steps.extract.outputs.user_id }}
-        ISSUE_NUMBER: ${{ github.event.issue.number }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Validation: User ID
-        if [ -d "$ENV__USER_PUBLIC_PATH" ]; then
-          echo "사용할 수 없는 사용자 아이디: **$USER_ID**" > comment.md
-          gh issue comment "$ISSUE_NUMBER" -F comment.md
-          exit 1
-        fi
+      uses: ./.github/actions/check-if-user-exists
+      with:
+        user-public-path: ${{ steps.extract.outputs.user_public_path }}
+        user-id: ${{ steps.extract.outputs.user_id }}
+        issue-number: ${{ github.event.issue.number }}
+        gh-token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Create user page
       env:

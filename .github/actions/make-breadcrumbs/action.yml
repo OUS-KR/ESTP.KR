@@ -1,0 +1,43 @@
+name: Make breadcrumbs
+description: ''
+
+inputs:
+  breadcrumbs-str:
+    description: ''
+    required: true
+    
+outputs:
+  breadcrumb-items:
+    description: ''
+    value: ${{ outputs.breadcrumbs.breadcrumb_items }}
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Make breadcrumbs
+      id: breadcrumbs
+      shell: bash
+      env:
+        BREADCRUMBS_STR: ${{ inputs.breadcrumbs-str }}
+      run: |
+        # Breadcrumbs
+        IFS=',' read -ra BREADCRUMBS_ARR <<< "$BREADCRUMBS_STR"
+        for ITEM in "${BREADCRUMBS_ARR[@]}"; do
+          TEXT="${ITEM%%|*}"
+          LINK="${ITEM##*|}"
+          
+          BREADCRUMB_ITEMS+="
+            <li class=\"breadcrumb-item lh-1\"><i class=\"ki-duotone ki-right fs-4 text-gray-700 mx-n1\"></i></li>
+            <li class=\"breadcrumb-item text-gray-700 lh-1\"><a href=\"$LINK\" class=\"text-gray-700 text-hover-primary\"><span>$TEXT</span></a></li>
+          "
+        done
+        
+        # Output
+        echo "BREADCRUMB_ITEMS: $BREADCRUMB_ITEMS"
+        
+        # Github output
+        {
+          echo "breadcrumb_items<<EOF"
+          echo "$BREADCRUMB_ITEMS"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"

@@ -1,0 +1,35 @@
+name: Check GitHub user ownership
+description: ''
+
+inputs:
+  user-public-meta-info-file:
+    description: ''
+    required: true
+  github-id:
+    description: ''
+    required: true
+  issue-number:
+    description: ''
+    required: true
+  gh-token:
+    description: ''
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Check GitHub user ownership
+      shell: bash
+      env:
+        ENV__USER_PUBLIC_META_INFO_FILE: ${{ inputs.user-public-meta-info-file }}
+        GITHUB_ID: ${{ inputs.github-id }}
+        ISSUE_NUMBER: ${{ inputs.issue-number }}
+        GH_TOKEN: ${{ inputs.gh-token }}
+      run: |
+        # Validation: User ownership
+        GITHUB_ID_META_FILE=$(jq -r '.github_id // empty' "$ENV__USER_PUBLIC_META_INFO_FILE")
+        if [ "$GITHUB_ID" != "$GITHUB_ID_META_FILE" ]; then
+          echo "권한이 없습니다" > comment.md
+          gh issue comment "$ISSUE_NUMBER" -F comment.md
+          exit 1
+        fi
