@@ -42,7 +42,16 @@
 - [New issue 버튼](https://github.com/OUS-KR/ESTP.KR/issues/new/choose) 클릭
 - 기능 선택 후 폼 작성
 
-## 기타
+## 기타 기능
+
+### 유튜브 단축주소
+
+- 유튜브 영상: `ESTP.KR/yt/{유튜브 영상 아이디}`
+  - 예제: [ESTP.KR/yt/1ZX1vEDTfY4](https://estp.kr/yt/1ZX1vEDTfY4)
+- 유튜브 영상 + 시작 시간 옵션: `ESTP.KR/{유튜브 영상 아이디}/{시작 시간}`
+  - 예제: [ESTP.KR/yt/1ZX1vEDTfY4/1m6s](https://estp.kr/yt/1ZX1vEDTfY4/1m6s)
+
+## 주의사항
 
 - 다음과 같은 콘텐츠 포함 시 제재
   - 불법 행위 또는 범죄를 조장하는 내용 (마약, 폭력, 성범죄, 불법 무기 등 관련 정보 유포 등)
