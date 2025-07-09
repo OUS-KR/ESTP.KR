@@ -9,7 +9,7 @@ inputs:
 outputs:
   breadcrumb-items:
     description: ''
-    value: ${{ outputs.breadcrumbs.breadcrumb_items }}
+    value: ${{ steps.breadcrumbs.outputs.breadcrumb_items }}
     
 runs:
   using: "composite"
