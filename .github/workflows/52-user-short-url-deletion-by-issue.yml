@@ -152,7 +152,7 @@ jobs:
         
     - name: Check GitHub user ownership
       uses: ./.github/actions/check-github-user-ownership
-      env:
+      with:
         user-public-meta-info-file: ${{ steps.extract.outputs.user_public_meta_info_file }}
         github-id: ${{ github.event.issue.user.id }}
         issue-number: ${{ github.event.issue.number }}
