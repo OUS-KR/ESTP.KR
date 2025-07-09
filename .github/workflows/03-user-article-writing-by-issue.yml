@@ -192,7 +192,7 @@ jobs:
         } >> "$GITHUB_OUTPUT"
         
     - name: Check if user exists
-      uses: ./.github/actions/check-if-user-exists
+      uses: ./.github/actions/check-if-user-does-not-exist
       with:
         user-public-path: ${{ steps.extract.outputs.user_public_path }}
         user-id: ${{ steps.extract.outputs.user_id }}

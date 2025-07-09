@@ -1,0 +1,34 @@
+name: Check if user exists
+description: ''
+
+inputs:
+  user-public-path:
+    description: ''
+    required: true
+  user-id:
+    description: ''
+    required: true
+  issue-number:
+    description: ''
+    required: true
+  gh-token:
+    description: ''
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Check if user exists
+      shell: bash
+      env:
+        ENV__USER_PUBLIC_PATH: ${{ inputs.user-public-path }}
+        USER_ID: ${{ inputs.user-id }}
+        ISSUE_NUMBER: ${{ inputs.issue-number }}
+        GH_TOKEN: ${{ inputs.gh-token }}
+      run: |
+        # Validation: User ID
+        if [ ! -d "$ENV__USER_PUBLIC_PATH" ]; then
+          echo "존재하지 않는 사용자 아이디: **$USER_ID**" > comment.md
+          gh issue comment "$ISSUE_NUMBER" -F comment.md
+          exit 1
+        fi
