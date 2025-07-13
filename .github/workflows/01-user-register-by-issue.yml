@@ -37,6 +37,11 @@ jobs:
         CONTENT_META_INFO_FILE_NAME="content.json"
         LIST_GLOBAL_META_INFO_FILE_NAME="list.global.json"
         
+        # Pause register
+        if [ "$GITHUB_ID" != "$ADMIN_GITHUB_ID" ]; then
+          exit 1
+        fi
+        
         # Github output
         {
           # Created at
