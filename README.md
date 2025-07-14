@@ -6,7 +6,7 @@
 
 - `ESTP.KR/u/{사용자 아이디}` 주소 기반의 사용자 등록
   - 사용자 예제: [ESTP.KR/u/estp](https://estp.kr/u/estp)
-  - 사용자 등록 예제: https://github.com/OUS-KR/ESTP.KR/issues/1
+  - [사용자 등록 예제](https://github.com/OUS-KR/ESTP.KR/issues/1)
 - `ESTP.KR/@{사용자 아이디}` 형태의 짧은 주소 지원
   - 사용자 예제: [ESTP.KR/@estp](https://estp.kr/@estp)
 
@@ -14,7 +14,7 @@
 
 - `ESTP.KR/u/{사용자 아이디}/{단축 경로}` 형태의 단축주소 생성
   - 사용자 단축주소 예제: [ESTP.KR/u/estp/links/estp-kr](https://estp.kr/u/estp/links/estp-kr)
-  - 사용자 단축주소 등록 예제: https://github.com/OUS-KR/ESTP.KR/issues/2
+  - [사용자 단축주소 등록 예제](https://github.com/OUS-KR/ESTP.KR/issues/2)
   - 동일한 단축 경로 존재 시 덮어쓰기
 - `ESTP.KR/@{사용자 아이디}/{단축 경로}` 형태의 짧은 주소 지원
   - 사용자 단축주소 예제: [ESTP.KR/@estp/links/estp-kr](https://estp.kr/@estp/links/estp-kr)
@@ -25,7 +25,7 @@
 
 - `ESTP.KR/u/{사용자 아이디}/{글 경로}` 형태의 글 작성
   - 사용자 글 예제: [ESTP.KR/u/estp/articles/example](https://estp.kr/u/estp/articles/example)
-  - 사용자 글 작성 예제: https://github.com/OUS-KR/ESTP.KR/issues/3
+  - [사용자 글 작성 예제](https://github.com/OUS-KR/ESTP.KR/issues/3)
   - 동일한 글 경로 존재 시 덮어쓰기
   - 글 경로 미입력 시 `ESTP.KR/u/{사용자 아이디}/` 페이지 수정
 - `ESTP.KR/@{사용자 아이디}/{글 경로}` 형태의 짧은 주소 지원
@@ -34,7 +34,7 @@
 ### [사용자 메뉴 설정](https://github.com/OUS-KR/ESTP.KR/issues/new?template=04-user-menu-setting-by-issue.yml)
 
 - 사용자 단축주소 및 글 페이지에 들어갈 메뉴 설정
-  - 사용자 메뉴 설정 예제: https://github.com/OUS-KR/ESTP.KR/issues/4
+  - [사용자 메뉴 설정 예제](https://github.com/OUS-KR/ESTP.KR/issues/4)
 
 ## 사용 방법
 
