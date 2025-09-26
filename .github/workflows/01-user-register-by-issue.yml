@@ -39,7 +39,8 @@ jobs:
         
         # Pause register
         if [ "$GITHUB_ID" != "$ADMIN_GITHUB_ID" ]; then
-          exit 1
+          # exit 1
+          echo "-"
         fi
         
         # Github output
