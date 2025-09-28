@@ -2,7 +2,11 @@ name: Deploy to stage from main
 
 on:
   workflow_dispatch: {}
-      
+  push:
+    paths:
+      - 'README.md'
+    branches:
+      - main
 jobs:
   merge-to-stage:
     runs-on: ubuntu-latest
