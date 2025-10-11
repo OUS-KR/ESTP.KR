@@ -42,6 +42,30 @@
         "url": "/u/tests/info-subtypes/",
         "type": "정보",
         "description": "8번, 7번, 3번 등 하위유형 비교"
+      },
+      {
+        "title": "ESTP 인간관계: 연애, 우정, 그리고 궁합",
+        "url": "/u/tests/info-relationships/",
+        "type": "정보",
+        "description": "의사소통 스타일, 타 유형과의 궁합"
+      },
+      {
+        "title": "ESTP에 대한 흔한 오해",
+        "url": "/u/tests/info-misconceptions/",
+        "type": "정보",
+        "description": "ESTP에 대한 오해와 진실"
+      },
+      {
+        "title": "ESTP 추천 취미",
+        "url": "/u/tests/info-hobbies/",
+        "type": "정보",
+        "description": "활동적이고 스릴 넘치는 경험"
+      },
+      {
+        "title": "ESTP 생산성 가이드",
+        "url": "/u/tests/info-productivity/",
+        "type": "정보",
+        "description": "미루는 습관을 이기는 법"
       }
     ]
   }
