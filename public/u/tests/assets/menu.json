@@ -1,4 +1,3 @@
-
 [
   {
     "mainTitle": "오늘의 콘텐츠",
@@ -14,6 +13,17 @@
         "url": "/u/tests/today-game/",
         "type": "게임",
         "description": "오늘의 추천 게임"
+      }
+    ]
+  },
+  {
+    "mainTitle": "정보",
+    "items": [
+      {
+        "title": "ESTP 특징 분석: 모험을 즐기는 사업가",
+        "url": "/u/tests/info-characteristics/",
+        "type": "정보",
+        "description": "ESTP의 핵심 특징, 장단점, 성장 방법"
       }
     ]
   }
