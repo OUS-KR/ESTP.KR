@@ -37,7 +37,7 @@
             </div>
             <div class="card info-card">
                 <div class="card-title"><span class="icon">📈</span> ESTP 지수</div>
-                <p id="intpIndexDisplay">ESTP 지수를 불러오는 중...</p>
+                <p id="mbtiIndexDisplay">ESTP 지수를 불러오는 중...</p>
             </div>
             <div class="card info-card">
                 <div class="card-title"><span class="icon">🔑</span> 행운의 키워드</div>
@@ -92,22 +92,22 @@
     const data = {
         advice: {
             openings: ["오늘은", "오늘 당신의", "지금은", "오늘은 특별히"],
-            subjects: ["대담한 행동이", "실용적인 판단이", "빠른 적응력이", "강력한 사회적 기술이", "새로운 경험이"],
-            verbs: ["빛을 발하는 날입니다.", "새로운 기회로 이끌 것입니다.", "문제의 핵심을 꿰뚫어 봅니다.", "예상치 못한 성과를 가져다줍니다.", "당신을 한 단계 성장시킬 것입니다."],
+            subjects: ["논리적 사고가", "지적 호기심이", "독창적인 아이디어가", "체계적인 분석력이", "추상적인 통찰력이", "새로운 관점이"],
+            verbs: ["빛을 발하는 날입니다.", "새로운 발견으로 이끌 것입니다.", "문제의 핵심을 꿰뚫어 봅니다.", "예상치 못한 기회를 가져다줍니다.", "당신을 한 단계 성장시킬 것입니다."],
             connectors: ["따라서", "그러니", "이 기회를 빌어", "망설이지 말고"],
-            actions: ["새로운 도전에 과감히 뛰어들어 보세요.", "직관을 믿고 빠르게 결정을 내리세요.", "다양한 사람들과 교류하며 아이디어를 얻으세요.", "현실적인 목표를 세우고 즉시 실행에 옮기세요.", "일상의 틀을 벗어나 새로운 경험을 찾아보세요."]
+            actions: ["한 걸음 물러서서 전체 시스템을 조망해 보세요.", "당신의 생각을 과감하게 실험에 옮겨보세요.", "평소와 다른 관점에서 문제를 바라보세요.", "다양한 분야의 지식을 융합하여 새로운 해결책을 찾아보세요.", "가장 근본적인 원리를 파고드는 시간을 가져보세요.", "당신의 아이디어를 구체적인 계획으로 발전시켜 보세요."]
         },
         task: {
-            types: ["도전하기:", "탐색하기:", "실행하기:", "교류하기:"],
-            actions: ["평소 미뤄왔던", "새롭게 시도하고 싶은", "흥미를 느꼈던", "주변 사람들과 함께 할 수 있는"],
-            subjects: ["활동적인 취미", "실용적인 기술", "새로운 스포츠", "사회적 모임", "즉흥적인 여행 계획", "복잡한 문제의 단순화"],
-            verbs: ["에 대해 1시간 동안 몰입해 보세요.", "의 핵심을 파악하고 직접 경험해 보세요.", "을(를) 다른 사람에게 가르쳐 보세요.", "과/와 관련된 새로운 아이디어를 3가지 이상 기록해 보세요.", "의 작동 방식을 직접 체험해 보세요."]
+            types: ["탐구하기:", "정리하기:", "설명하기:", "상상하기:"],
+            actions: ["평소 궁금했던", "오랫동안 탐구하고 싶었던", "최근 흥미가 생긴", "당연하게 여겼던"],
+            subjects: ["과학적 원리", "철학적 개념", "복잡한 시스템", "사회적 현상", "미해결 문제", "역사적 사건"],
+            verbs: ["에 대해 15분간 깊이 파고들어 보세요.", "의 핵심을 한 문장으로 요약해 보세요.", "을(를) 비전문가도 이해할 수 있도록 설명하는 글을 써보세요.", "과/와 관련된 새로운 아이디어를 3가지 이상 기록해 보세요.", "의 작동 방식을 다이어그램으로 그려보세요."]
         },
-        estpIndex: {
-            reasons: ["대담한 행동력이 발휘되어", "실용적인 문제 해결 능력이 극대화되어", "빠른 상황 판단과 적응력이 빛을 발하여", "강력한 사회적 기술로 주변을 이끌어", "새로운 경험을 통해 통찰력을 얻어"],
-            results: ["목표 달성 가능성이 높습니다.", "예상치 못한 기회를 잡을 수 있습니다.", "주변 사람들에게 긍정적인 영향을 줍니다.", "새로운 도전을 성공적으로 이끌 수 있습니다.", "현실적인 성과를 창출할 수 있습니다."]
+        mbtiIndex: {
+            reasons: ["논리 회로가 명료하게 작동하여", "창의적 영감이 샘솟아", "지적 탐구심이 최고조에 달해", "시스템 전체를 꿰뚫어보는 통찰력이 발휘되어", "복잡한 정보 속에서 패턴을 발견하여"],
+            results: ["분석적 사고력이 극대화됩니다.", "새로운 아이디어를 현실화할 가능성이 높습니다.", "복잡한 문제도 쉽게 해결할 수 있습니다.", "지적인 만족감을 크게 느낄 수 있습니다."]
         },
-        keywords: ["대담한", "행동가", "실용적인", "현실적인", "적응력", "관찰력", "사교적인", "즉흥적인", "에너지", "문제 해결사", "모험적인", "유연한", "직설적인", "사업가", "활동가", "탐험가", "협상가", "운동선수", "기업가"]
+        keywords: ["논리", "분석", "시스템", "통찰", "혁신", "아이디어", "탐구", "지식", "독립", "패턴", "융합", "추상화", "전략", "효율", "원리", "개념", "가설", "검증", "모델링", "알고리즘"]
     };
 
     // --- Generator Functions ---
@@ -148,7 +148,7 @@
         return `${type} ${rawSentence}`;
     }
 
-    function generateEstpIndex(randFn, parts) {
+    function generateMbtiIndex(randFn, parts) {
         const pick = (arr) => arr[Math.floor(randFn() * arr.length)];
         const percentage = 65 + Math.floor(randFn() * 31); // 65% to 95%
         return `${percentage}% - ${pick(parts.reasons)} ${pick(parts.results)}`;
@@ -167,7 +167,7 @@
 
             document.getElementById('adviceDisplay').innerText = generateAdvice(randFn, data.advice);
             document.getElementById('taskDisplay').innerText = generateTask(randFn, data.task);
-            document.getElementById('intpIndexDisplay').innerText = generateEstpIndex(randFn, data.estpIndex); // Changed to generateEstpIndex
+            document.getElementById('mbtiIndexDisplay').innerText = generateMbtiIndex(randFn, data.mbtiIndex);
             document.getElementById('keywordDisplay').innerText = generateKeywords(randFn, data.keywords, 5);
         } catch (e) {
             console.error("오늘의 운세 생성 중 오류 발생:", e);

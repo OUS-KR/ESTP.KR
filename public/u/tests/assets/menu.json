@@ -1,1 +1,14 @@
-[]
+
+[
+  {
+    "mainTitle": "오늘의 콘텐츠",
+    "items": [
+      {
+        "title": "오늘의 운세",
+        "url": "/u/tests/today-fortune/",
+        "type": "운세",
+        "description": "ESTP를 위한 오늘의 운세와 조언"
+      }
+    ]
+  }
+]
