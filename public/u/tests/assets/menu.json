@@ -30,6 +30,18 @@
         "url": "/u/tests/info-careers/",
         "type": "정보",
         "description": "추천 직업, 근무 환경, 생산성 팁"
+      },
+      {
+        "title": "ESTP 인지기능 분석 (Se, Ti, Fe, Ni)",
+        "url": "/u/tests/info-cognitive-functions/",
+        "type": "정보",
+        "description": "주기능부터 열등기능까지 심층 분석"
+      },
+      {
+        "title": "ESTP와 에니어그램 하위유형",
+        "url": "/u/tests/info-subtypes/",
+        "type": "정보",
+        "description": "8번, 7번, 3번 등 하위유형 비교"
       }
     ]
   }
