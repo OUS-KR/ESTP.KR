@@ -8,6 +8,12 @@
         "url": "/u/tests/today-fortune/",
         "type": "운세",
         "description": "ESTP를 위한 오늘의 운세와 조언"
+      },
+      {
+        "title": "오늘의 게임",
+        "url": "/u/tests/today-game/",
+        "type": "게임",
+        "description": "오늘의 추천 게임"
       }
     ]
   }
