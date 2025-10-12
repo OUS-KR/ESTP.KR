@@ -20,7 +20,7 @@
     <div id="quiz-container" class="container">
         <div id="start-area">
             <h1>ESTP 연애 스타일 테스트</h1>
-            <p>ESTP의 연애 스타일 알아보기</p>
+            <p>당신은 어떤 연애 스타일을 가지고 있나요? ESTP의 열정적이고 자유로운 모습, 그리고 함께 스릴 넘치는 경험을 추구하는 당신의 방식을 이 테스트를 통해 탐색해 보세요!</p>
             <button id="start-btn" class="btn btn-primary">테스트 시작하기</button>
         </div>
 
@@ -62,19 +62,43 @@
         // Placeholder quiz data
         const quizData = [
             {
-                question: '이것은 ESTP 연애 스타일 테스트의 첫 번째 질문입니다.',
+                question: '연인과 감정적인 갈등이 생겼을 때, 당신의 첫 반응은?',
                 answers: [
-                    { text: '답변 1', score: 10 },
-                    { text: '답변 2', score: 5 },
-                    { text: '답변 3', score: 1 }
+                    { text: '직설적인 대화로 해결을 시도하고, 감정적인 호소는 피한다.', score: 10 },
+                    { text: '문제의 원인을 분석하고 해결책을 제시한다.', score: 5 },
+                    { text: '갈등 상황을 피하고 혼자 생각할 시간을 갖는다.', score: 1 }
                 ]
             },
             {
-                question: '이것은 두 번째 질문입니다.',
+                question: '당신이 생각하는 최고의 애정 표현은 무엇인가요?',
                 answers: [
-                    { text: '답변 A', score: 10 },
-                    { text: '답변 B', score: 5 },
-                    { text: '답변 C', score: 1 }
+                    { text: '함께 액티비티를 즐기거나, 서프라이즈 선물 등 스릴 넘치는 경험을 공유하는 것.', score: 10 },
+                    { text: '따뜻한 말과 스킨십으로 애정을 표현하는 것.', score: 5 },
+                    { text: '상대방에게 필요한 실질적인 도움을 주는 것.', score: 1 }
+                ]
+            },
+            {
+                question: '연인이 당신의 친구 관계나 사생활에 간섭하려 한다면?',
+                answers: [
+                    { text: '독립성 침해로 인한 갈등을 느끼고 자유를 존중해달라고 요구한다.', score: 10 },
+                    { text: '어느 정도는 이해하지만, 나의 공간도 중요하다고 설명한다.', score: 5 },
+                    { text: '연인을 위해 기꺼이 나의 시간을 양보한다.', score: 1 }
+                ]
+            },
+            {
+                question: '연인과 가장 하고 싶은 데이트는?',
+                answers: [
+                    { text: '스포츠 경기 관람, 클럽, 즉흥 여행 등 활동적이고 스릴 넘치는 활동.', score: 10 },
+                    { text: '조용하고 로맨틱한 분위기에서 대화하는 것.', score: 5 },
+                    { text: '친구들과 함께 어울려 즐거운 시간을 보내는 것.', score: 1 }
+                ]
+            },
+            {
+                question: '연인에게 솔직한 피드백을 줄 때 당신의 방식은?',
+                answers: [
+                    { text: '돌려 말하지 않고 핵심을 정확히 전달한다.', score: 10 },
+                    { text: '상대방의 기분을 고려하여 부드럽게 표현한다.', score: 5 },
+                    { text: '갈등을 피하기 위해 웬만하면 피드백을 하지 않는다.', score: 1 }
                 ]
             }
         ];

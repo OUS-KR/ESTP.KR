@@ -20,7 +20,7 @@
     <div id="quiz-container" class="container">
         <div id="start-area">
             <h1>ESTP 스트레스 원인 테스트</h1>
-            <p>스트레스 원인 진단 테스트</p>
+            <p>혹시 요즘 스트레스가 많으신가요? ESTP에게 스트레스를 유발하는 주요 요인들을 이 테스트를 통해 파악하고, 현명하게 대처하는 방법을 찾아보세요!</p>
             <button id="start-btn" class="btn btn-primary">테스트 시작하기</button>
         </div>
 
@@ -62,19 +62,43 @@
         // Placeholder quiz data
         const quizData = [
             {
-                question: '이것은 ESTP 스트레스 원인 테스트의 첫 번째 질문입니다.',
+                question: '반복적이고 단조로운 업무를 계속해야 할 때 당신은?',
                 answers: [
-                    { text: '답변 1', score: 10 },
-                    { text: '답변 2', score: 5 },
-                    { text: '답변 3', score: 1 }
+                    { text: '지루함을 느끼고 집중력 저하와 함께 탈출 욕구를 느낀다.', score: 10 },
+                    { text: '어느 정도는 참을 수 있지만, 새로운 자극을 갈망한다.', score: 5 },
+                    { text: '크게 개의치 않고 묵묵히 업무를 수행한다.', score: 1 }
                 ]
             },
             {
-                question: '이것은 두 번째 질문입니다.',
+                question: '엄격한 규칙과 절차를 따라야만 하는 조직에 속해 있을 때 당신은?',
                 answers: [
-                    { text: '답변 A', score: 10 },
-                    { text: '답변 B', score: 5 },
-                    { text: '답변 C', score: 1 }
+                    { text: '자유 억압과 함께 강한 반발심을 느낀다.', score: 10 },
+                    { text: '불만을 느끼지만, 일단은 따른다.', score: 5 },
+                    { text: '규칙은 규칙이므로 불만 없이 따른다.', score: 1 }
+                ]
+            },
+            {
+                question: '먼 미래의 일을 미리 계획하고 준비하라는 말을 들었을 때 당신은?',
+                answers: [
+                    { text: '장기 계획에 대한 부담감과 스트레스를 받는다.', score: 10 },
+                    { text: '어느 정도는 계획하지만, 유연하게 대처하려 한다.', score: 5 },
+                    { text: '미래는 예측 불가능하다고 생각하고 현재에 집중한다.', score: 1 }
+                ]
+            },
+            {
+                question: '상대방이 논리 없이 감정적으로만 하소연할 때 당신은?',
+                answers: [
+                    { text: '공감의 어려움과 함께 문제 해결에 대한 압박을 느낀다.', score: 10 },
+                    { text: '어느 정도는 들어주지만, 논리적인 해결책을 제시하려 한다.', score: 5 },
+                    { text: '감정적인 위로도 중요하다고 생각하고 경청한다.', score: 1 }
+                ]
+            },
+            {
+                question: '당신은 어떤 상황에서 가장 큰 스트레스를 받나요?',
+                answers: [
+                    { text: '자유가 제한되거나, 나의 행동이 통제받는 상황.', score: 10 },
+                    { text: '비효율적이고 비논리적인 상황.', score: 5 },
+                    { text: '감정적인 갈등이나 인간관계 문제.', score: 1 }
                 ]
             }
         ];
