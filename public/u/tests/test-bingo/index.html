@@ -5,6 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESTP 빙고 챌린지</title>
     <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251012150000">
+    <style>
+        .bingo-container {
+            overflow-x: auto;
+            padding-bottom: 10px; /* Make space for scrollbar */
+        }
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+            min-width: 500px; /* Prevent tiles from becoming too small */
+        }
+        .bingo-cell {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.9em;
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+        }
+        .bingo-cell.checked {
+            background-color: var(--h-color);
+            color: var(--container-bg);
+            font-weight: bold;
+        }
+        .bingo-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        #bingo-counter {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        #reset-btn {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            background-color: var(--card-border);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="main-nav">
@@ -65,7 +118,7 @@
     </header>
     <div class="container">
         <h1>ESTP 빙고 챌린지</h1>
-        <p style="text-align:center;">당신은 얼마나 ESTP의 특징을 가지고 있을까요? 재미있는 빙고 챌린지를 통해 당신의 ESTP 지수를 확인하고, 친구들과 공감대를 형성해 보세요!</p>
+        <p style="text-align:center;">나는 얼마나 ESTP일까? 아래 빙고판에서 해당하는 항목을 클릭해 보세요.<br>완성된 빙고판을 캡쳐해서 친구들과 공유해 보세요!</p>
         
         <div class="bingo-controls">
             <div id="bingo-counter">체크된 항목 0/25</div>
