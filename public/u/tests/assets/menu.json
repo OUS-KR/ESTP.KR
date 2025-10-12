@@ -68,5 +68,117 @@
         "description": "미루는 습관을 이기는 법"
       }
     ]
+  },
+  {
+    "mainTitle": "테스트",
+    "items": [
+      {
+        "title": "ESTP 위기 협상 능력 테스트",
+        "url": "/u/tests/test-crisis-negotiation/",
+        "type": "테스트",
+        "description": "ESTP의 뛰어난 순발력과 설득력을 바탕으로 긴급하고 압박이 심한 상황에서 문제를 해결하고 협상을 이끌어내는 능력을 측정합니다."
+      },
+      {
+        "title": "ESTP 연애 스타일 테스트",
+        "url": "/u/tests/test-relationship-style/",
+        "type": "테스트",
+        "description": "ESTP의 연애 스타일 알아보기"
+      },
+      {
+        "title": "ESTP 스트레스 원인 테스트",
+        "url": "/u/tests/test-stress-triggers/",
+        "type": "테스트",
+        "description": "스트레스 원인 진단 테스트"
+      },
+      {
+        "title": "ESTP 활동적인 모험 성향 테스트",
+        "url": "/u/tests/test-active-adventure/",
+        "type": "테스트",
+        "description": "ESTP가 새로운 경험, 신체적 활동, 그리고 위험을 감수하는 모험을 얼마나 즐기는지 측정합니다."
+      },
+      {
+        "title": "ESTP 빙고 챌린지",
+        "url": "/u/tests/test-bingo/",
+        "type": "테스트",
+        "description": "ESTP 특징으로 구성된 빙고 게임"
+      },
+      {
+        "title": "ESTP 순발력 및 상황 판단 테스트",
+        "url": "/u/tests/test-quick-wits-and-judgment/",
+        "type": "테스트",
+        "description": "예상치 못한 상황에서 빠르게 핵심을 파악하고 가장 효율적인 행동을 결정하는 ESTP의 순발력과 상황 판단 능력을 측정합니다."
+      },
+      {
+        "title": "ESTP 실전 문제 해결 테스트",
+        "url": "/u/tests/test-hands-on-problem-solving/",
+        "type": "테스트",
+        "description": "ESTP의 실제 상황에서 발생하는 문제를 즉각적으로 파악하고 해결하는 실전 능력을 측정합니다."
+      }
+    ]
+  },
+  {
+    "mainTitle": "게임",
+    "items": [
+      {
+        "title": "액션 어드벤처",
+        "url": "/u/tests/game-action-adventure/",
+        "type": "게임",
+        "description": "역동적인 환경에서 장애물을 극복하고, 적과 싸우며, 스릴 넘치는 모험을 즐기는 게임입니다."
+      },
+      {
+        "title": "스포츠 챌린지",
+        "url": "/u/tests/game-sports-challenge/",
+        "type": "게임",
+        "description": "다양한 스포츠 종목에 참여하여 자신의 한계에 도전하고, 경쟁에서 승리하여 최고의 선수가 되는 것을 목표로 하는 게임입니다."
+      },
+      {
+        "title": "생존 시뮬레이션",
+        "url": "/u/tests/game-survival-simulation/",
+        "type": "게임",
+        "description": "무인도나 황무지 같은 극한의 환경에서, 자원을 수집하고 도구를 제작하며 생존하는 현실적인 문제 해결 게임입니다."
+      },
+      {
+        "title": "레이싱 챌린지",
+        "url": "/u/tests/game-racing-challenge/",
+        "type": "게임",
+        "description": "다양한 차량을 커스터마이징하고, 스릴 넘치는 트랙에서 다른 선수들과 경쟁하여 최고의 레이서가 되는 게임입니다."
+      },
+      {
+        "title": "소셜 파티 게임",
+        "url": "/u/tests/game-social-party/",
+        "type": "게임",
+        "description": "가상의 파티에서 다양한 미니게임을 즐기고, 재치있는 대화로 분위기를 주도하며 최고의 인싸가 되는 시뮬레이션 게임입니다."
+      },
+      {
+        "title": "스턴트맨 시뮬레이션",
+        "url": "/u/tests/game-stunt-performer-sim/",
+        "type": "게임",
+        "description": "영화 스턴트맨이 되어, 위험천만한 스턴트를 직접 계획하고 실행하며 최고의 장면을 만들어내는 물리 기반의 액션 게임입니다."
+      },
+      {
+        "title": "긴급 구조 관제사",
+        "url": "/u/tests/game-emergency-dispatcher/",
+        "type": "게임",
+        "description": "도시의 긴급 구조(경찰, 소방, 구급)를 지휘하며, 압박감 속에서 신속하고 정확한 결정을 내려 위기 상황을 해결하는 전략 시뮬레이션 게임입니다."
+      },
+      {
+        "title": "도시 탐험가",
+        "url": "/u/tests/game-urban-explorer/",
+        "type": "게임",
+        "description": "버려진 건물이나 금지된 구역을 탐험하며, 보안 시스템을 피하고 퍼즐을 풀어 숨겨진 보물을 찾아내는 어드벤처 게임입니다."
+      },
+      {
+        "title": "음악 기억력 게임",
+        "url": "/u/tests/game-music-memory/",
+        "type": "게임",
+        "description": "음악 기억력 게임"
+      },
+      {
+        "title": "리듬 마스터 게임",
+        "url": "/u/tests/game-rhythm-master/",
+        "type": "게임",
+        "description": "리듬 마스터 게임"
+      }
+    ]
   }
 ]

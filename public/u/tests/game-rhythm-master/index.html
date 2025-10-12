@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTP 리듬 마스터 게임</title>
+    <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251012150000">
+</head>
+<body>
+    <header class="main-nav">
+        <a href="/u/tests/" class="logo">ESTP.KR Games</a>
+        <div class="nav-right-section">
+            <nav class="nav-links" id="nav-links">
+                <!-- Dynamic menu will be loaded here by dynamic-menu.js -->
+            </nav>
+            <button id="theme-switcher" class="theme-switcher">🌙</button>
+            <button id="hamburger" class="hamburger">☰</button>
+        </div>
+    </header>
+    <div id="game-container" class="container">
+        <div id="start-area">
+            <h1>ESTP 리듬 마스터 게임</h1>
+            <p>리듬 마스터 게임</p>
+            <button id="start-btn" class="btn btn-primary">게임 시작하기</button>
+        </div>
+
+        <div id="game-area" class="hidden">
+            <!-- Game content will be loaded here -->
+            <p>게임 내용이 여기에 표시됩니다.</p>
+            <button id="reset-btn" class="btn btn-secondary">다시 시작</button>
+        </div>
+    </div>
+
+    <script src="/u/tests/assets/js/main.js?20251012150000" defer></script>
+    <script src="/u/tests/assets/js/dynamic-menu.js" defer></script>
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const startArea = document.getElementById('start-area');
+        const gameArea = document.getElementById('game-area');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        startBtn.addEventListener('click', startGame);
+        resetBtn.addEventListener('click', resetGame);
+
+        function setInitialView() {
+            startArea.style.display = 'block';
+            gameArea.style.display = 'none';
+        }
+
+        function startGame() {
+            startArea.style.display = 'none';
+            gameArea.style.display = 'block';
+            // Add game initialization logic here
+            console.log('Game started!');
+        }
+
+        function resetGame() {
+            // Add game reset logic here
+            console.log('Game reset!');
+            setInitialView();
+        }
+
+        setInitialView();
+    </script>
+</body>
+</html>
