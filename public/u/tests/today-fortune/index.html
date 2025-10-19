@@ -69,9 +69,49 @@
                 (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
+        
+        <div id="giscus-container" style="margin: 15px 0;"></div>
+        <script>
+            function loadGiscus() {
+                const container = document.getElementById('giscus-container');
+                while (container.firstChild) container.removeChild(container.firstChild);
+                
+                const script = document.createElement('script');
+                script.src = 'https://giscus.app/client.js';
+                script.setAttribute('data-repo', 'OUS-KR/INTP.KR');
+                script.setAttribute('data-repo-id', 'R_kgDOOrfScQ');
+                script.setAttribute('data-category', 'Announcements');
+                script.setAttribute('data-category-id', 'DIC_kwDOOrfScc4CqQAN');
+                script.setAttribute('data-mapping', 'pathname');
+                script.setAttribute('data-strict', '0');
+                script.setAttribute('data-reactions-enabled', '1');
+                script.setAttribute('data-emit-metadata', '1');
+                script.setAttribute('data-input-position', 'top');
+                script.setAttribute('data-theme', localStorage.getItem('theme') ?? 'light');
+                script.setAttribute('data-loading', 'lazy');
+                script.setAttribute('data-lang', 'ko');
+                script.setAttribute('crossorigin', 'anonymous');
+                script.setAttribute('async', '');
+                
+                container.appendChild(script);
+            }
+            
+            loadGiscus();
+        </script>
+        
+        <div class="content-card">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-format="autorelaxed"
+                data-ad-client="ca-pub-4262871645049971"
+                data-ad-slot="5813041058"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
 
-    <script src="/u/tests/assets/js/main.js?20251010170000" defer></script>
+    <script src="/u/tests/assets/js/main.js?20251020100900" defer></script>
     <script src="/u/tests/assets/js/dynamic-menu.js?20251010170000" defer></script>
     <script>
     function getDailySeed() {
@@ -113,7 +153,7 @@
         return hasBatchim ? particles[0] : particles[1];
     }
 
-    // --- Enhanced Generative Data Parts ---
+    // --- Enhanced Generative Data Parts (ESTP) ---
     const data = {
         advice: {
             openings: ["오늘은", "오늘 당신의", "지금은", "오늘은 특별히"],

@@ -5,6 +5,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Switcher --- //
     const applyTheme = (theme) => {
+        // Giscus
+        let iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+            iframe.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                'https://giscus.app'
+            );
+        }
+        
         if (theme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
             if(themeSwitcher) themeSwitcher.textContent = '☀️';
