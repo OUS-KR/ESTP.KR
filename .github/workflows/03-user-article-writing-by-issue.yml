@@ -28,7 +28,6 @@ jobs:
         DOT_GITHUB_SCRIPTS_PATH="${DOT_GITHUB_PATH}/scripts"
         DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE="${DOT_GITHUB_SCRIPTS_PATH}/convert.js"
         
-        ADMIN_GITHUB_ID="210320028"
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
@@ -51,7 +50,6 @@ jobs:
           echo "dot_github_scripts_path=$DOT_GITHUB_SCRIPTS_PATH"
           echo "dot_github_scripts_convert_js_file=$DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE"
           
-          echo "admin_github_id=$ADMIN_GITHUB_ID"
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
@@ -214,7 +212,6 @@ jobs:
         issue-number: ${{ github.event.issue.number }}
         gh-token: ${{ secrets.GITHUB_TOKEN }}
         
-    #
     - name: Setup Node.js for markdown conversion
       uses: actions/setup-node@v3
       with:
@@ -227,7 +224,6 @@ jobs:
         cd "$ENV__DOT_GITHUB_SCRIPTS_PATH"
         npm init -y
         npm install marked
-    #
     
     - name: Convert article body markdown to html
       id: convert

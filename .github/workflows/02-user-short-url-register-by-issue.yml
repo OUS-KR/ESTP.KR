@@ -24,6 +24,10 @@ jobs:
         CREATED_AT=$(TZ=Asia/Seoul date +"%Y-%m-%dT%H:%M:%S%:z")
         
         # Env
+        DOT_GITHUB_PATH=".github"
+        DOT_GITHUB_SCRIPTS_PATH="${DOT_GITHUB_PATH}/scripts"
+        DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE="${DOT_GITHUB_SCRIPTS_PATH}/convert.js"
+        
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
@@ -43,6 +47,9 @@ jobs:
           echo "created_at=$CREATED_AT"
           
           # Env
+          echo "dot_github_scripts_path=$DOT_GITHUB_SCRIPTS_PATH"
+          echo "dot_github_scripts_convert_js_file=$DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE"
+          
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
@@ -222,9 +229,23 @@ jobs:
         issue-number: ${{ github.event.issue.number }}
         gh-token: ${{ secrets.GITHUB_TOKEN }}
         
+    - name: Setup Node.js for markdown conversion
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install Node.js dependencies
+      env:
+        ENV__DOT_GITHUB_SCRIPTS_PATH: ${{ steps.env.outputs.dot_github_scripts_path }}
+      run: |
+        cd "$ENV__DOT_GITHUB_SCRIPTS_PATH"
+        npm init -y
+        npm install marked
+        
     - name: Convert article body markdown to html
       id: convert
       env:
+        ENV__DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE: ${{ steps.env.outputs.dot_github_scripts_convert_js_file }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
         ORIGINAL_URL: ${{ steps.extract.outputs.original_url }}
       run: |
@@ -240,7 +261,8 @@ jobs:
         # Convert
         sudo apt-get install -y pandoc
         
-        ARTICLE_HTML=$(echo "$ARTICLE_MARKDOWN" | pandoc -f gfm -t html | jq -Rs . | jq -r)
+        # ARTICLE_HTML=$(echo "$ARTICLE_MARKDOWN" | pandoc -f gfm -t html | jq -Rs . | jq -r)
+        ARTICLE_HTML=$(echo "$ARTICLE_MARKDOWN" | node "$ENV__DOT_GITHUB_SCRIPTS_CONVERT_JS_FILE")
         echo "ARTICLE_HTML: $ARTICLE_HTML"
         
         # SEO
