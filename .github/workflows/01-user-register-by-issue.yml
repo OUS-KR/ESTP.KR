@@ -25,6 +25,8 @@ jobs:
         
         # Env
         ADMIN_GITHUB_ID="210320028"
+        ADMIN_ID="admin"
+
         USERS_REGISTER_INFO_PATH="registered/users"
         USERS_PUBLIC_PATH="public/u"
         USERS_SERVICE_PATH="u"
@@ -38,9 +40,9 @@ jobs:
         LIST_GLOBAL_META_INFO_FILE_NAME="list.global.json"
         
         # Pause register
-        if [ "$GITHUB_ID" != "$ADMIN_GITHUB_ID" ]; then
-          # exit 1
-          echo "-"
+        if [[ "$GITHUB_ID" != "$ADMIN_GITHUB_ID" ]]; then
+          exit 1
+          # echo "-"
         fi
         
         # Github output
@@ -50,6 +52,8 @@ jobs:
           
           # Env
           echo "admin_github_id=$ADMIN_GITHUB_ID"
+          echo "admin_id=$ADMIN_ID"
+
           echo "users_register_info_path=$USERS_REGISTER_INFO_PATH"
           echo "users_public_path=$USERS_PUBLIC_PATH"
           echo "users_service_path=$USERS_SERVICE_PATH"
@@ -73,12 +77,12 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # Validation: User
-        if [ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ]; then
-          if [ -f "$ENV__USER_REGISTER_INFO_FILE" ]; then
+        if [[ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ]]; then
+          if [[ -f "$ENV__USER_REGISTER_INFO_FILE" ]]; then
             USER_COUNT=$(jq '.user_ids | length' "$ENV__USER_REGISTER_INFO_FILE")
             echo "USER_COUNT: $USER_COUNT"
             
-            if [ "$USER_COUNT" -ge 1 ]; then
+            if [[ "$USER_COUNT" -ge 1 ]]; then
               echo "이미 사용자 아이디를 등록한 Github 사용자: **$GITHUB_ID**" > comment.md
               gh issue comment "$ISSUE_NUMBER" -F comment.md
               exit 1
@@ -96,6 +100,8 @@ jobs:
     - name: Extract user ID from issue body
       id: extract
       env:
+        ENV__ADMIN_GITHUB_ID: ${{ steps.env.outputs.admin_github_id }}
+        ENV__ADMIN_ID: ${{ steps.env.outputs.admin_id }}
         ENV__USERS_PUBLIC_PATH: ${{ steps.env.outputs.users_public_path }}
         ENV__USERS_SERVICE_PATH: ${{ steps.env.outputs.users_service_path }}
         ENV__USER_PAGE_HTML_FILE_NAME: ${{ steps.env.outputs.user_page_html_file_name }}
@@ -104,6 +110,7 @@ jobs:
         ENV__CONTENT_META_INFO_FILE_NAME: ${{ steps.env.outputs.content_meta_info_file_name }}
         ENV__LIST_GLOBAL_META_INFO_FILE_NAME: ${{ steps.env.outputs.list_global_meta_info_file_name }}
         PARSED_ISSUE: ${{ steps.issue-parser.outputs.parsed-issue }}
+        GITHUB_ID: ${{ github.event.issue.user.id }}
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -117,7 +124,20 @@ jobs:
           echo "user_id=" >> $GITHUB_OUTPUT
           exit 1
         fi
-        
+
+        # Validation: Admin ID
+        is_admin=false
+        if [[ "$USER_ID" == "$ENV__ADMIN_ID" ]]; then
+          if [[ "$GITHUB_ID" != "$ENV__ADMIN_GITHUB_ID" ]]; then
+            echo "권한이 없습니다." > comment.md
+            gh issue comment "$ISSUE_NUMBER" -F comment.md
+            echo "user_id=" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            is_admin=true
+          fi
+        fi
+
         # User paths & files
         USER_PUBLIC_PATH="$ENV__USERS_PUBLIC_PATH/$USER_ID"
         USER_SERVICE_PATH="$ENV__USERS_SERVICE_PATH/$USER_ID"
@@ -136,6 +156,7 @@ jobs:
         # Github output
         {
           echo "user_id=$USER_ID"
+          echo "is_admin=$is_admin"
           
           echo "user_public_path=$USER_PUBLIC_PATH"
           echo "user_service_path=$USER_SERVICE_PATH"
