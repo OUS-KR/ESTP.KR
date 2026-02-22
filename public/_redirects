@@ -1,0 +1,11 @@
+# User
+/@:user/!*      /u/:user/links/:splat           301
+/@:user/*       /u/:user/:splat                 301
+/@:user         /u/:user                        301
+/!*             /u/esfp/links/:splat            301
+
+# Person
+/person/*       /p/:splat                       301
+
+# Youtube
+/yt/:vid        https://youtu.be/:vid           302
