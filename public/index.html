@@ -1,1 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESTP — estp.kr</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
 
+    <style type="text/tailwindcss">
+      @theme {
+        /* ── Chrome / Metal — 금속의 냉정함 ── */
+        --color-chrome-50:   #f8f8f8;
+        --color-chrome-100:  #eeeeee;
+        --color-chrome-200:  #d4d4d4;
+        --color-chrome-300:  #b0b0b0;
+        --color-chrome-400:  #888888;
+        --color-chrome-500:  #606060;
+        --color-chrome-600:  #404040;
+        --color-chrome-700:  #2a2a2a;
+        --color-chrome-800:  #1a1a1a;
+        --color-chrome-900:  #0f0f0f;
+        --color-chrome-950:  #080808;
+
+        /* ── Signal Red — 위험·속도·결단 ── */
+        --color-red-400:    #f05050;
+        --color-red-500:    #e02020;
+        --color-red-600:    #c01010;
+
+        /* ── Electric White — 형광 액센트 ── */
+        --color-volt-300:   #e8ff60;
+        --color-volt-400:   #d4f020;
+
+        /* ── Steel Blue — 냉정한 계산 ── */
+        --color-steel-400:  #60a8c8;
+        --color-steel-500:  #3888b0;
+
+        --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+        --font-body:    "Space Grotesk", system-ui, sans-serif;
+        --font-ui:      "Inter", system-ui, sans-serif;
+      }
+
+      @layer base {
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html {
+          scroll-behavior: smooth;
+          background-color: var(--color-chrome-950);
+          color: var(--color-chrome-200);
+        }
+
+        body {
+          font-family: var(--font-body);
+          font-weight: 300;
+          letter-spacing: 0.01em;
+          overflow-x: hidden;
+        }
+
+        ::selection {
+          background-color: var(--color-red-500);
+          color: #fff;
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--color-chrome-950); }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(224,32,32,0.4);
+          border-radius: 0;
+        }
+      }
+
+      /* ══════════════════════════════════════════
+         CANVAS & BG LAYERS
+      ══════════════════════════════════════════ */
+      #kinetic-canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Hard diagonal slash — 속도의 궤적 */
+      .slash-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        background:
+          linear-gradient(
+            115deg,
+            transparent 0%,
+            transparent 58%,
+            rgba(224,32,32,0.04) 58%,
+            rgba(224,32,32,0.04) 59%,
+            transparent 59%,
+            transparent 72%,
+            rgba(255,255,255,0.015) 72%,
+            rgba(255,255,255,0.015) 72.3%,
+            transparent 72.3%
+          );
+      }
+
+      /* Radial heat — 열기의 핵 */
+      .heat-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        background:
+          radial-gradient(ellipse 50% 40% at 50% 50%,
+            rgba(224,32,32,0.06) 0%, transparent 65%),
+          radial-gradient(ellipse 80% 30% at 50% 100%,
+            rgba(224,32,32,0.08) 0%, transparent 55%),
+          radial-gradient(ellipse 100% 15% at 50% 0%,
+            rgba(10,10,10,0.8) 0%, transparent 100%);
+        animation: heat-flicker 6s ease-in-out infinite alternate;
+      }
+
+      @keyframes heat-flicker {
+        0%   { opacity: 0.7; }
+        33%  { opacity: 1;   }
+        66%  { opacity: 0.85;}
+        100% { opacity: 0.9; }
+      }
+
+      /* ══════════════════════════════════════════
+         SITE WRAPPER
+      ══════════════════════════════════════════ */
+      .site-wrapper {
+        position: relative;
+        z-index: 3;
+        min-height: 100dvh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+
+      /* ══════════════════════════════════════════
+         HEADER
+      ══════════════════════════════════════════ */
+      .glass-header {
+        background: rgba(8,8,8,0.75);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(224,32,32,0.15);
+      }
+
+      /* ══════════════════════════════════════════
+         LOGO — Barlow Condensed CAPS, 날카로운 각도
+      ══════════════════════════════════════════ */
+      .logo-estp {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: clamp(3.5rem, 10vw, 8rem);
+        line-height: 0.9;
+        color: transparent;
+        background: linear-gradient(
+          160deg,
+          #ffffff        0%,
+          var(--color-chrome-200) 25%,
+          var(--color-chrome-400) 55%,
+          var(--color-red-500)   80%,
+          var(--color-red-600)   100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        filter: drop-shadow(0 0 20px rgba(224,32,32,0.25))
+                drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        transition: filter 0.4s ease;
+      }
+
+      .logo-estp:hover {
+        filter: drop-shadow(0 0 40px rgba(224,32,32,0.55))
+                drop-shadow(0 2px 8px rgba(0,0,0,0.9));
+      }
+
+      /* ══════════════════════════════════════════
+         NAV
+      ══════════════════════════════════════════ */
+      .nav-link {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 0.72rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(212,212,212,0.3);
+        position: relative;
+        transition: color 0.25s ease;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -3px; left: 0;
+        width: 0; height: 2px;
+        background: var(--color-red-500);
+        transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+      }
+
+      .nav-link:hover { color: #fff; }
+      .nav-link:hover::after { width: 100%; }
+
+      /* ══════════════════════════════════════════
+         HERO
+      ══════════════════════════════════════════ */
+      .hero-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        padding: clamp(5rem,13vw,10rem) 1.5rem clamp(4rem,9vw,8rem);
+        min-height: 90dvh;
+        overflow: hidden;
+      }
+
+      /* Ghost bg text — 비스듬히 기울어진 */
+      .hero-bg-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-51%,-52%) skewX(-6deg);
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(22vw,32vw,44vw);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(224,32,32,0.07);
+        user-select: none;
+        pointer-events: none;
+        white-space: nowrap;
+        line-height: 1;
+      }
+
+      /* Red slash diagonal line */
+      .hero-slash {
+        position: absolute;
+        top: 0; bottom: 0;
+        left: 50%;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          transparent 0%,
+          var(--color-red-600) 20%,
+          var(--color-red-500) 50%,
+          var(--color-red-600) 80%,
+          transparent 100%
+        );
+        opacity: 0.2;
+        transform: rotate(18deg) translateX(-50%);
+        pointer-events: none;
+      }
+
+      /* Bottom red floor edge */
+      .arena-floor {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          var(--color-red-600) 20%,
+          var(--color-red-500) 50%,
+          var(--color-red-600) 80%,
+          transparent 100%
+        );
+        opacity: 0.4;
+        animation: floor-flicker 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes floor-flicker {
+        from { opacity: 0.3; }
+        to   { opacity: 0.6; }
+      }
+
+      /* ══════════════════════════════════════════
+         SECTION LABEL
+      ══════════════════════════════════════════ */
+      .section-label {
+        font-family: var(--font-display);
+        font-size: 0.65rem;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: var(--color-red-500);
+        font-weight: 400;
+      }
+
+      /* ══════════════════════════════════════════
+         TAGLINE
+      ══════════════════════════════════════════ */
+      .tagline {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-weight: 300;
+        font-size: clamp(1.15rem, 2.8vw, 1.65rem);
+        color: rgba(212,212,212,0.5);
+        letter-spacing: 0.04em;
+        line-height: 1.65;
+      }
+
+      /* ══════════════════════════════════════════
+         ENTREPRENEUR BADGE
+      ══════════════════════════════════════════ */
+      .doer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.4rem 1rem;
+        background: rgba(224,32,32,0.08);
+        border: 1px solid rgba(224,32,32,0.3);
+        clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      }
+
+      .signal-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--color-red-500);
+        clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+        animation: signal-pulse 1.2s ease-in-out infinite;
+      }
+
+      @keyframes signal-pulse {
+        0%,100% { opacity:1; transform:scale(1);    box-shadow:0 0 6px var(--color-red-500); }
+        50%      { opacity:0.4; transform:scale(0.7); box-shadow:none; }
+      }
+
+      /* ══════════════════════════════════════════
+         DIVIDERS — sharp, hard edges
+      ══════════════════════════════════════════ */
+      .sharp-line-h {
+        border: none;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(224,32,32,0.15) 15%,
+          rgba(212,212,212,0.15) 50%,
+          rgba(224,32,32,0.15) 85%,
+          transparent 100%
+        );
+        margin: 0;
+      }
+
+      .sharp-line-v {
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--color-red-500)  30%,
+          var(--color-chrome-300) 60%,
+          transparent
+        );
+        animation: vline-flicker 2.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes vline-flicker {
+        from { opacity: 0.5; transform: scaleY(0.95); }
+        to   { opacity: 1;   transform: scaleY(1.05); }
+      }
+
+      /* ══════════════════════════════════════════
+         LETTER BLOCKS — E · S · T · P
+         각 블록: 평행사변형 클립
+      ══════════════════════════════════════════ */
+      .letter-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 2rem 1.4rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        flex: 1;
+        min-width: min(120px,100%);
+        position: relative;
+        overflow: hidden;
+        transition:
+          border-color 0.35s ease,
+          transform    0.4s cubic-bezier(0.22,1,0.36,1),
+          box-shadow   0.35s ease;
+        cursor: default;
+        clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+      }
+
+      /* sweep line on hover */
+      .letter-block::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .lb-e::before { background: linear-gradient(160deg, rgba(224,32,32,0.1), transparent 70%); }
+      .lb-s::before { background: linear-gradient(160deg, rgba(176,176,176,0.08), transparent 70%); }
+      .lb-t::before { background: linear-gradient(160deg, rgba(232,255,96,0.07), transparent 70%); }
+      .lb-p::before { background: linear-gradient(160deg, rgba(96,168,200,0.08), transparent 70%); }
+
+      .letter-block:hover { transform: translateY(-7px) skewX(-2deg); }
+      .letter-block:hover::before { opacity: 1; }
+
+      .lb-e:hover { border-color:rgba(224,32,32,0.45);  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(224,32,32,0.12); }
+      .lb-s:hover { border-color:rgba(176,176,176,0.4); box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(176,176,176,0.1); }
+      .lb-t:hover { border-color:rgba(232,255,96,0.35); box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(232,255,96,0.1);  }
+      .lb-p:hover { border-color:rgba(96,168,200,0.4);  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(96,168,200,0.1); }
+
+      .letter-big {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(2.5rem,5.5vw,4rem);
+        line-height: 1;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        letter-spacing: 0.02em;
+      }
+
+      .l-e { background: linear-gradient(160deg, #fff, var(--color-red-500)); }
+      .l-s { background: linear-gradient(160deg, var(--color-chrome-100), var(--color-chrome-400)); }
+      .l-t { background: linear-gradient(160deg, var(--color-volt-300), var(--color-volt-400)); }
+      .l-p { background: linear-gradient(160deg, var(--color-steel-400), var(--color-steel-500)); }
+
+      .letter-word {
+        font-family: var(--font-display);
+        font-size: 0.6rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(212,212,212,0.3);
+        font-weight: 400;
+        text-align: center;
+      }
+
+      .letter-desc {
+        font-family: var(--font-body);
+        font-size: 0.78rem;
+        color: rgba(212,212,212,0.4);
+        text-align: center;
+        line-height: 1.5;
+        margin-top: 0.2rem;
+        font-weight: 300;
+      }
+
+      /* ══════════════════════════════════════════
+         FEATURE CARDS — 평행사변형 클립 + 하드 엣지
+      ══════════════════════════════════════════ */
+      .feature-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        position: relative;
+        overflow: hidden;
+        transition:
+          border-color 0.35s ease,
+          transform    0.4s cubic-bezier(0.22,1,0.36,1),
+          box-shadow   0.35s ease;
+        cursor: default;
+      }
+
+      /* top slash accent */
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .fc-red::before   { background: linear-gradient(90deg, transparent, var(--color-red-500),   transparent); }
+      .fc-white::before { background: linear-gradient(90deg, transparent, var(--color-chrome-300), transparent); }
+      .fc-volt::before  { background: linear-gradient(90deg, transparent, var(--color-volt-400),  transparent); }
+
+      .fc-red:hover   { border-color:rgba(224,32,32,0.3);  box-shadow:0 24px 55px rgba(0,0,0,0.7),0 0 40px rgba(224,32,32,0.08);   transform:translateY(-6px) skewX(-1deg); }
+      .fc-white:hover { border-color:rgba(176,176,176,0.3);box-shadow:0 24px 55px rgba(0,0,0,0.7),0 0 40px rgba(176,176,176,0.06); transform:translateY(-6px) skewX(-1deg); }
+      .fc-volt:hover  { border-color:rgba(232,255,96,0.3); box-shadow:0 24px 55px rgba(0,0,0,0.7),0 0 40px rgba(232,255,96,0.07);  transform:translateY(-6px) skewX(-1deg); }
+
+      .feature-card:hover::before { opacity: 1; }
+
+      .feature-icon {
+        font-size: 1.8rem;
+        line-height: 1;
+        filter: saturate(0.5) brightness(0.8);
+        transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.35s ease;
+      }
+      .feature-card:hover .feature-icon {
+        transform: scale(1.18) skewX(-4deg);
+        filter: saturate(1.2) brightness(1.1);
+      }
+
+      .feature-title {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #e0e0e0;
+      }
+
+      .feature-body {
+        font-family: var(--font-body);
+        font-size: 0.83rem;
+        line-height: 1.85;
+        color: rgba(212,212,212,0.38);
+        font-weight: 300;
+      }
+
+      /* ══════════════════════════════════════════
+         CTA BUTTON — 평행사변형 클립
+      ══════════════════════════════════════════ */
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.9rem 2.6rem;
+        font-family: var(--font-display);
+        font-size: 0.72rem;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #fff;
+        border: 1px solid rgba(224,32,32,0.4);
+        background: rgba(224,32,32,0.06);
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+        clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+      }
+
+      .cta-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(224,32,32,0.15),
+          rgba(224,32,32,0.05)
+        );
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .cta-btn:hover {
+        border-color: rgba(224,32,32,0.7);
+        box-shadow: 0 0 30px rgba(224,32,32,0.25),
+                    inset 0 0 20px rgba(224,32,32,0.05);
+      }
+      .cta-btn:hover::before { opacity: 1; }
+
+      /* ══════════════════════════════════════════
+         TRAIT PILLS — 날카로운 각도
+      ══════════════════════════════════════════ */
+      .traits-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+
+      .trait-pill {
+        font-family: var(--font-display);
+        font-size: 0.62rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 400;
+        padding: 0.3rem 0.85rem;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: rgba(212,212,212,0.32);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.28s ease;
+        cursor: default;
+        clip-path: polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
+      }
+
+      .trait-pill:nth-child(4n+1):hover { border-color:rgba(224,32,32,0.55);  color:var(--color-red-400);    background:rgba(224,32,32,0.07);  transform:translateY(-2px) skewX(-2deg); }
+      .trait-pill:nth-child(4n+2):hover { border-color:rgba(176,176,176,0.5); color:#e0e0e0;                 background:rgba(255,255,255,0.05);transform:translateY(-2px) skewX(-2deg); }
+      .trait-pill:nth-child(4n+3):hover { border-color:rgba(232,255,96,0.45); color:var(--color-volt-300);   background:rgba(232,255,96,0.06); transform:translateY(-2px) skewX(-2deg); }
+      .trait-pill:nth-child(4n):hover   { border-color:rgba(96,168,200,0.45); color:var(--color-steel-400);  background:rgba(96,168,200,0.06); transform:translateY(-2px) skewX(-2deg); }
+
+      /* ══════════════════════════════════════════
+         QUOTE
+      ══════════════════════════════════════════ */
+      .sharp-quote {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-weight: 300;
+        font-size: clamp(1.2rem, 3vw, 1.75rem);
+        line-height: 1.75;
+        color: rgba(212,212,212,0.52);
+        position: relative;
+        padding: 0 2.5rem;
+        letter-spacing: 0.02em;
+      }
+
+      .sharp-quote::before,
+      .sharp-quote::after {
+        position: absolute;
+        font-family: var(--font-display);
+        font-style: normal;
+        font-weight: 700;
+        font-size: 4rem;
+        line-height: 0;
+        opacity: 0.12;
+        color: var(--color-red-500);
+      }
+      .sharp-quote::before { content: '"'; top: 0.4em;    left: 0; }
+      .sharp-quote::after  { content: '"'; bottom: -0.05em; right: 0; }
+
+      /* ══════════════════════════════════════════
+         ARENA BOX — 전장의 중심
+      ══════════════════════════════════════════ */
+      .arena-box {
+        border: 1px solid rgba(224,32,32,0.15);
+        background: linear-gradient(
+          160deg,
+          rgba(224,32,32,0.04) 0%,
+          rgba(10,10,10,0.6)  50%,
+          rgba(224,32,32,0.03) 100%
+        );
+        position: relative;
+        overflow: hidden;
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+      }
+
+      /* corner notch accent */
+      .arena-box::before {
+        content: "";
+        position: absolute;
+        bottom: 0; right: 0;
+        width: 24px; height: 24px;
+        background: var(--color-red-500);
+        clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        opacity: 0.3;
+      }
+
+      .arena-box::after {
+        content: "▲";
+        position: absolute;
+        right: 2rem;
+        bottom: 1.5rem;
+        font-size: 7rem;
+        color: rgba(224,32,32,0.03);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+        transform: rotate(90deg);
+      }
+
+      /* ══════════════════════════════════════════
+         STATS — 냉정한 숫자
+      ══════════════════════════════════════════ */
+      .stat-num {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(2rem,5.5vw,3.5rem);
+        letter-spacing: 0.05em;
+        line-height: 1;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .stat-label {
+        font-family: var(--font-display);
+        font-size: 0.58rem;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: rgba(212,212,212,0.25);
+        font-weight: 400;
+        margin-top: 0.35rem;
+      }
+
+      /* ══════════════════════════════════════════
+         DOMAIN BADGE
+      ══════════════════════════════════════════ */
+      .domain-badge {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 0.62rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(212,212,212,0.2);
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 0.35rem 0.9rem;
+        clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+      }
+
+      /* ══════════════════════════════════════════
+         FOOTER
+      ══════════════════════════════════════════ */
+      .site-footer {
+        border-top: 1px solid rgba(224,32,32,0.1);
+        padding: 2rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: rgba(8,8,8,0.7);
+        backdrop-filter: blur(14px);
+      }
+
+      .footer-copy {
+        font-family: var(--font-display);
+        font-size: 0.6rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: rgba(212,212,212,0.15);
+        font-weight: 400;
+      }
+
+      /* ══════════════════════════════════════════
+         ANIMATIONS
+      ══════════════════════════════════════════ */
+      /* 날카롭게 진입 — 비스듬히 */
+      .slash-in {
+        opacity: 0;
+        transform: translateX(-14px) skewX(-4deg);
+        animation: slash-in-kf 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+      }
+
+      @keyframes slash-in-kf {
+        to { opacity: 1; transform: translateX(0) skewX(0); }
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: fade-up-kf 0.85s cubic-bezier(0.22,1,0.36,1) forwards;
+      }
+
+      @keyframes fade-up-kf {
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .delay-1 { animation-delay: 0.06s;  }
+      .delay-2 { animation-delay: 0.14s;  }
+      .delay-3 { animation-delay: 0.24s;  }
+      .delay-4 { animation-delay: 0.36s;  }
+      .delay-5 { animation-delay: 0.48s;  }
+      .delay-6 { animation-delay: 0.62s;  }
+      .delay-7 { animation-delay: 0.78s;  }
+
+      /* ══════════════════════════════════════════
+         SCROLL INDICATOR
+      ══════════════════════════════════════════ */
+      .scroll-indicator {
+        position: absolute;
+        bottom: 2.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        animation: scroll-drop 2s ease-in-out infinite;
+      }
+
+      @keyframes scroll-drop {
+        0%, 100% { opacity: 0.2; transform: translateX(-50%) translateY(0);   }
+        50%       { opacity: 0.55; transform: translateX(-50%) translateY(8px); }
+      }
+
+      /* ══════════════════════════════════════════
+         GRID
+      ══════════════════════════════════════════ */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(260px,100%),1fr));
+        gap: 1.2rem;
+      }
+
+      /* ══════════════════════════════════════════
+         ORIGIN TEXT
+      ══════════════════════════════════════════ */
+      .origin-text {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: clamp(1.05rem,2.6vw,1.45rem);
+        font-weight: 300;
+        line-height: 2;
+        color: rgba(212,212,212,0.42);
+        letter-spacing: 0.02em;
+      }
+
+      .origin-em-r { color: var(--color-red-400);   font-style: normal; font-weight: 600; }
+      .origin-em-w { color: #e0e0e0;                font-style: normal; }
+      .origin-em-v { color: var(--color-volt-300);  font-style: normal; }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="kinetic-canvas"></canvas>
+    <div class="slash-layer" aria-hidden="true"></div>
+    <div class="heat-layer"  aria-hidden="true"></div>
+
+    <div class="site-wrapper">
+
+      <!-- ══════════════════════════════════════
+           HEADER
+      ══════════════════════════════════════ -->
+      <header class="glass-header relative z-10 flex items-center
+                     justify-between px-8 py-6">
+
+        <a href="/" class="logo-estp select-none"
+           style="font-size:1.3rem; letter-spacing:0.1em;">ESTP</a>
+
+        <nav class="hidden sm:flex items-center gap-10" aria-label="Primary">
+          <a href="#letters"  class="nav-link">Letters</a>
+          <a href="#arena"    class="nav-link">Arena</a>
+          <a href="#contact"  class="nav-link">Contact</a>
+        </nav>
+
+        <div class="domain-badge hidden sm:block select-none">estp.kr</div>
+      </header>
+
+      <!-- ══════════════════════════════════════
+           HERO
+      ══════════════════════════════════════ -->
+      <main>
+        <section class="hero-section">
+
+          <div class="hero-bg-text" aria-hidden="true">ESTP</div>
+          <div class="hero-slash"   aria-hidden="true"></div>
+          <div class="arena-floor"  aria-hidden="true"></div>
+
+          <!-- Doer badge -->
+          <div class="doer-badge slash-in mb-6">
+            <span class="signal-dot"></span>
+            <span style="font-family:var(--font-display);font-size:0.62rem;
+                         letter-spacing:0.32em;text-transform:uppercase;
+                         color:rgba(212,212,212,0.6);font-weight:400;">
+              The Entrepreneur
+            </span>
+          </div>
+
+          <!-- Logo -->
+          <h1 class="logo-estp slash-in delay-1 select-none">ESTP</h1>
+
+          <!-- Tagline -->
+          <p class="tagline fade-up delay-2 mt-6 max-w-xl">
+            생각은 짧게. 행동은 빠르게.<br />
+            <span style="font-size:0.88em; opacity:0.6;">
+              Extraverted · Sensing · Thinking · Perceiving
+            </span>
+          </p>
+
+          <!-- vertical line -->
+          <div class="sharp-line-v h-12 mx-auto my-9 fade-up delay-3"
+               aria-hidden="true"></div>
+
+          <!-- Quote -->
+          <blockquote class="sharp-quote fade-up delay-4 max-w-2xl">
+            두려움은 계획하는 사람의 것이다.<br />
+            ESTP는 이미 움직이고 있다.
+          </blockquote>
+
+          <!-- Trait pills -->
+          <div class="traits-wrap fade-up delay-5 mt-9 max-w-xl">
+            <span class="trait-pill">행동</span>
+            <span class="trait-pill">속도</span>
+            <span class="trait-pill">논리</span>
+            <span class="trait-pill">담력</span>
+            <span class="trait-pill">현재</span>
+            <span class="trait-pill">카리스마</span>
+            <span class="trait-pill">기업가</span>
+            <span class="trait-pill">위험감수</span>
+          </div>
+
+          <!-- CTA -->
+          <div class="mt-11 fade-up delay-6">
+            <a href="#letters" class="cta-btn">
+              <span>링에 올라가기</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                   aria-hidden="true">
+                <path d="M7 1v12M7 13l-4-4M7 13l4-4"
+                      stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="scroll-indicator" aria-hidden="true">
+            <span style="font-family:var(--font-display);font-weight:400;
+                         font-size:0.54rem;letter-spacing:0.38em;
+                         text-transform:uppercase;
+                         color:rgba(224,32,32,0.3);">scroll</span>
+            <svg width="1" height="28" viewBox="0 0 1 28">
+              <line x1="0.5" y1="0" x2="0.5" y2="28"
+                    stroke="rgba(224,32,32,0.25)" stroke-width="1"/>
+            </svg>
+          </div>
+        </section>
+
+        <hr class="sharp-line-h" />
+
+        <!-- ══════════════════════════════════════
+             STATS ROW
+        ══════════════════════════════════════ -->
+        <section class="px-8 py-14 max-w-4xl mx-auto">
+          <div class="grid grid-cols-3 gap-6">
+
+            <div class="flex flex-col items-center gap-1">
+              <span class="stat-num"
+                style="background:linear-gradient(160deg,#fff,var(--color-red-500));
+                       -webkit-background-clip:text;background-clip:text;">
+                4%
+              </span>
+              <span class="stat-label">of population</span>
+            </div>
+
+            <div class="flex flex-col items-center gap-1">
+              <span class="stat-num"
+                style="background:linear-gradient(160deg,var(--color-chrome-100),var(--color-chrome-400));
+                       -webkit-background-clip:text;background-clip:text;">
+                NOW
+              </span>
+              <span class="stat-label">always moving</span>
+            </div>
+
+            <div class="flex flex-col items-center gap-1">
+              <span class="stat-num"
+                style="background:linear-gradient(160deg,var(--color-volt-300),var(--color-volt-400));
+                       -webkit-background-clip:text;background-clip:text;">
+                0
+              </span>
+              <span class="stat-label">hesitations</span>
+            </div>
+
+          </div>
+        </section>
+
+        <hr class="sharp-line-h" />
+
+        <!-- ══════════════════════════════════════
+             LETTERS — E · S · T · P
+        ══════════════════════════════════════ -->
+        <section id="letters" class="px-6 py-20 max-w-5xl mx-auto">
+          <div class="mb-12 text-center">
+            <p class="section-label mb-3">네 글자의 전략</p>
+            <h2 style="font-family:var(--font-display);font-weight:700;
+                       font-size:clamp(1.6rem,4vw,2.8rem);
+                       letter-spacing:0.18em;text-transform:uppercase;
+                       color:#e0e0e0;">
+              E · S · T · P
+            </h2>
+          </div>
+
+          <div class="flex flex-wrap gap-3 justify-center">
+
+            <div class="letter-block lb-e">
+              <span class="letter-big l-e">E</span>
+              <span class="letter-word">Extraverted</span>
+              <span class="letter-desc">바깥 세계에서<br />에너지를 얻는다</span>
+            </div>
+
+            <div class="letter-block lb-s">
+              <span class="letter-big l-s">S</span>
+              <span class="letter-word">Sensing</span>
+              <span class="letter-desc">지금 현실을<br />날카롭게 읽는다</span>
+            </div>
+
+            <div class="letter-block lb-t">
+              <span class="letter-big l-t">T</span>
+              <span class="letter-word">Thinking</span>
+              <span class="letter-desc">논리로<br />판단한다</span>
+            </div>
+
+            <div class="letter-block lb-p">
+              <span class="letter-big l-p">P</span>
+              <span class="letter-word">Perceiving</span>
+              <span class="letter-desc">즉흥으로<br />승부를 낸다</span>
+            </div>
+
+          </div>
+        </section>
+
+        <hr class="sharp-line-h" />
+
+        <!-- ══════════════════════════════════════
+             ARENA — 3 feature cards
+        ══════════════════════════════════════ -->
+        <section id="arena" class="px-8 py-20 max-w-5xl mx-auto">
+          <div class="mb-14 text-center">
+            <p class="section-label mb-3">세 개의 무기</p>
+            <h2 style="font-family:var(--font-display);font-weight:700;
+                       font-size:clamp(1.6rem,4vw,2.8rem);
+                       letter-spacing:0.18em;text-transform:uppercase;
+                       color:#e0e0e0;">
+              ESTP의 세계
+            </h2>
+          </div>
+
+          <div class="cards-grid">
+
+            <div class="feature-card fc-red p-8">
+              <div class="feature-icon mb-5">⚔️</div>
+              <h3 class="feature-title mb-3">행동 (Action)</h3>
+              <p class="feature-body">
+                분석보다 실행. 회의보다 현장.
+                ESTP는 생각이 끝나기 전에 이미 움직인다.
+                위기 상황에서 가장 먼저 솔루션을 내고,
+                가장 빠르게 결과를 만들어낸다.
+              </p>
+            </div>
+
+            <div class="feature-card fc-white p-8">
+              <div class="feature-icon mb-5">🎯</div>
+              <h3 class="feature-title mb-3">전략 (Strategy)</h3>
+              <p class="feature-body">
+                감정 없이 상황을 읽는다.
+                사람을 이해하되 논리로 움직인다.
+                체스판 전체를 보는 눈 — ESTP의 냉철한
+                계산은 결코 과소평가되지 않는다.
+              </p>
+            </div>
+
+            <div class="feature-card fc-volt p-8">
+              <div class="feature-icon mb-5">🔋</div>
+              <h3 class="feature-title mb-3">에너지 (Energy)</h3>
+              <p class="feature-body">
+                방 안에 들어서면 공기가 바뀐다.
+                ESTP의 존재감은 설명이 필요 없다.
+                자연스럽게 중심이 되고,
+                모두가 그 에너지를 따라간다.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <hr class="sharp-line-h" />
+
+        <!-- ══════════════════════════════════════
+             ARENA BOX
+        ══════════════════════════════════════ -->
+        <section class="px-8 py-16 max-w-3xl mx-auto">
+          <div class="arena-box p-12">
+            <p class="section-label mb-6">on being ESTP</p>
+            <p class="origin-text text-center">
+              ESTP는 전체 인구의 약
+              <span class="origin-em-r">4%</span>다.<br />
+              드물지만, 존재하면
+              <span class="origin-em-w">반드시 눈에 띈다.</span><br />
+              <br />
+              가장 현실적이고, 가장 빠르며,<br />
+              두려움이 <span class="origin-em-v">전략</span>이 되는 유형.
+            </p>
+            <div class="sharp-line-v h-12 mx-auto mt-10"
+                 aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <hr class="sharp-line-h" />
+
+        <!-- ══════════════════════════════════════
+             CONTACT
+        ══════════════════════════════════════ -->
+        <section id="contact" class="px-8 py-20 max-w-xl mx-auto text-center">
+          <p class="section-label mb-5">contact</p>
+          <h2 style="font-family:var(--font-display);font-weight:700;
+                     font-size:clamp(1.5rem,3.5vw,2.3rem);
+                     letter-spacing:0.2em;text-transform:uppercase;
+                     color:#e0e0e0;">
+            연결하기
+          </h2>
+          <p class="mt-5 mb-10"
+             style="font-family:var(--font-display);font-style:italic;
+                    font-size:0.95rem;line-height:2;font-weight:300;
+                    color:rgba(212,212,212,0.32);">
+            말보다 빠른 메일 한 줄.
+          </p>
+          <a href="mailto:hello@estp.kr" class="cta-btn">
+            hello@estp.kr
+          </a>
+        </section>
+
+      </main>
+
+      <!-- ══════════════════════════════════════
+           FOOTER
+      ══════════════════════════════════════ -->
+      <footer class="site-footer">
+        <span class="footer-copy">© 2026 estp.kr — All rights reserved.</span>
+        <span class="footer-copy" style="opacity:0.55;">
+          move fast · think sharp · win now.
+        </span>
+      </footer>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         KINETIC PARTICLE SCRIPT
+         — speed lines, sparks, shards
+    ══════════════════════════════════════ -->
+    <script>
+    (() => {
+      const canvas = document.getElementById('kinetic-canvas');
+      const ctx    = canvas.getContext('2d');
+
+      let W, H;
+
+      /* ── 세 종류의 파티클 ── */
+      const LINES   = [];   // 속도선 — 수평으로 빠르게 이동
+      const SPARKS  = [];   // 충격 불꽃 — 빨간 점
+      const SHARDS  = [];   // 금속 파편 — 마름모/삼각형
+
+      const L_COUNT  = 25;
+      const SP_COUNT = 55;
+      const SH_COUNT = 30;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', () => { resize(); init(); });
+
+      /* ── Speed Line — 속도선 ── */
+      class SpeedLine {
+        constructor() { this.reset(false); }
+        reset(fresh = false) {
+          this.y      = fresh
+            ? Math.random() * H
+            : Math.random() * H;
+          this.x      = fresh ? -200 : Math.random() * W - 200;
+          this.len    = Math.random() * 120 + 40;
+          this.speed  = Math.random() * 5 + 3;
+          this.thick  = Math.random() * 0.8 + 0.2;
+          this.life   = 0;
+          this.maxL   = Math.floor((W + 200) / this.speed) + 10;
+          const t     = Math.random();
+          this.col    = t < 0.5 ? `224,32,32` : t < 0.8 ? `176,176,176` : `232,255,96`;
+        }
+        step() {
+          this.x    += this.speed;
+          this.life++;
+          if (this.x > W + 10 || this.life > this.maxL) this.reset(true);
+        }
+        draw() {
+          const a = Math.sin((this.life / this.maxL) * Math.PI) * 0.35;
+          ctx.beginPath();
+          ctx.moveTo(this.x - this.len, this.y);
+          ctx.lineTo(this.x, this.y);
+          const g = ctx.createLinearGradient(this.x - this.len, 0, this.x, 0);
+          g.addColorStop(0, `rgba(${this.col},0)`);
+          g.addColorStop(1, `rgba(${this.col},${a.toFixed(3)})`);
+          ctx.strokeStyle = g;
+          ctx.lineWidth   = this.thick;
+          ctx.stroke();
+        }
+      }
+
+      /* ── Spark — 충격 불꽃 ── */
+      class Spark {
+        constructor() { this.reset(false); }
+        reset(fresh = false) {
+          this.x    = Math.random() * W;
+          this.y    = fresh
+            ? (Math.random() > 0.5 ? -4 : H + 4)
+            : Math.random() * H;
+          this.r    = Math.random() * 1.1 + 0.3;
+          this.vx   = (Math.random() - 0.5) * 1.2;
+          this.vy   = (Math.random() - 0.5) * 1.2;
+          this.life = 0;
+          this.maxL = Math.random() * 140 + 60;
+          const t   = Math.random();
+          this.col  = t < 0.6 ? `224,32,32` : t < 0.85 ? `255,200,180` : `232,255,96`;
+        }
+        step() {
+          this.x   += this.vx;
+          this.y   += this.vy;
+          // 약한 중력
+          this.vy  += 0.018;
+          this.life++;
+          if (this.life > this.maxL) this.reset(true);
+        }
+        draw() {
+          const a = Math.sin((this.life / this.maxL) * Math.PI) * 0.75;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${this.col},${a.toFixed(3)})`;
+          ctx.fill();
+        }
+      }
+
+      /* ── Metal Shard — 금속 파편 ── */
+      class MetalShard {
+        constructor() { this.reset(false); }
+        reset(fresh = false) {
+          this.x     = Math.random() * W;
+          this.y     = fresh ? -10 : Math.random() * H;
+          this.size  = Math.random() * 5 + 2;
+          this.angle = Math.random() * Math.PI * 2;
+          this.va    = (Math.random() - 0.5) * 0.06;
+          this.vx    = (Math.random() - 0.5) * 0.6 + (Math.random() > 0.5 ? 1.2 : -1.2);
+          this.vy    = Math.random() * 0.8 + 0.3;
+          this.life  = 0;
+          this.maxL  = Math.random() * 250 + 150;
+          const t    = Math.random();
+          this.col   = t < 0.45 ? `176,176,176`
+                     : t < 0.75 ? `224,32,32`
+                     : `232,255,96`;
+        }
+        step() {
+          this.x     += this.vx;
+          this.y     += this.vy;
+          this.angle += this.va;
+          this.life++;
+          if (this.y > H + 10 || this.life > this.maxL) this.reset(true);
+        }
+        /* 날카로운 삼각형 파편 */
+        draw() {
+          const a = Math.sin((this.life / this.maxL) * Math.PI) * 0.55;
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.angle);
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size);
+          ctx.lineTo(this.size * 0.55, this.size * 0.7);
+          ctx.lineTo(-this.size * 0.55, this.size * 0.7);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(${this.col},${a.toFixed(3)})`;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function init() {
+        LINES.length  = 0;
+        SPARKS.length = 0;
+        SHARDS.length = 0;
+        for (let i = 0; i < L_COUNT;  i++) LINES.push(new SpeedLine());
+        for (let i = 0; i < SP_COUNT; i++) SPARKS.push(new Spark());
+        for (let i = 0; i < SH_COUNT; i++) SHARDS.push(new MetalShard());
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, W, H);
+        LINES.forEach(l  => { l.step(); l.draw(); });
+        SPARKS.forEach(s => { s.step(); s.draw(); });
+        SHARDS.forEach(s => { s.step(); s.draw(); });
+        requestAnimationFrame(loop);
+      }
+
+      init();
+      loop();
+    })();
+    </script>
+
+  </body>
+</html>
