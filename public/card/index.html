@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>estp.kr</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;min-height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#09070a}
+
+    /* ── background orbs: red-orange danger palette ── */
+    .bg-orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+    .bg-orb-1{width:700px;height:480px;top:-240px;left:-180px;background:radial-gradient(ellipse,rgba(255,45,30,0.18)0%,transparent70%)}
+    .bg-orb-2{width:560px;height:560px;bottom:-220px;right:-160px;background:radial-gradient(ellipse,rgba(255,140,20,0.15)0%,transparent70%)}
+    .bg-orb-3{width:400px;height:320px;top:-60px;right:-100px;background:radial-gradient(ellipse,rgba(200,30,10,0.11)0%,transparent70%)}
+    .bg-orb-4{width:340px;height:260px;bottom:-60px;left:-60px;background:radial-gradient(ellipse,rgba(255,90,0,0.09)0%,transparent70%)}
+    .bg-orb-5{width:320px;height:320px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(180,20,0,0.08)0%,transparent70%)}
+
+    /* subtle spark-field dots */
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:
+        radial-gradient(1.2px 1.2px at 8% 20%,rgba(255,120,60,0.32) 0%,transparent 100%),
+        radial-gradient(1px 1px at 23% 74%,rgba(255,80,30,0.25) 0%,transparent 100%),
+        radial-gradient(1.2px 1.2px at 67% 12%,rgba(255,150,40,0.28) 0%,transparent 100%),
+        radial-gradient(1px 1px at 82% 64%,rgba(220,60,20,0.22) 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 88%,rgba(255,100,20,0.20) 0%,transparent 100%),
+        radial-gradient(1.2px 1.2px at 90% 32%,rgba(255,60,10,0.18) 0%,transparent 100%)}
+
+    /* ── scene & card-wrap ── */
+    .scene{perspective:900px;position:relative;z-index:1}
+    .card-wrap{
+      width:380px;height:240px;position:relative;
+      transform-style:preserve-3d;border-radius:16px;cursor:pointer;
+      animation:card-enter .75s cubic-bezier(.18,1.4,.36,1) both
+    }
+    @keyframes card-enter{
+      from{opacity:0;transform:rotateX(-10deg) rotateY(30deg) scale(.80) translateX(20px);filter:blur(10px) brightness(1.8)}
+      to  {opacity:1;transform:none;filter:none}
+    }
+    .card-wrap.is-idle{animation:card-enter .75s cubic-bezier(.18,1.4,.36,1) both, float-idle 4.8s ease-in-out .75s infinite}
+    @keyframes float-idle{
+      0%,100%{transform:rotateX(4deg) rotateY(-5deg) translateY(0)}
+      25%    {transform:rotateX(-4deg) rotateY(6deg) translateY(-10px)}
+      55%    {transform:rotateX(3deg) rotateY(-3deg) translateY(-6px)}
+      75%    {transform:rotateX(-3deg) rotateY(5deg) translateY(-9px)}
+    }
+
+    /* ── card base glass ── */
+    .card{
+      width:100%;height:100%;border-radius:16px;overflow:hidden;
+      background:linear-gradient(130deg,
+        rgba(255,70,30,0.18)  0%,
+        rgba(150,30,10,0.09) 28%,
+        rgba(255,120,40,0.14) 58%,
+        rgba(180,40,10,0.11) 100%);
+      backdrop-filter:blur(18px) saturate(190%) brightness(1.08);
+      border:1px solid rgba(255,110,50,0.32);
+      box-shadow:
+        0 36px 75px rgba(8,3,3,.72),
+        0 8px 22px rgba(8,3,3,.52),
+        inset 0 1px 0 rgba(255,170,100,.52),
+        inset 0 2px 8px rgba(255,90,30,.12),
+        inset 0 -1px 0 rgba(200,40,10,.14),
+        inset 0 0 55px rgba(220,55,10,.07)
+    }
+
+    /* ── holographic overlay ── */
+    .card-holo{
+      position:absolute;inset:0;border-radius:inherit;z-index:10;pointer-events:none;
+      opacity:0;transition:opacity .28s ease;
+      background:
+        repeating-linear-gradient(
+          calc(var(--r,118deg)),
+          hsla(15,80%,60%,.13)  0%,
+          hsla(30,75%,58%,.11)  8%,
+          hsla(45,70%,62%,.12) 16%,
+          hsla(5,80%,60%,.11)  24%,
+          hsla(355,75%,62%,.12) 32%,
+          hsla(20,78%,60%,.10) 40%,
+          hsla(40,72%,60%,.12) 48%,
+          hsla(15,80%,60%,.13) 56%,
+          hsla(0,80%,62%,.11)  64%
+        ),
+        radial-gradient(ellipse 52% 52% at var(--mx,50%) var(--my,50%),rgba(255,130,80,.14) 0%,transparent 62%);
+      mix-blend-mode:screen
+    }
+    .card-wrap:hover .card-holo{opacity:1}
+
+    /* ── metal texture ── */
+    .card-texture{
+      position:absolute;inset:0;border-radius:inherit;z-index:8;pointer-events:none;
+      background-image:
+        repeating-linear-gradient(0deg,  rgba(255,100,40,0) 0px,rgba(255,100,40,0) 3px,rgba(255,100,40,.012) 3px,rgba(255,100,40,.012) 4px),
+        repeating-linear-gradient(65deg, rgba(220,80,20,0)  0px,rgba(220,80,20,0)  6px,rgba(220,80,20,.009) 6px,rgba(220,80,20,.009) 7px),
+        repeating-linear-gradient(-55deg,rgba(180,50,10,0)  0px,rgba(180,50,10,0)  8px,rgba(180,50,10,.007) 8px,rgba(180,50,10,.007) 9px);
+      opacity:.80
+    }
+
+    /* ── edge highlight ── */
+    .card-edge{
+      position:absolute;inset:0;border-radius:inherit;z-index:9;pointer-events:none;
+      background:
+        linear-gradient(180deg,rgba(255,160,90,.46) 0px,rgba(255,160,90,0) 3px),
+        linear-gradient(90deg, rgba(255,130,60,.24) 0px,rgba(255,130,60,0) 2px),
+        linear-gradient(270deg,rgba(200,70,20,.15)  0px,rgba(200,70,20,0)  2px),
+        linear-gradient(0deg,  rgba(140,30,5,.08)   0px,rgba(140,30,5,0)   2px)
+    }
+
+    /* ── spotlight ── */
+    .card-spot{
+      position:absolute;inset:0;border-radius:inherit;z-index:11;pointer-events:none;
+      opacity:0;transition:opacity .20s ease;
+      background:radial-gradient(ellipse 40% 40% at var(--mx,50%) var(--my,50%),rgba(255,150,80,.13) 0%,transparent 68%)
+    }
+    .card-wrap:hover .card-spot{opacity:1}
+
+    /* ── shimmer sweep (fast — 3.0s) ── */
+    .card-shimmer{position:absolute;inset:0;border-radius:inherit;z-index:12;pointer-events:none;overflow:hidden}
+    .card-shimmer::before{
+      content:"";position:absolute;top:-100%;left:-70%;width:38%;height:300%;
+      background:linear-gradient(109deg,transparent 35%,rgba(255,140,60,.07) 46%,rgba(255,170,80,.14) 50%,rgba(255,140,60,.07) 54%,transparent 65%);
+      transform:skewX(-8deg);
+      animation:danger-sweep 3.0s ease-in-out 1.0s infinite
+    }
+    .card-shimmer::after{
+      content:"";position:absolute;top:-100%;left:-70%;width:18%;height:300%;
+      background:linear-gradient(109deg,transparent 38%,rgba(220,80,20,.04) 48%,rgba(255,110,40,.08) 50%,rgba(220,80,20,.04) 52%,transparent 62%);
+      transform:skewX(-8deg);
+      animation:danger-sweep 3.0s ease-in-out 1.32s infinite
+    }
+    @keyframes danger-sweep{
+      0%  {left:-70%;opacity:0}
+      6%  {opacity:1}
+      48% {left:130%;opacity:1}
+      49% {opacity:0}
+      100%{left:130%;opacity:0}
+    }
+    .card-wrap:hover .card-shimmer::before,
+    .card-wrap:hover .card-shimmer::after{animation-play-state:paused}
+
+    /* ── inner SVG art ── */
+    .card-inner-art{position:absolute;inset:0;border-radius:inherit;z-index:6;pointer-events:none;overflow:hidden}
+
+    /* ── dividers ── */
+    .card-hline{
+      position:absolute;left:24px;right:24px;bottom:52px;height:1px;z-index:14;
+      background:linear-gradient(to right,transparent,rgba(255,110,40,.22) 25%,rgba(255,110,40,.22) 75%,transparent)
+    }
+    .card-vline{
+      position:absolute;top:18%;bottom:18%;left:50%;width:1px;z-index:14;
+      background:linear-gradient(to bottom,transparent,rgba(255,110,40,.16) 30%,rgba(255,110,40,.16) 70%,transparent);
+      opacity:0;transition:opacity .36s ease
+    }
+    .card-wrap:hover .card-vline{opacity:1}
+
+    /* ── hover meaning overlay ── */
+    .card-meanings{
+      position:absolute;inset:0;z-index:13;display:flex;align-items:center;justify-content:center;
+      pointer-events:none;opacity:0;transition:opacity .40s ease
+    }
+    .card-wrap:hover .card-meanings{opacity:1}
+    .meanings-row{display:flex;align-items:center;gap:0;padding:0 28px}
+    .meaning-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 10px}
+    .meaning-glyph{font-size:15px;line-height:1}
+    .meaning-label{
+      font-size:6.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+      color:rgba(255,190,130,.75)
+    }
+    .meaning-sep{width:1px;height:28px;background:linear-gradient(to bottom,transparent,rgba(255,120,50,.28),transparent)}
+
+    /* ── letter tag ── */
+    .letter-tag{
+      position:absolute;top:0;right:0;z-index:16;
+      display:flex;flex-direction:column;align-items:center;gap:2px;
+      padding:13px 11px 10px;pointer-events:none
+    }
+    .letter-item{display:flex;flex-direction:column;align-items:center;gap:1px}
+    .letter-char{font-size:9px;font-weight:700;letter-spacing:.04em;color:rgba(255,160,90,.62)}
+    .letter-word{font-size:5.5px;font-weight:400;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,130,60,.32)}
+    .letter-sep{width:10px;height:1px;background:rgba(255,110,40,.16);margin:1px 0}
+
+    /* ── card content grid ── */
+    .card-content{
+      position:relative;z-index:15;width:100%;height:100%;
+      display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;
+      padding:22px 24px
+    }
+    .card-name{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:4px;align-self:start}
+    .name-main{
+      font-size:52px;font-weight:100;letter-spacing:.20em;
+      color:rgba(255,235,215,.96);text-transform:lowercase;
+      text-shadow:
+        0 1px 0 rgba(255,200,140,.44),
+        0 -1px 0 rgba(20,5,0,.28),
+        0 0 22px rgba(255,110,40,.36),
+        0 0 48px rgba(220,60,10,.18);
+      filter:drop-shadow(0 0 18px rgba(255,90,30,.28))
+    }
+    .name-dot{color:rgba(255,120,50,.92);font-weight:200}
+    .name-sub{
+      font-size:8px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+      color:rgba(255,160,90,.46)
+    }
+
+    .card-meta{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:4px;align-self:end;padding-bottom:2px}
+    .meta-row{display:flex;align-items:center;gap:5px}
+    .meta-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,130,50,.45);flex-shrink:0}
+    .meta-text{font-size:8.5px;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,180,110,.30)}
+    .meta-text em{color:rgba(255,200,140,.56);font-style:normal;font-weight:600}
+
+    .card-right{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;padding-left:8px}
+    .badge{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      width:34px;height:34px;border-radius:50%;
+      border:1px solid rgba(255,120,50,.28);
+      background:rgba(255,80,20,.07);
+      backdrop-filter:blur(4px)
+    }
+    .badge-glyph{font-size:16px;line-height:1}
+    .badge-label{font-size:5px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,150,80,.42);margin-top:1px}
+    .domain-url{
+      font-size:11px;font-weight:500;letter-spacing:.14em;
+      color:rgba(255,160,90,.52);text-transform:lowercase
+    }
+    .domain-tld{color:rgba(255,120,50,.78)}
+
+    /* ── spark particle ── */
+    .spark{position:absolute;border-radius:1px;pointer-events:none;animation:spark-fly ease-out infinite}
+    @keyframes spark-fly{
+      0%  {transform:translate(0,0) rotate(var(--sr,45deg)) scale(1);opacity:0}
+      8%  {opacity:1}
+      70% {opacity:.6}
+      100%{transform:translate(var(--sx,30px),var(--sy,-80px)) rotate(calc(var(--sr,45deg)+180deg)) scale(.3);opacity:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="bg-orb bg-orb-4"></div>
+  <div class="bg-orb bg-orb-5"></div>
+
+  <div class="scene">
+    <div class="card-wrap is-idle" id="cardWrap">
+
+      <!-- effect layers -->
+      <div class="card-holo"    id="cardHolo"></div>
+      <div class="card-spot"    id="cardSpot"></div>
+      <div class="card-shimmer"></div>
+      <div class="card-texture"></div>
+      <div class="card-edge"></div>
+
+      <div class="card" id="cardFace">
+
+        <!-- SVG art layer -->
+        <div class="card-inner-art">
+          <svg width="380" height="240" viewBox="0 0 380 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="rg-burst" cx="68%" cy="52%" r="55%">
+                <stop offset="0%"   stop-color="#ff6020" stop-opacity=".22"/>
+                <stop offset="45%"  stop-color="#cc2800" stop-opacity=".08"/>
+                <stop offset="100%" stop-color="#0a0302" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="rg-tach" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"   stop-color="#ff7030" stop-opacity=".18"/>
+                <stop offset="60%"  stop-color="#cc3000" stop-opacity=".06"/>
+                <stop offset="100%" stop-color="#0a0302" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="lg-slash1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#ff7030" stop-opacity="0"/>
+                <stop offset="40%"  stop-color="#ff7030" stop-opacity=".28"/>
+                <stop offset="55%"  stop-color="#ff9050" stop-opacity=".18"/>
+                <stop offset="100%" stop-color="#ff5010" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="lg-slash2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#ff5020" stop-opacity="0"/>
+                <stop offset="40%"  stop-color="#ff5020" stop-opacity=".16"/>
+                <stop offset="100%" stop-color="#ff5020" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="lg-slash3" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#cc2800" stop-opacity="0"/>
+                <stop offset="50%"  stop-color="#ff6030" stop-opacity=".10"/>
+                <stop offset="100%" stop-color="#cc2800" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="glow-r" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow-s" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <clipPath id="card-clip"><rect width="380" height="240" rx="16"/></clipPath>
+            </defs>
+
+            <g clip-path="url(#card-clip)">
+
+              <!-- ambient burst glow -->
+              <rect width="380" height="240" fill="url(#rg-burst)" opacity=".9"/>
+
+              <!-- speed lines (diagonal, left → right, receding) -->
+              <g opacity=".22" stroke="url(#lg-slash1)" stroke-width="1">
+                <line x1="-20" y1="20"  x2="320" y2="20"/>
+                <line x1="-20" y1="38"  x2="310" y2="38"/>
+                <line x1="-20" y1="55"  x2="290" y2="55"/>
+                <line x1="-20" y1="70"  x2="260" y2="70"/>
+                <line x1="-20" y1="84"  x2="225" y2="84"/>
+              </g>
+              <g opacity=".14" stroke="url(#lg-slash2)" stroke-width=".8">
+                <line x1="10"  y1="100" x2="340" y2="100"/>
+                <line x1="10"  y1="114" x2="330" y2="114"/>
+                <line x1="10"  y1="127" x2="310" y2="127"/>
+                <line x1="10"  y1="139" x2="285" y2="139"/>
+              </g>
+
+              <!-- bold diagonal slash marks -->
+              <line x1="290" y1="-10" x2="410" y2="130" stroke="url(#lg-slash1)" stroke-width="22" opacity=".15"/>
+              <line x1="320" y1="-10" x2="430" y2="108" stroke="url(#lg-slash2)" stroke-width="10" opacity=".11"/>
+              <line x1="260" y1="-10" x2="370" y2="150" stroke="url(#lg-slash3)" stroke-width="6"  opacity=".08"/>
+
+              <!-- shockwave rings (centred right) -->
+              <g transform="translate(295,118)" opacity=".18" filter="url(#glow-s)">
+                <circle r="28"  stroke="#ff7030" stroke-width="1.2" fill="none" opacity=".9"/>
+                <circle r="48"  stroke="#ff5020" stroke-width=".9"  fill="none" opacity=".7"/>
+                <circle r="70"  stroke="#ff4010" stroke-width=".7"  fill="none" opacity=".5"/>
+                <circle r="95"  stroke="#cc2800" stroke-width=".5"  fill="none" opacity=".35"/>
+                <circle r="124" stroke="#aa1800" stroke-width=".4"  fill="none" opacity=".20"/>
+              </g>
+
+              <!-- tachometer arc (bottom-right corner) -->
+              <g transform="translate(340,195)" opacity=".30">
+                <path d="M-80,0 A80,80 0 0,1 0,-80" stroke="#ff7030" stroke-width="1.4" fill="none" opacity=".5"/>
+                <path d="M-65,0 A65,65 0 0,1 0,-65" stroke="#ff5020" stroke-width=".8" fill="none" opacity=".38"/>
+                <!-- tick marks -->
+                <g stroke="#ff9050" stroke-width=".9" opacity=".6" filter="url(#glow-r)">
+                  <line x1="-80" y1="0"  x2="-72" y2="0"/>
+                  <line x1="-79" y1="-11" x2="-71" y2="-10"/>
+                  <line x1="-76" y1="-22" x2="-68" y2="-20"/>
+                  <line x1="-71" y1="-32" x2="-63" y2="-29"/>
+                  <line x1="-63" y1="-41" x2="-56" y2="-37"/>
+                  <line x1="-54" y1="-49" x2="-47" y2="-44"/>
+                  <line x1="-43" y1="-55" x2="-37" y2="-50"/>
+                  <line x1="-31" y1="-59" x2="-26" y2="-53"/>
+                  <line x1="-18" y1="-62" x2="-14" y2="-56"/>
+                  <line x1="-5"  y1="-63" x2="-3"  y2="-57"/>
+                  <line x1="8"   y1="-63" x2="5"   y2="-57"/>
+                </g>
+                <!-- needle -->
+                <line x1="0" y1="0" x2="-58" y2="-45" stroke="#ff3010" stroke-width="1.6" opacity=".80" filter="url(#glow-r)"/>
+                <circle r="4" fill="#ff4020" opacity=".7" filter="url(#glow-s)"/>
+              </g>
+
+              <!-- bold X cross-hair (top-left) -->
+              <g transform="translate(48,44)" opacity=".18" stroke="#ff6020" stroke-width=".8">
+                <line x1="-18" y1="-18" x2="18" y2="18"/>
+                <line x1="18"  y1="-18" x2="-18" y2="18"/>
+                <circle r="12" fill="none" stroke-width=".6" opacity=".6"/>
+                <circle r="4"  fill="none" stroke-width=".5" opacity=".4"/>
+              </g>
+
+              <!-- data readout lines (bottom-left HUD) -->
+              <g transform="translate(22,190)" opacity=".22" fill="none">
+                <rect x="0" y="0" width="55" height="2" rx="1" fill="#ff6020" opacity=".50"/>
+                <rect x="0" y="5" width="40" height="2" rx="1" fill="#ff4010" opacity=".38"/>
+                <rect x="0" y="10" width="66" height="2" rx="1" fill="#ff6020" opacity=".32"/>
+                <rect x="0" y="15" width="30" height="2" rx="1" fill="#ff4010" opacity=".26"/>
+              </g>
+
+              <!-- corner accent triangles -->
+              <polygon points="0,0 32,0 0,22"   fill="rgba(255,100,40,0.12)"/>
+              <polygon points="380,240 348,240 380,218" fill="rgba(200,50,10,0.09)"/>
+
+            </g>
+          </svg>
+        </div>
+
+        <!-- spark container -->
+        <div id="sparkContainer" style="position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden;border-radius:16px;"></div>
+
+        <!-- letter tag -->
+        <div class="letter-tag">
+          <div class="letter-item"><span class="letter-char">E</span><span class="letter-word">Extra</span></div>
+          <div class="letter-sep"></div>
+          <div class="letter-item"><span class="letter-char">S</span><span class="letter-word">Sensing</span></div>
+          <div class="letter-sep"></div>
+          <div class="letter-item"><span class="letter-char">T</span><span class="letter-word">Thinking</span></div>
+          <div class="letter-sep"></div>
+          <div class="letter-item"><span class="letter-char">P</span><span class="letter-word">Perceiv</span></div>
+        </div>
+
+        <!-- hover meaning overlay -->
+        <div class="card-meanings">
+          <div class="meanings-row">
+            <div class="meaning-item"><span class="meaning-glyph">⚡</span><span class="meaning-label">Extrovert</span></div>
+            <div class="meaning-sep"></div>
+            <div class="meaning-item"><span class="meaning-glyph">👁</span><span class="meaning-label">Sensing</span></div>
+            <div class="meaning-sep"></div>
+            <div class="meaning-item"><span class="meaning-glyph">🎯</span><span class="meaning-label">Thinking</span></div>
+            <div class="meaning-sep"></div>
+            <div class="meaning-item"><span class="meaning-glyph">🔥</span><span class="meaning-label">Perceiving</span></div>
+          </div>
+        </div>
+
+        <!-- dividers -->
+        <div class="card-vline"></div>
+        <div class="card-hline"></div>
+
+        <!-- card content -->
+        <div class="card-content">
+          <div class="card-name">
+            <div class="name-main">estp<span class="name-dot">.</span>kr</div>
+            <div class="name-sub">the entrepreneur · the doer</div>
+          </div>
+          <div class="card-meta">
+            <div class="meta-row"><div class="meta-dot"></div><span class="meta-text"><em>E</em> — Extraverted · Bold &amp; Action</span></div>
+            <div class="meta-row"><div class="meta-dot"></div><span class="meta-text"><em>S</em> — Sensing · Lives in the Now</span></div>
+            <div class="meta-row"><div class="meta-dot"></div><span class="meta-text"><em>TP</em> — Thinking &amp; Perceiving · Sharp</span></div>
+          </div>
+          <div class="card-right">
+            <div class="badge">
+              <span class="badge-glyph">⚡</span>
+              <span class="badge-label">ESTP</span>
+            </div>
+            <div class="domain-url">estp<span class="domain-tld">.kr</span></div>
+          </div>
+        </div>
+
+      </div><!-- .card -->
+    </div><!-- .card-wrap -->
+  </div><!-- .scene -->
+
+  <script>
+    const wrap = document.getElementById('cardWrap');
+    const holo = document.getElementById('cardHolo');
+    const spot = document.getElementById('cardSpot');
+
+    let tX = 0, tY = 0, cX = 0, cY = 0, hovering = false;
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    (function loop() {
+      cX = lerp(cX, tX, .11);
+      cY = lerp(cY, tY, .11);
+      wrap.style.transform = hovering
+        ? `rotateX(${cX}deg) rotateY(${cY}deg) scale(1.04)`
+        : `rotateX(${cX}deg) rotateY(${cY}deg)`;
+      requestAnimationFrame(loop);
+    })();
+
+    wrap.addEventListener('mouseenter', () => {
+      hovering = true;
+      wrap.classList.remove('is-idle');
+      wrap.style.animation = 'none';
+      wrap.style.boxShadow = '0 48px 90px rgba(8,3,3,.80),0 0 40px rgba(255,80,20,.18),0 0 20px rgba(255,60,10,.10)';
+    });
+    wrap.addEventListener('mouseleave', () => {
+      hovering = false;
+      tX = 0; tY = 0;
+      wrap.style.boxShadow = '';
+      holo.style.removeProperty('--mx');
+      holo.style.removeProperty('--my');
+      holo.style.removeProperty('--r');
+      spot.style.removeProperty('--mx');
+      spot.style.removeProperty('--my');
+    });
+    wrap.addEventListener('mousemove', e => {
+      const r  = wrap.getBoundingClientRect();
+      const nx = (e.clientX - r.left - r.width  / 2) / (r.width  / 2);
+      const ny = (e.clientY - r.top  - r.height / 2) / (r.height / 2);
+      tY =  nx * 16;
+      tX = -ny * 12;
+      const px = ((e.clientX - r.left)  / r.width  * 100).toFixed(1) + '%';
+      const py = ((e.clientY - r.top)   / r.height * 100).toFixed(1) + '%';
+      const angle = (Math.atan2(ny, nx) * 180 / Math.PI + 90).toFixed(1) + 'deg';
+      holo.style.setProperty('--mx', px);
+      holo.style.setProperty('--my', py);
+      holo.style.setProperty('--r',  angle);
+      spot.style.setProperty('--mx', px);
+      spot.style.setProperty('--my', py);
+    });
+
+    /* ── spark particles ── */
+    const SPARKS = [
+      { x:'14%', w:6, h:2,   color:'rgba(255,80,30,0.82)',  dur:3.2, delay:0,   sx:'24px',  sy:'-70px',  sr:'38deg'  },
+      { x:'26%', w:3, h:3,   color:'rgba(255,150,50,0.76)', dur:4.0, delay:0.6, sx:'-18px', sy:'-85px',  sr:'-25deg' },
+      { x:'38%', w:7, h:2.5, color:'rgba(220,60,10,0.80)',  dur:3.5, delay:1.3, sx:'30px',  sy:'-60px',  sr:'55deg'  },
+      { x:'50%', w:4, h:4,   color:'rgba(255,120,40,0.74)', dur:4.4, delay:0.4, sx:'-22px', sy:'-90px',  sr:'-40deg' },
+      { x:'62%', w:5, h:2,   color:'rgba(255,60,20,0.78)',  dur:3.8, delay:1.8, sx:'28px',  sy:'-75px',  sr:'30deg'  },
+      { x:'74%', w:3, h:3,   color:'rgba(255,170,60,0.70)', dur:4.2, delay:0.9, sx:'-14px', sy:'-80px',  sr:'-55deg' },
+      { x:'84%', w:6, h:2,   color:'rgba(200,40,0,0.76)',   dur:3.4, delay:2.2, sx:'20px',  sy:'-65px',  sr:'48deg'  },
+      { x:'20%', w:4, h:2.5, color:'rgba(255,100,30,0.72)', dur:4.6, delay:1.5, sx:'-26px', sy:'-72px',  sr:'-30deg' },
+      { x:'56%', w:5, h:2,   color:'rgba(255,80,20,0.74)',  dur:3.6, delay:2.8, sx:'32px',  sy:'-88px',  sr:'62deg'  },
+      { x:'46%', w:3, h:3.5, color:'rgba(220,90,10,0.68)',  dur:4.8, delay:3.2, sx:'-10px', sy:'-78px',  sr:'-18deg' },
+    ];
+
+    const container = document.getElementById('sparkContainer');
+    SPARKS.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'spark';
+      el.style.cssText = `
+        left:${s.x};bottom:${Math.floor(Math.random()*60+10)}px;
+        width:${s.w}px;height:${s.h}px;
+        background:${s.color};
+        --sx:${s.sx};--sy:${s.sy};--sr:${s.sr};
+        animation-duration:${s.dur}s;
+        animation-delay:${s.delay}s;
+        border-radius:${s.h<3?'1px':'50%'};
+      `;
+      container.appendChild(el);
+    });
+  </script>
+</body>
+</html>
