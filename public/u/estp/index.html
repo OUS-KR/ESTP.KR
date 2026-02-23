@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESTP — estp.kr</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-dynamo-50:  #fff7ed;
+      --color-dynamo-100: #ffedd5;
+      --color-dynamo-200: #fed7aa;
+      --color-dynamo-300: #fdba74;
+      --color-dynamo-400: #fb923c;
+      --color-dynamo-500: #f97316;
+      --color-dynamo-600: #ea580c;
+      --color-dynamo-700: #c2410c;
+      --color-dynamo-800: #9a3412;
+      --color-dynamo-900: #7c2d12;
+      --color-dynamo-950: #431407;
+
+      --color-bolt-400:   #fbbf24;
+      --color-bolt-500:   #f59e0b;
+      --color-bolt-600:   #d97706;
+
+      --color-risk-400:   #f87171;
+      --color-risk-500:   #ef4444;
+      --color-risk-600:   #dc2626;
+
+      --color-adrenaline-400: #a78bfa;
+      --color-adrenaline-500: #8b5cf6;
+
+      --color-steel-400:  #94a3b8;
+      --color-steel-500:  #64748b;
+
+      --color-void-900:   #09060a;
+      --color-void-950:   #060408;
+
+      --font-serif:       "Noto Serif KR", serif;
+      --font-sans:        "Inter", sans-serif;
+      --font-display:     "Barlow Condensed", sans-serif;
+    }
+  </style>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #09060a;
+      color: #f1d6b8;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Carbon fibre texture ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.012) 0px,
+          rgba(255,255,255,0.012) 1px,
+          transparent 1px,
+          transparent 8px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.012) 0px,
+          rgba(255,255,255,0.012) 1px,
+          transparent 1px,
+          transparent 8px
+        );
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Grain ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Particle layer ── */
+    #particle-layer {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1; overflow: hidden;
+    }
+    .particle {
+      position: absolute; opacity: 0;
+      animation: streak var(--dur,8s) ease-in infinite;
+      animation-delay: var(--delay,0s);
+    }
+    @keyframes streak {
+      0%   { transform: translate(0,0) rotate(var(--rot,30deg)) scaleY(0.5); opacity: 0; }
+      12%  { opacity: var(--mop,0.6); }
+      88%  { opacity: var(--mop,0.3); }
+      100% { transform: translate(var(--tx,60px),var(--ty,-200px)) rotate(var(--rot,30deg)) scaleY(1.5); opacity: 0; }
+    }
+
+    /* ── Dynamo top burn ── */
+    .dynamo-burn {
+      position: fixed; top: 0; left: 0; right: 0; height: 55vh;
+      background: radial-gradient(ellipse 75% 45% at 50% 0%,
+        rgba(249,115,22,0.20) 0%,
+        rgba(251,191,36,0.10) 35%,
+        transparent 70%);
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ── Speed line accent ── */
+    .speed-line {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #f97316 30%, #fbbf24 60%, #ef4444 80%, transparent 100%);
+      animation: scan 4s linear infinite;
+      z-index: 10; opacity: 0.7;
+    }
+    @keyframes scan {
+      0%   { transform: translateX(-100%); opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.7; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* ── Shimmer — fire-gold ── */
+    .shimmer-text {
+      background: linear-gradient(90deg,
+        #f97316 0%, #fbbf24 20%, #ef4444 40%, #f97316 60%, #fbbf24 80%, #f97316 100%);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3.5s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    /* ── Cards ── */
+    .estp-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(249,115,22,0.18);
+      border-radius: 14px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .estp-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 44px rgba(249,115,22,0.18);
+      border-color: rgba(249,115,22,0.42);
+    }
+
+    /* ── Link buttons ── */
+    .link-btn {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 13px 18px; border-radius: 12px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(249,115,22,0.18);
+      color: #f1d6b8; text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem; font-weight: 500;
+      transition: all 0.22s ease; cursor: pointer;
+    }
+    .link-btn:hover {
+      background: rgba(249,115,22,0.12);
+      border-color: rgba(249,115,22,0.48);
+      transform: translateX(6px);
+      box-shadow: 0 0 22px rgba(249,115,22,0.18);
+    }
+    .link-btn .btn-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+
+    /* ── Avatar ── */
+    .avatar-wrap { position: relative; display: inline-block; }
+    .avatar-ring {
+      position: absolute; inset: -5px; border-radius: 50%;
+      background: conic-gradient(#f97316,#fbbf24,#ef4444,#a78bfa,#f97316);
+      animation: spin-ring 4s linear infinite; z-index: -1;
+    }
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
+    .avatar-img {
+      width: 92px; height: 92px; border-radius: 50%;
+      border: 3px solid #09060a;
+      position: relative; z-index: 1; display: block;
+    }
+    .status-dot {
+      width: 14px; height: 14px; background: #fbbf24;
+      border-radius: 50%; border: 3px solid #09060a;
+      position: absolute; bottom: 4px; right: 4px; z-index: 2;
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.7); }
+      50%      { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(26px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Progress bars ── */
+    .bar-track {
+      height: 5px; background: rgba(255,255,255,0.08);
+      border-radius: 99px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 99px; width: 0%;
+      transition: width 1.4s cubic-bezier(.25,.46,.45,.94);
+    }
+
+    /* ── RPM gauge ── */
+    .rpm-gauge {
+      position: relative; width: 110px; height: 60px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+    }
+    .rpm-arc {
+      position: absolute; top: 0; left: 0;
+      width: 110px; height: 110px; overflow: hidden;
+    }
+    .rpm-arc svg { width: 110px; height: 110px; }
+
+    /* ── Carousel ── */
+    .carousel-wrap { position: relative; overflow: hidden; border-radius: 14px; }
+    .carousel-track { display: flex; transition: transform 0.45s ease; }
+    .carousel-slide { min-width: 100%; position: relative; }
+    .carousel-slide img { width: 100%; height: 236px; object-fit: cover; display: block; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px;
+      background: rgba(9,6,10,0.65);
+      border: 1px solid rgba(249,115,22,0.38);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #f1d6b8; font-size: 0.95rem;
+      transition: background 0.2s; z-index: 10;
+    }
+    .carousel-btn:hover { background: rgba(249,115,22,0.30); }
+    .carousel-prev { left: 10px; }
+    .carousel-next { right: 10px; }
+    .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .carousel-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel-dot.active { background: #f97316; transform: scale(1.4); }
+
+    /* ── Music player ── */
+    .vinyl {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: conic-gradient(
+        #1a0800 0deg 30deg,  #2d1200 30deg 60deg,
+        #1a0800 60deg 90deg, #2d1200 90deg 120deg,
+        #1a0800 120deg 150deg,#2d1200 150deg 180deg,
+        #1a0800 180deg 210deg,#2d1200 210deg 240deg,
+        #1a0800 240deg 270deg,#2d1200 270deg 300deg,
+        #1a0800 300deg 330deg,#2d1200 330deg 360deg);
+      box-shadow: 0 0 0 7px #09060a, 0 0 0 9px rgba(249,115,22,0.25);
+      position: relative; flex-shrink: 0;
+    }
+    .vinyl::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #f97316; box-shadow: 0 0 10px rgba(249,115,22,0.9);
+    }
+    .vinyl-spin { animation: spin 2.5s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .progress-bar-wrap { height: 4px; background: rgba(255,255,255,0.10); border-radius: 99px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg,#f97316,#fbbf24); border-radius: 99px; width: 0%; }
+    .progress-anim { animation: pgrow 180s linear forwards; }
+    @keyframes pgrow { from { width:0%; } to { width:100%; } }
+
+    /* ── Tags ── */
+    .tag-pill {
+      display: inline-block; padding: 4px 11px; border-radius: 99px;
+      font-size: 0.7rem; font-weight: 500; border: 1px solid;
+    }
+
+    /* ── FAQ ── */
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary .faq-arrow { transform: rotate(180deg); }
+    .faq-arrow { transition: transform 0.3s; display: inline-block; }
+
+    /* ── Forms ── */
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(249,115,22,0.20);
+      border-radius: 9px; padding: 10px 13px;
+      color: #f1d6b8; font-family: 'Inter',sans-serif;
+      font-size: 0.85rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: rgba(249,115,22,0.58); }
+    .form-input::placeholder { color: rgba(241,214,184,0.28); }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(249,115,22,0.7);
+      margin-bottom: 12px;
+    }
+
+    /* ── Feature image hover ── */
+    .spotlight-hover { position: relative; overflow: hidden; border-radius: 14px; cursor: pointer; }
+    .spotlight-hover img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .spotlight-hover:hover img { transform: scale(1.05); }
+    .spotlight-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,rgba(9,6,10,0.80) 0%,transparent 55%);
+      display: flex; align-items: flex-end; padding: 14px;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .spotlight-hover:hover .spotlight-overlay { opacity: 1; }
+
+    /* ── Risk meter pill ── */
+    .risk-meter {
+      display: flex; gap: 3px; align-items: center;
+    }
+    .risk-bar {
+      width: 6px; height: 16px; border-radius: 2px;
+      background: rgba(255,255,255,0.12);
+      transition: background 0.3s;
+    }
+
+    /* ── Diagonal accent ── */
+    .diag-accent {
+      position: fixed; bottom: 0; right: 0; pointer-events: none; z-index: 1; opacity: 0.07;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Speed line top accent -->
+  <div class="speed-line"></div>
+
+  <!-- Dynamo burn glow -->
+  <div class="dynamo-burn"></div>
+
+  <!-- Diagonal corner deco -->
+  <svg class="diag-accent" width="260" height="260" viewBox="0 0 260 260">
+    <polygon points="260,0 260,260 0,260" fill="#f97316"/>
+    <polygon points="260,40 260,260 40,260" fill="#fbbf24" opacity="0.5"/>
+  </svg>
+
+  <!-- Particle layer -->
+  <div id="particle-layer"></div>
+
+  <!-- ════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════ -->
+  <div style="position:relative;z-index:2;max-width:480px;margin:0 auto;padding:24px 16px 60px;">
+
+    <!-- ══════════════
+         HERO
+    ══════════════ -->
+    <section style="text-align:center;padding:44px 0 32px;" class="reveal">
+
+      <!-- Avatar -->
+      <div class="avatar-wrap" style="margin-bottom:20px;display:inline-block;">
+        <div class="avatar-ring"></div>
+        <img
+          class="avatar-img"
+          src="https://api.dicebear.com/9.x/shapes/svg?seed=estp&backgroundColor=140800&color=f97316,fbbf24,ef4444,a78bfa"
+          alt="ESTP Avatar"
+        />
+        <div class="status-dot"></div>
+      </div>
+
+      <!-- Title -->
+      <h1 class="shimmer-text" style="font-family:'Barlow Condensed',sans-serif;font-size:3.2rem;font-weight:800;letter-spacing:0.12em;margin-bottom:6px;line-height:1;">
+        ESTP
+      </h1>
+      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:rgba(241,214,184,0.45);letter-spacing:0.18em;margin-bottom:14px;">
+        estp.kr · THE ENTREPRENEUR
+      </p>
+
+      <!-- Quote -->
+      <p style="font-family:'Noto Serif KR',serif;font-size:1.02rem;color:rgba(241,214,184,0.82);line-height:1.75;margin-bottom:20px;padding:0 8px;">
+        "생각할 시간? 없다. 지금 당장 움직이는 게 답이다."
+      </p>
+
+      <!-- Tags -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:24px;">
+        <span class="tag-pill" style="background:rgba(249,115,22,0.14);border-color:rgba(249,115,22,0.38);color:#f97316;">⚡ 기업가</span>
+        <span class="tag-pill" style="background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.32);color:#fbbf24;">🔥 다이나모</span>
+        <span class="tag-pill" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.30);color:#f87171;">🎯 대담함</span>
+        <span class="tag-pill" style="background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.28);color:#a78bfa;">💡 즉흥</span>
+        <span class="tag-pill" style="background:rgba(148,163,184,0.10);border-color:rgba(148,163,184,0.25);color:#94a3b8;">🌪️ 행동</span>
+      </div>
+
+      <!-- E·S·T·P Stats grid -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;">
+        <div class="estp-card" style="padding:13px 6px;text-align:center;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#f97316;">E</div>
+          <div style="font-size:0.6rem;color:rgba(241,214,184,0.4);margin-top:3px;">외향</div>
+        </div>
+        <div class="estp-card" style="padding:13px 6px;text-align:center;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#fbbf24;">S</div>
+          <div style="font-size:0.6rem;color:rgba(241,214,184,0.4);margin-top:3px;">감각</div>
+        </div>
+        <div class="estp-card" style="padding:13px 6px;text-align:center;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#f87171;">T</div>
+          <div style="font-size:0.6rem;color:rgba(241,214,184,0.4);margin-top:3px;">사고</div>
+        </div>
+        <div class="estp-card" style="padding:13px 6px;text-align:center;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#a78bfa;">P</div>
+          <div style="font-size:0.6rem;color:rgba(241,214,184,0.4);margin-top:3px;">인식</div>
+        </div>
+      </div>
+      <p style="font-size:0.62rem;color:rgba(241,214,184,0.22);text-align:center;letter-spacing:0.08em;">
+        Extraverted · Sensing · Thinking · Perceiving
+      </p>
+
+      <!-- Risk meter decoration -->
+      <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-top:18px;">
+        <span style="font-size:0.68rem;color:rgba(241,214,184,0.35);letter-spacing:0.08em;">RISK TOLERANCE</span>
+        <div class="risk-meter" id="riskMeter">
+          <div class="risk-bar" style="height:8px;"></div>
+          <div class="risk-bar" style="height:10px;"></div>
+          <div class="risk-bar" style="height:13px;"></div>
+          <div class="risk-bar" style="height:16px;"></div>
+          <div class="risk-bar" style="height:20px;"></div>
+          <div class="risk-bar" style="height:20px;"></div>
+          <div class="risk-bar" style="height:16px;"></div>
+        </div>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.88rem;font-weight:700;color:#f97316;letter-spacing:0.05em;">MAX</span>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         ANNOUNCEMENT
+    ══════════════ -->
+    <section style="margin-bottom:24px;" class="reveal">
+      <div style="
+        background:linear-gradient(135deg,rgba(249,115,22,0.16) 0%,rgba(239,68,68,0.10) 100%);
+        border:1px solid rgba(249,115,22,0.33);
+        border-radius:13px;padding:15px 18px;
+        display:flex;align-items:center;gap:13px;
+      ">
+        <span style="font-size:1.5rem;flex-shrink:0;">🏁</span>
+        <div>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;color:#f97316;letter-spacing:0.06em;margin-bottom:3px;">NEW DEAL: Entrepreneur Vol.6</p>
+          <p style="font-size:0.76rem;color:rgba(241,214,184,0.52);">리스크를 두려워하지 않는 자들을 위한 콘텐츠</p>
+        </div>
+        <span style="margin-left:auto;font-size:0.72rem;color:rgba(249,115,22,0.65);flex-shrink:0;">→</span>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         SOCIAL LINKS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">⚡ Connect</p>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:linear-gradient(135deg,#e1306c,#833ab4);">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </span>
+          <span style="flex:1;">Instagram</span>
+          <span style="font-size:0.72rem;color:rgba(241,214,184,0.30);">@estp.kr</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#ff0000;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </span>
+          <span style="flex:1;">YouTube</span>
+          <span style="font-size:0.72rem;color:rgba(241,214,184,0.30);">ESTP Channel</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#000;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </span>
+          <span style="flex:1;">X (Twitter)</span>
+          <span style="font-size:0.72rem;color:rgba(241,214,184,0.30);">@estp_kr</span>
+        </a>
+
+        <a href="#" class="link-btn">
+          <span class="btn-icon" style="background:#24292e;">
+            <svg width="17" height="17" fill="white" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </span>
+          <span style="flex:1;">GitHub</span>
+          <span style="font-size:0.72rem;color:rgba(241,214,184,0.30);">estp-kr</span>
+        </a>
+
+        <a href="mailto:hello@estp.kr" class="link-btn">
+          <span class="btn-icon" style="background:linear-gradient(135deg,#f97316,#fbbf24);">✉️</span>
+          <span style="flex:1;">Email</span>
+          <span style="font-size:0.72rem;color:rgba(241,214,184,0.30);">hello@estp.kr</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         DYNAMO TRAITS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">🔥 Dynamo Traits</p>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+
+        <div class="estp-card" style="padding:17px 18px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.3rem;">⚡</span>
+            <div>
+              <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;color:#f97316;">Bold Action · 즉각 행동</p>
+              <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);">생각보다 행동이 먼저, 위기가 기회다</p>
+            </div>
+            <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:#f97316;font-weight:700;">98%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:98%;background:linear-gradient(90deg,#f97316,#fbbf24);"></div>
+          </div>
+        </div>
+
+        <div class="estp-card" style="padding:17px 18px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.3rem;">🎯</span>
+            <div>
+              <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;color:#fbbf24;">Persuasion · 설득력</p>
+              <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);">어떤 방도 자기 편으로 만드는 카리스마</p>
+            </div>
+            <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:#fbbf24;font-weight:700;">94%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:94%;background:linear-gradient(90deg,#fbbf24,#f59e0b);"></div>
+          </div>
+        </div>
+
+        <div class="estp-card" style="padding:17px 18px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.3rem;">🌪️</span>
+            <div>
+              <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;color:#f87171;">Adaptability · 적응력</p>
+              <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);">어떤 환경에서도 살아남는 실용적 유연성</p>
+            </div>
+            <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:#f87171;font-weight:700;">91%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:91%;background:linear-gradient(90deg,#f87171,#ef4444);"></div>
+          </div>
+        </div>
+
+        <div class="estp-card" style="padding:17px 18px;">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px;">
+            <span style="font-size:1.3rem;">💡</span>
+            <div>
+              <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;color:#a78bfa;">Street Smarts · 현장 감각</p>
+              <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);">이론보다 현장, 교과서보다 경험</p>
+            </div>
+            <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:#a78bfa;font-weight:700;">96%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="--w:96%;background:linear-gradient(90deg,#a78bfa,#8b5cf6);"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FEATURED VIDEO
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">🎬 Featured Video</p>
+      <div class="estp-card" style="overflow:hidden;padding:0;">
+        <div style="position:relative;padding-bottom:56.25%;height:0;">
+          <iframe
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="ESTP Featured Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div style="padding:13px 15px;">
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.92rem;letter-spacing:0.04em;color:#f97316;margin-bottom:4px;">⚡ THE DYNAMO'S PLAYBOOK — 기업가의 승부수</p>
+          <div style="display:flex;align-items:center;gap:11px;">
+            <span style="font-size:0.7rem;color:rgba(241,214,184,0.38);">👁 52.1K</span>
+            <span style="font-size:0.7rem;color:rgba(241,214,184,0.38);">❤️ 6.4K</span>
+            <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;color:rgba(249,115,22,0.55);letter-spacing:0.06em;">ESTP.KR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         VIDEO PLAYLIST
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">📺 Playlist</p>
+      <div class="estp-card" style="padding:7px;">
+        <div style="display:flex;flex-direction:column;gap:1px;">
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(249,115,22,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:7px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#f1d6b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">리스크 없이는 수익도 없다</p>
+              <p style="font-size:0.7rem;color:rgba(241,214,184,0.35);margin-top:2px;">29.8K · 10:44</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(249,115,22,0.6);flex-shrink:0;">▶</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(249,115,22,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:7px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#f1d6b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">협상의 기술 — ESTP의 설득 전략</p>
+              <p style="font-size:0.7rem;color:rgba(241,214,184,0.35);margin-top:2px;">23.5K · 8:17</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(249,115,22,0.6);flex-shrink:0;">▶</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(249,115,22,0.09)'" onmouseout="this.style.background='transparent'">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg" alt="" style="width:62px;height:46px;object-fit:cover;border-radius:7px;flex-shrink:0;" />
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:0.8rem;font-weight:500;color:#f1d6b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">현장에서 배운 것들 — 경험이 최고의 교사</p>
+              <p style="font-size:0.7rem;color:rgba(241,214,184,0.35);margin-top:2px;">16.2K · 7:03</p>
+            </div>
+            <span style="font-size:0.9rem;color:rgba(249,115,22,0.6);flex-shrink:0;">▶</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         IMAGE CAROUSEL
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">📸 Gallery</p>
+      <div class="carousel-wrap" id="carousel">
+        <div class="carousel-track" id="carouselTrack">
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=480&q=80" alt="Entrepreneur" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(9,6,10,0.78),transparent);">
+              <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#f1d6b8;">⚡ 기업가의 눈</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=480&q=80" alt="Deal" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(9,6,10,0.78),transparent);">
+              <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#f1d6b8;">🤝 협상 테이블</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=480&q=80" alt="City" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(9,6,10,0.78),transparent);">
+              <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#f1d6b8;">🏙️ 도시와 기회</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=480&q=80" alt="Strategy" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(9,6,10,0.78),transparent);">
+              <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#f1d6b8;">🎯 전략 수립</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1520333789090-1afc82db536a?w=480&q=80" alt="Action" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:11px 14px;background:linear-gradient(to top,rgba(9,6,10,0.78),transparent);">
+              <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#f1d6b8;">🔥 행동의 순간</p>
+            </div>
+          </div>
+
+        </div>
+        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous">‹</button>
+        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next">›</button>
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </section>
+
+    <!-- ══════════════
+         FEATURE IMAGE
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">🏆 Spotlight</p>
+      <div class="spotlight-hover estp-card" style="border:0;">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=480&q=80" alt="ESTP Spotlight" style="height:200px;" />
+        <div class="spotlight-overlay">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.08em;color:#f1d6b8;background:rgba(249,115,22,0.75);padding:6px 14px;border-radius:99px;">지금 바로 시작하기 →</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         MUSIC PLAYER
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">🎵 Now Playing</p>
+      <div class="estp-card" style="padding:18px;">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:13px;">
+          <div class="vinyl" id="vinyl"></div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.04em;color:#f97316;margin-bottom:2px;">Full Throttle</p>
+            <p style="font-size:0.73rem;color:rgba(241,214,184,0.42);margin-bottom:7px;">ESTP Adrenaline Vol.6</p>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+          </div>
+          <button onclick="toggleMusic()" id="playBtn" style="
+            width:40px;height:40px;border-radius:50%;
+            background:linear-gradient(135deg,#f97316,#fbbf24);
+            border:none;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1rem;flex-shrink:0;
+            box-shadow:0 0 16px rgba(249,115,22,0.45);
+            transition:transform 0.15s;
+          ">▶</button>
+        </div>
+        <div style="border-top:1px solid rgba(249,115,22,0.12);padding-top:11px;display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.76rem;color:rgba(241,214,184,0.58);">1. Full Throttle</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;color:#f97316;font-weight:600;">3:28</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.76rem;color:rgba(241,214,184,0.35);">2. Risk Taker</span>
+            <span style="font-size:0.72rem;color:rgba(241,214,184,0.28);">4:11</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.76rem;color:rgba(241,214,184,0.35);">3. Street Level</span>
+            <span style="font-size:0.72rem;color:rgba(241,214,184,0.28);">3:55</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         PROJECT CARDS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">🚀 Ventures</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+
+        <div class="estp-card" style="padding:15px;">
+          <span style="font-size:1.4rem;display:block;margin-bottom:7px;">⚡</span>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;color:#f97316;margin-bottom:3px;">Deal Lab</p>
+          <p style="font-size:0.7rem;color:rgba(241,214,184,0.42);line-height:1.5;">협상과 거래의 실험실</p>
+        </div>
+
+        <div class="estp-card" style="padding:15px;">
+          <span style="font-size:1.4rem;display:block;margin-bottom:7px;">🎯</span>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;color:#fbbf24;margin-bottom:3px;">Risk Map</p>
+          <p style="font-size:0.7rem;color:rgba(241,214,184,0.42);line-height:1.5;">리스크 분석과 기회 지도</p>
+        </div>
+
+        <div class="estp-card" style="padding:15px;">
+          <span style="font-size:1.4rem;display:block;margin-bottom:7px;">🌪️</span>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;color:#f87171;margin-bottom:3px;">Crisis Play</p>
+          <p style="font-size:0.7rem;color:rgba(241,214,184,0.42);line-height:1.5;">위기를 기회로 전환하는 플레이북</p>
+        </div>
+
+        <div class="estp-card" style="padding:15px;">
+          <span style="font-size:1.4rem;display:block;margin-bottom:7px;">💡</span>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;color:#a78bfa;margin-bottom:3px;">Open Field</p>
+          <p style="font-size:0.7rem;color:rgba(241,214,184,0.42);line-height:1.5;">경계 없는 오픈 소스 벤처</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         RECENT POSTS
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <p class="section-label" style="margin-bottom:0;">✍️ Dispatches</p>
+        <a href="#" style="font-size:0.7rem;color:rgba(249,115,22,0.58);text-decoration:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;">ALL →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+
+        <div class="estp-card" style="padding:13px 15px;cursor:pointer;">
+          <p style="font-size:0.83rem;font-weight:600;color:#f1d6b8;margin-bottom:5px;">실패를 두려워하는 당신에게</p>
+          <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);line-height:1.5;">ESTP는 실패를 데이터로 본다. 두려움은 행동하지 않을 때 생긴다.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(249,115,22,0.12);border-color:rgba(249,115,22,0.28);color:#f97316;font-size:0.62rem;">리스크</span>
+            <span style="font-size:0.62rem;color:rgba(241,214,184,0.25);margin-left:auto;">2026.02.22</span>
+          </div>
+        </div>
+
+        <div class="estp-card" style="padding:13px 15px;cursor:pointer;">
+          <p style="font-size:0.83rem;font-weight:600;color:#f1d6b8;margin-bottom:5px;">협상 테이블에서 살아남는 법</p>
+          <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);line-height:1.5;">모든 거래에는 심리가 있다. ESTP가 읽는 사람, 상황, 그리고 타이밍.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.26);color:#fbbf24;font-size:0.62rem;">협상</span>
+            <span style="font-size:0.62rem;color:rgba(241,214,184,0.25);margin-left:auto;">2026.02.17</span>
+          </div>
+        </div>
+
+        <div class="estp-card" style="padding:13px 15px;cursor:pointer;">
+          <p style="font-size:0.83rem;font-weight:600;color:#f1d6b8;margin-bottom:5px;">왜 ESTP는 계획을 싫어하는가</p>
+          <p style="font-size:0.73rem;color:rgba(241,214,184,0.45);line-height:1.5;">계획은 현실을 만나면 쓸모없어진다. 중요한 건 적응 속도다.</p>
+          <div style="display:flex;gap:7px;margin-top:7px;align-items:center;">
+            <span class="tag-pill" style="background:rgba(167,139,250,0.10);border-color:rgba(167,139,250,0.26);color:#a78bfa;font-size:0.62rem;">적응</span>
+            <span style="font-size:0.62rem;color:rgba(241,214,184,0.25);margin-left:auto;">2026.02.11</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FAQ
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">❓ FAQ</p>
+      <div class="estp-card" style="padding:7px;display:flex;flex-direction:column;gap:2px;">
+
+        <details style="border-radius:9px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-size:0.83rem;font-weight:500;color:#f1d6b8;display:flex;justify-content:space-between;align-items:center;">
+            <span>ESTP는 어떤 유형인가요?</span>
+            <span class="faq-arrow" style="color:#f97316;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 12px;font-size:0.76rem;color:rgba(241,214,184,0.52);line-height:1.75;">
+            ESTP는 외향(E)·감각(S)·사고(T)·인식(P)의 조합으로, 전체 인구의 약 4~5%입니다. "기업가" 또는 "다이나모"라는 별명답게 행동이 먼저이고, 위기 상황에서 가장 빠르고 실용적인 해결책을 찾아냅니다.
+          </div>
+        </details>
+
+        <details style="border-radius:9px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-size:0.83rem;font-weight:500;color:#f1d6b8;display:flex;justify-content:space-between;align-items:center;">
+            <span>ESTP의 핵심 강점은?</span>
+            <span class="faq-arrow" style="color:#f97316;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 12px;font-size:0.76rem;color:rgba(241,214,184,0.52);line-height:1.75;">
+            대담한 결단력, 뛰어난 설득력, 현장 적응력, 그리고 압박 상황에서의 냉정한 판단력입니다. 어떤 상황에서도 기회를 포착하고 즉각적으로 행동에 옮기는 것이 ESTP의 진면목입니다.
+          </div>
+        </details>
+
+        <details style="border-radius:9px;overflow:hidden;">
+          <summary style="padding:13px 14px;font-size:0.83rem;font-weight:500;color:#f1d6b8;display:flex;justify-content:space-between;align-items:center;">
+            <span>estp.kr에 연락하려면?</span>
+            <span class="faq-arrow" style="color:#f97316;font-size:0.72rem;">▼</span>
+          </summary>
+          <div style="padding:0 14px 12px;font-size:0.76rem;color:rgba(241,214,184,0.52);line-height:1.75;">
+            <a href="mailto:hello@estp.kr" style="color:#f97316;text-decoration:none;">hello@estp.kr</a>로 직접 연락하거나 아래 폼을 이용해 주세요. 길게 쓰지 않아도 됩니다 — 핵심만 빠르게 ⚡
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- ══════════════
+         NEWSLETTER
+    ══════════════ -->
+    <section style="margin-bottom:32px;" class="reveal">
+      <p class="section-label">📮 Subscribe</p>
+      <div class="estp-card" style="padding:20px 18px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.05em;color:#f97316;margin-bottom:5px;">DYNAMO DISPATCH 받아보기</p>
+        <p style="font-size:0.76rem;color:rgba(241,214,184,0.44);margin-bottom:14px;line-height:1.65;">공개 안 한 딜 분석, 현장 전략, ESTP 인사이트를 뉴스레터로 보내드립니다.</p>
+        <div id="subForm" style="display:flex;flex-direction:column;gap:9px;">
+          <input type="email" id="subEmail" placeholder="your@email.com" class="form-input" />
+          <button onclick="doSubscribe()" style="
+            padding:10px;border-radius:9px;
+            background:linear-gradient(135deg,#f97316,#fbbf24);
+            border:none;cursor:pointer;
+            font-family:'Barlow Condensed',sans-serif;
+            font-weight:700;font-size:0.95rem;letter-spacing:0.08em;color:#09060a;
+            transition:opacity 0.2s;
+          " onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">
+            ⚡ FULL THROTTLE — 구독하기
+          </button>
+        </div>
+        <div id="subSuccess" style="display:none;text-align:center;padding:11px;">
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.92rem;letter-spacing:0.04em;color:#4ade80;">🏁 DEAL CLOSED — 첫 번째 디스패치를 기다려 주세요!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         CONTACT FORM
+    ══════════════ -->
+    <section style="margin-bottom:40px;" class="reveal">
+      <p class="section-label">💬 Contact</p>
+      <div class="estp-card" style="padding:20px 18px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.05em;color:#f97316;margin-bottom:5px;">같이 판을 키울 생각 있나요?</p>
+        <p style="font-size:0.76rem;color:rgba(241,214,184,0.44);margin-bottom:14px;line-height:1.65;">거래 제안, 콜라보, 단순 연락 — 뭐든 환영합니다. 단, 빠르게.</p>
+        <div id="contactForm" style="display:flex;flex-direction:column;gap:9px;">
+          <input type="text"  id="contactName"  placeholder="이름" class="form-input" />
+          <input type="email" id="contactEmail" placeholder="이메일" class="form-input" />
+          <select id="contactTopic" class="form-input" style="appearance:none;-webkit-appearance:none;">
+            <option value="" disabled selected style="background:#1a0800;">주제 선택</option>
+            <option value="deal"     style="background:#1a0800;">⚡ 딜·거래 제안</option>
+            <option value="collab"   style="background:#1a0800;">🤝 콜라보레이션</option>
+            <option value="consult"  style="background:#1a0800;">🎯 전략 자문</option>
+            <option value="media"    style="background:#1a0800;">📸 미디어·인터뷰</option>
+            <option value="other"    style="background:#1a0800;">💬 기타</option>
+          </select>
+          <textarea id="contactMsg" placeholder="핵심만 간결하게 — 길수록 손해입니다" class="form-input" style="resize:vertical;min-height:86px;"></textarea>
+          <button onclick="doContact()" style="
+            padding:10px;border-radius:9px;
+            background:linear-gradient(135deg,#f97316,#fbbf24);
+            border:none;cursor:pointer;
+            font-family:'Barlow Condensed',sans-serif;
+            font-weight:700;font-size:0.95rem;letter-spacing:0.08em;color:#09060a;
+            transition:opacity 0.2s;
+          " onmouseover="this.style.opacity='0.82'" onmouseout="this.style.opacity='1'">
+            지금 바로 보내기 🏁
+          </button>
+        </div>
+        <div id="contactSuccess" style="display:none;text-align:center;padding:13px;">
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.92rem;letter-spacing:0.04em;color:#4ade80;">✅ 수신 완료 — 빠르게 연락드리겠습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════
+         FOOTER
+    ══════════════ -->
+    <footer style="text-align:center;padding-top:22px;border-top:1px solid rgba(249,115,22,0.12);" class="reveal">
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:14px;">
+        <span class="tag-pill" style="background:rgba(249,115,22,0.12);border-color:rgba(249,115,22,0.30);color:#f97316;">Extraverted</span>
+        <span class="tag-pill" style="background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.27);color:#fbbf24;">Sensing</span>
+        <span class="tag-pill" style="background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.25);color:#f87171;">Thinking</span>
+        <span class="tag-pill" style="background:rgba(167,139,250,0.10);border-color:rgba(167,139,250,0.25);color:#a78bfa;">Perceiving</span>
+      </div>
+      <p style="font-family:'Noto Serif KR',serif;font-size:0.85rem;color:rgba(241,214,184,0.35);margin-bottom:7px;">
+        행동이 먼저다. 나머지는 따라온다.
+      </p>
+      <a href="https://estp.kr" style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.10em;color:#f97316;text-decoration:none;">ESTP.KR</a>
+      <p style="font-size:0.62rem;color:rgba(241,214,184,0.17);margin-top:11px;letter-spacing:0.05em;">
+        E · S · T · P · Made with Tailwind CSS 4
+      </p>
+    </footer>
+
+  </div><!-- /main wrapper -->
+
+  <script>
+    /* ══ Risk meter fill on load ══ */
+    (function() {
+      const bars = document.querySelectorAll('#riskMeter .risk-bar');
+      const activeColors = ['#f97316','#fbbf24','#fbbf24','#f97316','#ef4444','#ef4444','#dc2626'];
+      setTimeout(() => {
+        bars.forEach((b,i) => { b.style.background = activeColors[i]; });
+      }, 600);
+    })();
+
+    /* ══ Particles — fire streaks & sparks ══ */
+    (function() {
+      const layer  = document.getElementById('particle-layer');
+      const colors = ['#f97316','#fbbf24','#ef4444','#a78bfa','#fb923c','#fde68a'];
+
+      for (let i = 0; i < 52; i++) {
+        const p     = document.createElement('div');
+        p.className = 'particle';
+        const w     = 2 + Math.random() * 3;
+        const h     = Math.random() > 0.5 ? w : w * (3 + Math.random() * 4);
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const angle = -20 + Math.random() * 40;
+        const tx    = (Math.random() - 0.5) * 80;
+        const ty    = -(100 + Math.random() * 180);
+
+        p.style.cssText = `
+          width:${w}px; height:${h}px;
+          left:${Math.random() * 100}%;
+          top:${10 + Math.random() * 90}%;
+          background:${color};
+          border-radius:${w}px;
+          --dur:${5 + Math.random() * 8}s;
+          --delay:${Math.random() * 7}s;
+          --mop:${0.3 + Math.random() * 0.5};
+          --tx:${tx}px;
+          --ty:${ty}px;
+          --rot:${angle}deg;
+          box-shadow:0 0 ${4 + Math.random()*5}px ${color};
+        `;
+        layer.appendChild(p);
+      }
+    })();
+
+    /* ══ Scroll Reveal + Bar Animations ══ */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          e.target.querySelectorAll('.bar-fill').forEach(bar => {
+            const w = bar.style.getPropertyValue('--w');
+            if (w) bar.style.width = w;
+          });
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ══ Carousel ══ */
+    const track    = document.getElementById('carouselTrack');
+    const slides   = track ? track.querySelectorAll('.carousel-slide') : [];
+    const dotsWrap = document.getElementById('carouselDots');
+    let current    = 0, autoTimer, touchStartX = 0;
+
+    if (slides.length) {
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => gotoSlide(i));
+        dotsWrap.appendChild(dot);
+      });
+
+      function gotoSlide(n) {
+        current = (n + slides.length) % slides.length;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) =>
+          d.classList.toggle('active', i === current));
+      }
+
+      function startAuto() { autoTimer = setInterval(() => gotoSlide(current + 1), 3800); }
+      function stopAuto()  { clearInterval(autoTimer); }
+
+      document.getElementById('carouselPrev')?.addEventListener('click', () => { stopAuto(); gotoSlide(current - 1); startAuto(); });
+      document.getElementById('carouselNext')?.addEventListener('click', () => { stopAuto(); gotoSlide(current + 1); startAuto(); });
+
+      const cw = document.getElementById('carousel');
+      cw.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+      cw.addEventListener('touchend',   e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 38) gotoSlide(dx < 0 ? current + 1 : current - 1);
+        startAuto();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  gotoSlide(current - 1);
+        if (e.key === 'ArrowRight') gotoSlide(current + 1);
+      });
+      cw.addEventListener('mouseenter', stopAuto);
+      cw.addEventListener('mouseleave', startAuto);
+      startAuto();
+    }
+
+    /* ══ Music Player ══ */
+    let playing = false;
+    function toggleMusic() {
+      playing = !playing;
+      const vinyl = document.getElementById('vinyl');
+      const btn   = document.getElementById('playBtn');
+      const prog  = document.getElementById('progressFill');
+      if (playing) {
+        vinyl.classList.add('vinyl-spin');
+        prog.classList.add('progress-anim');
+        btn.textContent = '⏸';
+        btn.style.background = 'linear-gradient(135deg,#fbbf24,#f97316)';
+      } else {
+        vinyl.classList.remove('vinyl-spin');
+        prog.classList.remove('progress-anim');
+        btn.textContent = '▶';
+        btn.style.background = 'linear-gradient(135deg,#f97316,#fbbf24)';
+      }
+    }
+
+    /* ══ Forms ══ */
+    function doSubscribe() {
+      const email = document.getElementById('subEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('subEmail').style.borderColor = '#ef4444';
+        return;
+      }
+      document.getElementById('subForm').style.display    = 'none';
+      document.getElementById('subSuccess').style.display = 'block';
+    }
+
+    function doContact() {
+      const name  = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const msg   = document.getElementById('contactMsg').value.trim();
+      if (!name || !email || !msg) return;
+      document.getElementById('contactForm').style.display    = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
